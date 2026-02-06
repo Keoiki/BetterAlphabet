@@ -58,9 +58,33 @@ The constructor for the class is the exact same, and calling `resetText() / rese
 The function `startTyping() / start()` is used to start the typing effect, as it doesn't begin automatically, and `finishText() / finish()` can be used for finishing the text before it reaches the end itself.
 
 Typed text also supports one extra tag currently:
-- `<d>` for Delay, this one's for Typed text only (more on that below), delaying the typing effect for the given amount in seconds. `Hmm,<d=0.25/> I'll have a uhh,<d=0.5/> I'm not sure...`
+- `<d>` for Delay, delaying the typing effect for the given amount in seconds. `Hmm,<d=0.25/> I'll have a uhh,<d=0.5/> I'm not sure...`
   - This tag is a self-closing one, meaning it has no ending partner unlike all the other tags.
 
 ## Implementing custom character sheets
 
-TBA
+Implementing custom characters is easy. However first you must understand the format on how the characters are named. In the `.xml` you'll get when exporting the image, each name is as follows: `decimal-hex`, for example `65-0041` for `A`.
+- The hex is not required, as the mod only checks for `decimal-` when adding the animation.
+
+With that out of the way, let's continue with the actual implementation:
+- Place your image and xml into `images/balphabet/TYPE/` of your mod, with `TYPE` being either `regular` or `bold`.
+- Create a `.txt` file in `data/balphabet/` of your mod. The name should be the same as the `.png` and `.xml` from the previous step.
+- Within the text file, each line will act as an entry for a character, with the following fields in the format `field=value`, separated by spaces:
+  - `char`, being the decimal number of the character, not the hex,
+  - `offsetX`, the offset in the X axis for the character (OPTIONAL)
+  - `offsetY`, the offset in the Y axis for the character (OPTIONAL, but highly suggested)
+  - `colored`, is this character colored? If `true` or `1`, color tags will not affect them.
+
+An example is shown below, being the lone character from the `Special` sheet.
+```
+char=65533 offsetY=-8
+```
+
+### Debug State
+
+You can check if your characters were loaded properly *(granted no Polymod errors)* is by opening the Debug State by pressing `Shift + B` on the Main Menu.
+- `WASD` to move the camera.
+- `Q/E` to zoom out/in.
+- `J/K` to switch between the shown typefaces.
+- `Z/C` to switch between the shown character in the offset area, above the main text area, hold `Shift` or `Alt` multiplies the switch by `10`.
+- `Arrow Keys` to move the offset area character, hold `Shift` to move by `10`.
