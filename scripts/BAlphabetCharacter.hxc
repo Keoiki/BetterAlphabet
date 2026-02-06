@@ -1,7 +1,6 @@
 package balphabet;
 
 import flixel.FlxG;
-import flixel.math.FlxPoint;
 import funkin.graphics.FunkinSprite;
 
 class BAlphabetCharacter extends FunkinSprite

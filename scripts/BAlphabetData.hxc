@@ -1,13 +1,10 @@
 package balphabet;
 
-import funkin.modding.base.ScriptedMusicBeatState;
 import funkin.modding.module.Module;
-import funkin.util.FileUtil;
 import funkin.ui.mainmenu.MainMenuState;
 import flixel.FlxG;
 import haxe.Utf8;
 import haxe.ds.IntMap;
-import haxe.ds.StringMap;
 import StringTools;
 
 typedef BALetter = {
@@ -53,8 +50,7 @@ class BAlphabetData extends Module
     {   
         if ((FlxG.state is MainMenuState) && FlxG.state.subState == null && FlxG.keys.pressed.SHIFT && FlxG.keys.justPressed.B)
         {
-            var targetState = ScriptedMusicBeatState.init('balphabet.BAlphabetTest');
-            FlxG.switchState(targetState);
+            FlxG.switchState(new BAlphabetTest());
         }
 
         super.onUpdate(event);

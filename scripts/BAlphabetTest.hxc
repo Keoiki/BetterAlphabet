@@ -1,16 +1,13 @@
 package balphabet;
 
 import balphabet.BAlphabet;
+import balphabet.BAlphabetTyped;
 import funkin.util.tools.MapTools;
 import funkin.ui.MusicBeatState;
-import funkin.modding.module.ModuleHandler;
 import funkin.graphics.FunkinSprite;
 import funkin.ui.mainmenu.MainMenuState;
 import flixel.util.FlxSort;
 import flixel.text.FlxText;
-import flixel.FlxSprite;
-import flixel.FlxObject;
-import flixel.FlxCamera;
 import flixel.FlxG;
 import StringTools;
 

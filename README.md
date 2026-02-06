@@ -33,7 +33,7 @@ But what if you wanted a bit more, like the customization I talked about earlier
 - `<i>` for *Italics*, causing the characters to *skew a little bit*, making them Italic, wow. This may cause characters to overlap slightly however.
 - `<c>` for Color, this tag lets you color any area of text however you want. The usage is `<c=00FF00>Green Text</c>` for green colored text for example, replacing the `00FF00` with the hex color of your choosing. (Do NOT include the `#`)
 - `<a>` for Alpha, which allows you to change the opacity of the letters within the tag. `<a=0.5>This text is half visible</a> This half however, isn't.`
-- `<s>` for SCALE, allowing you to scale individual letters as you want. This stacks with the text objects own scale, meaning a scale of `0.5` on a text object already at `0.5` scale makes any letter inside said tag `0.25` the size of the default letter size.
+- `<s>` for SCALE, allowing you to scale individual letters as you want. This stacks with the text object's own scale, meaning a scale of `0.5` on a text object already at `0.5` scale makes any letter inside said tag `0.25` the size of the default letter size.
 - `<W>` for Wavy, this one causes the letters to move in a sine wave pattern, with each letter moving slightly behind the previous one.
 - `<S>` for Shake, which causes the letters to tremble from their initial position briefly, before moving back, repeating ad infinitum.
 
