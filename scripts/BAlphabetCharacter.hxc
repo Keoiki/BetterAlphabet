@@ -1,0 +1,199 @@
+package balphabet;
+
+import flixel.FlxG;
+import flixel.math.FlxPoint;
+import funkin.graphics.FunkinSprite;
+
+class BAlphabetCharacter extends FunkinSprite
+{
+    public var alignOffset:Float = 0;
+    public var letterOffset:Array<Float> = [0, 0];
+
+    public var row:Int = 0;
+    public var rowWidth:Float = 0;
+
+    public var doShake:Bool = false;
+    public var isShakeOffset:Bool = false;
+    public var shakeXOffset:Float = 0;
+    public var shakeYOffset:Float = 0;
+    public var doWave:Bool = false;
+    public var waveOffset:Int = 0;
+
+    public var bold:Bool = false;
+    public var localScale:Float = 1;
+    public var type:String = "unknown";
+    public var typeface:String = "unknown";
+    public var shouldUpdateFrames:Bool = false;
+
+    public var character:Int = -1;
+    public var curLetter = null;
+
+    public var spacesBefore:Int = 0;
+    public var spacesTrailing:Int = 0;
+
+    public function new(x, y)
+    {
+        super(x, y);
+    }
+
+    public function setupAlphaCharacter(x:Float, y:Float, characterCode:Int = 0, ?isBold:Bool = false, ?newLocalScale:Float = 1, ?parentScale:Array<Float> = [1, 1]):Void
+    {
+        this.x = x;
+        this.y = y;
+        
+        localScale = newLocalScale;
+        this.scale.x = parentScale[0] * localScale;
+        this.scale.y = parentScale[1] * localScale;
+
+        // Only fetch on the first setup or when the character changes.
+        if (character != characterCode)
+        {
+            character = characterCode;
+            curLetter = BAlphabetData.getLetter(character);
+
+            // Only set type on the first setup or when typeface changes.
+            if (type == "unknown" || typeface != curLetter.typeface)
+            {
+                bold = isBold;
+                type = bold ? "bold" : "regular";
+                shouldUpdateFrames = true;
+            }
+
+            typeface = curLetter.typeface;
+            setTypeface(typeface);
+
+            var alphaAnim:String = curLetter.anim + '-';
+            animation.addByPrefix(alphaAnim, alphaAnim, 24, true);
+            animation.play(alphaAnim, true);
+        }
+
+        // Special case: the only change is boldness.
+        if (bold != isBold)
+        {
+            bold = isBold;
+            type = bold ? "bold" : "regular";
+            shouldUpdateFrames = true;
+            setTypeface(typeface);
+
+            var alphaAnim:String = curLetter.anim + '-';
+            animation.addByPrefix(alphaAnim, alphaAnim, 24, true);
+            animation.play(alphaAnim, true);
+        }
+
+        updateHitbox();
+        updateLetterOffset();
+
+        alignOffset = 0;
+        // bold = isBold;
+    }
+
+    public function setTypeface(name:String):Void
+    {
+        if (frames == null || shouldUpdateFrames)
+        {
+            frames = Paths.getSparrowAtlas('balphabet/' + type + "/" + name);
+            if (frames == null) // In case no bold version exists.
+            {
+                bold = false;
+                type = "regular";
+                frames = Paths.getSparrowAtlas('balphabet/regular/' + name);
+            }
+            shouldUpdateFrames = false;
+        }
+    }
+
+    public function setItalics():Void
+    {
+        this.skew.x = -20;
+    }
+
+    public function setColor(newColor:Int):Void
+    {
+        if (!curLetter.colored)
+        {
+            color = newColor;
+        }
+    }
+
+    function updateLetterOffset():Void
+    {
+        if (animation.curAnim == null)
+        {
+            // trace(character);
+            return;
+        }
+
+        var add:Float = bold ? 60 : 54;
+
+        if (curLetter.offsets != null)
+        {
+            letterOffset[0] = curLetter.offsets[0];
+            letterOffset[1] = curLetter.offsets[1];
+        }
+
+        add *= scale.y;
+        offset.x += letterOffset[0] * scale.x;
+
+        if (scale.y < 0)
+        {
+            offset.y += letterOffset[1] * scale.y - (add / 2 * localScale);
+            flipX = true;
+        }
+        else
+        {
+            offset.y += letterOffset[1] * scale.y - (add / localScale - height);
+        }
+    }
+
+    function resetEffects():Void
+    {
+        this.alpha = 1;
+        setColor(0xFFFFFFFF);
+        this.skew.x = 0;
+        doShake = false;
+        isShakeOffset = false;
+        shakeXOffset = 0;
+        shakeYOffset = 0;
+        doWave = false;
+        waveOffset = 0;
+    }
+
+    var waveSine:Float = 0;
+    var shakeTick:Float = 0;
+    var shakeFramerate:Float = 16;
+    var shakeSize:Float = 4;
+
+    function update(elapsed:Float):Void
+    {
+        if (doShake)
+        {
+            shakeTick += elapsed;
+            if (shakeTick >= 1 / shakeFramerate)
+            {
+                shakeTick %= 1 / shakeFramerate;
+                if (!isShakeOffset)
+                {
+                    shakeXOffset = FlxG.random.float(-shakeSize * localScale, shakeSize * localScale);
+                    shakeYOffset = FlxG.random.float(-shakeSize * localScale, shakeSize * localScale);
+                    x += shakeXOffset;
+                    y += shakeYOffset;
+                    isShakeOffset = true;
+                }
+                else
+                {
+                    x -= shakeXOffset;
+                    y -= shakeYOffset;
+                    isShakeOffset = false;
+                }
+            }
+        }
+
+        if (doWave)
+        {
+            waveSine += elapsed;
+            offset.y += (Math.sin((waveSine * 4) + (waveOffset * 0.5)) / 2) * scale.y;
+        }
+        
+        super.update(elapsed);
+    }
+}

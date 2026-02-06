@@ -1,0 +1,66 @@
+# Better Alphabet
+A data driven text system for vanilla Friday Night Funkin. (i.e. V-Slice)
+
+**Current FNF Version:** `0.8.1-develop`
+
+Better Alphabet (or BAlphabet) is a Friday Night Funkin mod which allows other modders to easily add cool looking text to whereever they want. It also offers customization of the written text and new character sheets can be added by modders easily.
+
+## Implementing in your own mod
+
+Once the mod is in your mods folder, the only thing needed is:
+```haxe
+import balphabet.BAlphabet;
+```
+in whatever file you want to use it in, that's that, now it's ready to be used.
+
+```haxe
+var testText:BAlphabet = new BAlphabet(FlxG.width / 2, 50, "Hello!");
+testText.alignment = "center";
+testText.setScale(0.75);
+add(testText);
+```
+
+The example above will create a new text object at the given position and with:
+- the text "Hello!",
+- with the alignment set to "center" so the text isn't offset from the middle of the screen,
+- and lastly scaled down a bit, since the characters can be quite large by default.
+
+> [!IMPORTANT]
+> Do not try to set the scale of the text with `text.scale.set(x, y)`, this will NOT WORK properly and will lead to letter misalignment. Similarly do not try to set the `angle` of the text, this will only rotate each letter around themselves and not the whole text object like you might imagine.
+
+But what if you wanted a bit more, like the customization I talked about earlier? The strings passed in support various tags, written as `<tag>Text</tag>`. The supported tags are as follows:
+- `<b>` for **Bold**, this causes letters to change their graphic to a bold one, granting them an outline. If no bold graphic is found the default one is used instead.
+- `<i>` for *Italics*, causing the characters to *skew a little bit*, making them Italic, wow. This may cause characters to overlap slightly however.
+- `<c>` for Color, this tag lets you color any area of text however you want. The usage is `<c=00FF00>Green Text</c>` for green colored text for example, replacing the `00FF00` with the hex color of your choosing. (Do NOT include the `#`)
+- `<a>` for Alpha, which allows you to change the opacity of the letters within the tag. `<a=0.5>This text is half visible</a> This half however, isn't.`
+- `<s>` for SCALE, allowing you to scale individual letters as you want. This stacks with the text objects own scale, meaning a scale of `0.5` on a text object already at `0.5` scale makes any letter inside said tag `0.25` the size of the default letter size.
+- `<W>` for Wavy, this one causes the letters to move in a sine wave pattern, with each letter moving slightly behind the previous one.
+- `<S>` for Shake, which causes the letters to tremble from their initial position briefly, before moving back, repeating ad infinitum.
+
+Another thing that is supported is HTML Escape Codes, letting you type characters without having to mindlessly copy paste them as long as you remember their (hexa)decimal codes. Just put them inside the string you're passing and they'll be parsed before any tags are.
+- Both `&#65;` and `&#x41;` work for getting the `A` character as an example.
+
+### Typed Text
+
+```haxe
+import balphabet.BAlphabetTyped;
+```
+
+This class allows you to make text that appears over a period of time, instead of instantly. However for the time being, you must reset the text MANUALLY (scary) because setters (and getters) don't god damn work properly with scripted class extending ._.
+
+The constructor for the class is the exact same, and calling `resetText() / reset()` is recommended right after adding the object or else your letters will be all over the screen and not hidden like is intended. But from there, there are a couple of variables that might be of interest:
+- `speed:Float`, controls how fast the typing speed is, with the default of `0.05`,
+- `letterStep:Int`, controls how many letters are shown each time they're meant to be, with the default of `1`,
+- `finishedText:Bool`, for reading if the typing is done yet,
+- `letterCallback:Void`, for running a function each time letters are shown, useful for sounds,
+- and `finishCallback:Void`, for running a function once the text is done typing.
+
+The function `startTyping() / start()` is used to start the typing effect, as it doesn't begin automatically, and `finishText() / finish()` can be used for finishing the text before it reaches the end itself.
+
+Typed text also supports one extra tag currently:
+- `<d>` for Delay, this one's for Typed text only (more on that below), delaying the typing effect for the given amount in seconds. `Hmm,<d=0.25/> I'll have a uhh,<d=0.5/> I'm not sure...`
+  - This tag is a self-closing one, meaning it has no ending partner unlike all the other tags.
+
+## Implementing custom character sheets
+
+TBA

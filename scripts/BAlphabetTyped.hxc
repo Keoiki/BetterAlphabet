@@ -1,0 +1,139 @@
+package balphabet;
+
+class BAlphabetTyped extends BAlphabet
+{
+    // This doesn't get called, call resetText() manually!
+    function set_text(input:String):String
+    {
+        trace("set_text from Typed");
+        resetText();
+        super.set_text(input);
+    }
+
+    var isTyping:Bool = false;
+    var finishedText:Bool = false;
+    var speed:Float = 0.05;
+    var curLetter:Int = -1;
+    var timeToUpdate:Float = 0;
+    var letterStep:Int = 1;
+    var delayTime:Float = 0;
+
+    public var letterCallback:Void->Void;
+    public var finishCallback:Void->Void;
+
+    override public function new(x:Float, y:Float, text:String = ""):Void
+    {
+        super(x, y, text);
+        // resetText();
+    }
+
+    public function startTyping():Void
+    {
+        finishedText = false;
+        isTyping = true;
+    }
+
+    public function resetText():Void
+    {
+        curLetter = -1;
+        timeToUpdate = 0;
+        isTyping = false;
+        finishedText = false;
+        for (letter in letters)
+        {
+            letter.visible = false;
+        }
+    }
+
+    public function finishText():Void
+    {
+        if (finishedText || !isTyping)
+            return;
+
+        displayUpTo(letters.length - 1);
+
+        if (finishCallback != null) finishCallback();
+
+        isTyping = false;
+        finishedText = true;
+        timeToUpdate = 0;
+    }
+    
+    public function displayUpTo(dest:Int):Void
+    {
+        var start:Int = curLetter;
+        if (start < 0)
+            start = 0;
+
+        if (dest >= letters.length)
+        {
+            dest = letters.length - 1;
+        }
+
+        for (i in start...(dest + 1))
+        {
+            if (letters[i] != null)
+            {
+                letters[i].visible = true;
+            }
+        }
+    }
+
+    override function update(elapsed:Float):Void
+    {
+        super.update(elapsed);
+
+        if (!isTyping) return;
+
+        if (!finishedText)
+        {
+            timeToUpdate += elapsed;
+            while (timeToUpdate >= speed + delayTime)
+            {
+                delayTime = 0;
+
+                displayUpTo(curLetter + letterStep);
+
+                curLetter += letterStep;
+
+                if (letterCallback != null) letterCallback();
+
+                if (textDataExtra.exists(curLetter))
+                {
+                    delayTime = textDataExtra.get(curLetter).delay;
+                    // trace("Wait time found for " + curLetter + ": " + delayTime);
+                    if (delayTime == null || delayTime < 0)
+                    {
+                        delayTime = 0;
+                    }
+                }
+
+                if (curLetter >= letters.length - 1)
+                {
+                    if (finishCallback != null) finishCallback();
+                    finishedText = true;
+                    timeToUpdate = 0;
+                    isTyping = false;
+                    break;
+                }
+
+                timeToUpdate = 0;
+            }
+        }
+    }
+
+    public function start():Void
+    {
+        startTyping();
+    }
+
+    public function reset():Void
+    {
+        resetText();
+    }
+
+    public function finish():Void
+    {
+        finishText();
+    }
+}

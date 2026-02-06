@@ -1,0 +1,254 @@
+package balphabet;
+
+using StringTools;
+import funkin.modding.module.Module;
+import haxe.ds.IntMap;
+
+typedef TextData = {
+    color:Null<Int>, // <c=FF0000>text</c>
+    scale:Null<Float>, // <s=1.5>text</c>
+    effect:Null<Int>, // <W> (1, Wave) or <S> (2, Shake)
+    italics:Null<Bool>, // <i>
+    bold:Null<Bool>, // <b>
+    alpha:Null<Float>, // <a=0.5>Half opacity text!</a>
+    delay:Null<Float> // <d=0.5/> (Seconds, only on typed text)
+}
+
+class BAlphabetParser extends Module
+{
+    public var charDataList:IntMap<Int, Null<TextData>> = new IntMap();
+    public var charDataExtra:IntMap<Int, Null<TextData>> = new IntMap();
+
+    public var tagList:Array<String> = ["c", "s", "W", "S", "i", "b", "a", "d", "/"];
+
+    public var charIndex:Int = 0;
+    public var inTag:Bool = false;
+    public var inSelfClosingTag:Bool = false;
+    public var stringOffset:Int = 0;
+
+    var hasColor:Bool = false;
+    var hasScale:Bool = false;
+    var hasEffect:Bool = false;
+    var hasItalics:Bool = false;
+    var hasBold:Bool = false;
+    var hasAlpha:Bool = false;
+    var hasDelay:Bool = false;
+
+    var addColor:Int = null;
+    var addScale:Float = null;
+    var addEffect:Int = null;
+    var addAlpha:Int = null;
+    var addDelay:Float = null;
+
+    var charsToPush:Array<Dynamic> = [];
+
+    public function new():Void
+    {
+        super('balphabet-parser', 3);
+    }
+
+    override public function onCreate(event:ScriptEvent):Void
+    {
+        super.onCreate(event);
+    }
+
+    public function resetVariables():Void
+    {
+        charIndex = 0;
+        stringOffset = 0;
+        inTag = false;
+        charDataList.clear();
+        charDataExtra.clear();
+        charsToPush = [];
+    }
+
+    public function parseText(text:String):String
+    {
+        resetVariables();
+        text = parseUnicode(text);
+        for (i in 0...text.length)
+        {
+            i += stringOffset;
+            if (i > text.length) break;
+            parseTags(text, text.charAt(i), i);
+            if (inSelfClosingTag)
+            {
+                if (hasDelay)
+                {
+                    // trace("Wait tag added at " + (charIndex - 1));
+                    charDataExtra.set(charIndex - 1, {
+                        delay: addDelay
+                    });
+                }
+                charIndex--;
+                inSelfClosingTag = false;
+            }
+            if (!inTag)
+            {
+                var charCheck = text.charCodeAt(i);
+                if (hasColor || hasEffect || hasItalics || hasBold || hasScale || hasAlpha)
+                {
+                    charDataList.set(charIndex, {
+                        color: addColor,
+                        scale: addScale,
+                        effect: addEffect,
+                        italics: hasItalics,
+                        bold: hasBold,
+                        alpha: addAlpha
+                    });
+                }
+                switch (charCheck)
+                {
+                    case 32:
+                        // trace("Space found at " + charIndex);
+                        charIndex--;
+                    case 10:
+                        // trace("Carriage Return found at " + charIndex);
+                        charIndex--;
+                    case 13:
+                        // trace("Line Feed found at " + charIndex);
+                        charIndex--;
+                    case 9:
+                        // trace("Horizontal Tab found at " + charIndex);
+                        charIndex--;
+                    default: // Continue as normal
+                }
+                charIndex++;
+            }
+        }
+        // trace(charDataList);
+        // var regex:EReg = new EReg('<.*?>', 'g');
+        var regex:EReg = new EReg('<[!a-zA-Z\\/][^>]*>', 'g'); // Better regex
+        text = regex.replace(text, '');
+        return text;
+    }
+
+    function parseUnicode(text:String)
+    {
+        // var regex = ~/&#x?[A-Fa-f0-9]+;/g;
+        var regex:EReg = new EReg("&#x?[A-Fa-f0-9]+;", "g");
+        text = regex.map(text, (e) -> {
+            var result:String = e.matched(0);
+            var isHex:Bool = result.charAt(2) == "x";
+            return BAlphabetData.fromCharCode(Std.int((isHex ? "0x" : "") + result.substring((isHex ? 3 : 2), result.length - 1)));
+        });
+    }
+
+    public function parseTags(fullText:String, char:String, i:Int):Void
+    {
+        var isTag:Bool = char == '<';
+        if (isTag)
+        {
+            var next:String = fullText.charAt(i + 1);
+            if (!tagList.contains(next))
+            {
+                return;
+            } 
+
+            var tagEnd:Int = fullText.indexOf('>', i);
+            if (fullText.charAt(tagEnd - 1) == '/')
+            {
+                stringOffset += fullText.substring(i, tagEnd + 1).length - 1;
+                inSelfClosingTag = true;
+                onEnterTag(fullText, i, next);
+                return;
+            }
+
+            inTag = true;
+            var enter:Bool = next != '/';
+            if (enter)
+            {
+                onEnterTag(fullText, i, next);
+            }
+            else
+            {
+                // Not needed anymore? 
+                // NVM I'm actually stupid
+                onCloseTag(fullText.charAt(i + 2));
+            }
+        }
+        else
+        {
+            var closeTag:Bool = (i > 0 && fullText.charAt(i - 1) == '>');
+            if (closeTag)
+                inTag = false;
+        }
+    }
+
+    public function onEnterTag(fullText:String, i:Int, tag:String):Void
+    {
+        var tagStart:Int = i + 3; // <#=
+        var tagEnd:Int = fullText.indexOf('>', tagStart);
+
+        if (inTag)
+        {
+            switch (tag)
+            {
+                case 'c': 
+                    var color:String = fullText.substring(tagStart, tagEnd);
+                    addColor = Std.parseInt('0x' + color);
+                    hasColor = true;
+                case 'W':
+                    addEffect = 1;
+                    hasEffect = true;
+                case 'S':
+                    addEffect = 2;
+                    hasEffect = true;
+                case 'i':
+                    hasItalics = true;
+                case 'b':
+                    hasBold = true;
+                case 'a':
+                    var alpha:String = fullText.substring(tagStart, tagEnd);
+                    addAlpha = Std.parseFloat(alpha);
+                    hasAlpha = true;
+                case 's':
+                    var scale:String = fullText.substring(tagStart, tagEnd);
+                    addScale = Std.parseFloat(scale);
+                    hasScale = true;
+                default:
+            }
+        }
+        else if (inSelfClosingTag)
+        {
+            switch (tag)
+            {
+                case 'd':
+                    var delay:String = fullText.substring(tagStart, tagEnd - 1);
+                    addDelay = Std.parseFloat(delay);
+                    hasDelay = true;
+                default:
+            }
+        }
+    }
+
+    public function onCloseTag(tag:String):Void
+    {
+        switch (tag)
+        {
+            case 'c': 
+                addColor = null;
+                hasColor = false;
+            case 'W':
+                addEffect = null;
+                hasEffect = false;
+            case 'S':
+                addEffect = null;
+                hasEffect = false;
+            case 'i':
+                hasItalics = false;
+            case 'b':
+                hasBold = false;
+            case 'a':
+                addAlpha = null;
+                hasAlpha = false;
+            case 's':
+                addScale = null;
+                hasScale = false;
+            case 'd':
+                addDelay = null;
+                hasDelay = false;
+            default:
+        }
+    }
+}

@@ -1,0 +1,369 @@
+package balphabet;
+
+import StringTools;
+import balphabet.BAlphabetCharacter;
+import funkin.modding.module.ModuleHandler;
+import funkin.modding.base.ScriptedFlxSpriteGroup;
+
+class BAlphabet extends ScriptedFlxSpriteGroup
+{
+    // Base variable get_ overrides
+    override function get_width():Float
+    {
+        var widestRow:Float = 0;
+        for (row in rowWidths)
+        {
+            if (row > widestRow)
+            {
+                widestRow = row;
+            }
+        }
+        return widestRow;
+    }
+
+    override function get_height():Float
+    {
+        return letters[letters.length - 1].row * Y_PER_ROW * scaleY;
+    }
+
+    // Regular variables
+    var text(default, set):String;
+
+    function set_text(input:String):String
+    {
+        clearLetters();
+        input = StringTools.replace(input, '\\n', '\n');
+        input = textParser.parseText(input);
+        textData = textParser.charDataList;
+        textDataExtra = textParser.charDataExtra;
+        createLetters(input);
+        updateAlignment();
+        text = input;
+
+        return input;
+    }
+
+    var alignment(default, set):String = 'left';
+
+    function set_alignment(input:String):String
+    {
+        input = StringTools.trim(input);
+        switch (input.toLowerCase())
+        {
+            case 'right': alignment = 'right';
+            case 'center', 'centered': alignment = 'centered';
+            default: alignment = 'left';
+        }
+        updateAlignment();
+
+        return alignment;
+    }
+
+    // var bold:Bool = false;
+    var letters:Array<BAlphabetCharacter> = [];
+    var rowWidths:Array<Float> = [];
+    var scaleX:Float = 1;
+    var scaleY:Float = 1;
+    var rows:Int = 0;
+
+    final Y_PER_ROW:Float = 85;
+
+    var textParser;
+    var textData;
+    var textDataExtra;
+
+    public function new(x:Float, y:Float, _text:String = ""):Void
+    {
+        super(x, y);
+        textParser = ModuleHandler.getModule('balphabet-parser');
+        text = _text;
+    }
+
+    public function setAlignment(align:String):Void
+    {
+        alignment = align;
+    }
+
+    function updateAlignment():Void
+    {
+        for (letter in letters)
+        {
+            var newOffset:Float = 0;
+            switch (alignment)
+            {
+                case 'right': newOffset = rowWidths[letter.row];
+                case 'centered': newOffset = rowWidths[letter.row] / 2;
+                default: newOffset = 0;
+            }
+            letter.offset.x -= letter.alignOffset;
+            letter.alignOffset = newOffset;
+            letter.offset.x += letter.alignOffset;
+        }
+    }
+
+    public function setText(newText:String):Void
+    {
+        text = newText;
+    }
+
+    function clearLetters():Void
+    {
+        var i:Int = letters.length;
+        while (i > 0)
+        {
+            --i;
+            var letter = letters[i];
+            if (letter != null) {
+                letter.kill();
+                // letters.remove(letter);
+                // this.remove(letter);
+            }
+        }
+        letters = [];
+        rows = 0;
+    }
+
+    public function setScale(newX:Float, newY:Null<Float> = null):Void
+    {
+        var lastX:Float = this.scale.x;
+        var lastY:Float = this.scale.y;
+        if(newY == null)
+            newY = newX;
+        scaleX = newX;
+        scaleY = newY;
+
+        this.scale.x = newX;
+        this.scale.y = newY;
+        softReloadLetters(newX / lastX, newY / lastY);
+    }
+
+    // function set_scaleX(value:Float):Float
+    // {
+        // if (value == scaleX)
+            // return value;
+
+        // var ratio:Float = value / this.scale.x;
+        // this.scale.x = value;
+        // scaleX = value;
+        // softReloadLetters(ratio, 1);
+
+        // return value;
+    // }
+
+    // function set_scaleY(value:Float):Float
+    // {
+        // if (value == scaleY)
+            // return value;
+
+        // var ratio:Float = value / this.scale.y;
+        // this.scale.y = value;
+        // scaleY = value;
+        // softReloadLetters(1, ratio);
+
+        // return value;
+    // }
+
+    function softReloadLetters(ratioX:Float = 1, ratioY:Null<Float> = null):Void
+    {
+        if (ratioY == null)
+            ratioY = ratioX;
+
+        for (letter in letters)
+        {
+            if (letter != null)
+            {
+                letter.setupAlphaCharacter(
+                    (letter.x - x) * ratioX + x,
+                    (letter.y - y) * ratioY + y,
+                    letter.character,
+                    letter.bold,
+                    letter.localScale,
+                    [scaleX, scaleY]
+                );
+            }
+        }
+
+        rowWidths = [];
+        loadLetterModifiers();
+        refreshRowWidth();
+    }
+
+    public function createLetters(newText:String):Void
+    {
+        rows = 0;
+        rowWidths = [];
+        var consecutiveSpaces:Int = 0;
+        var posX:Float = 0;
+        var index = 0;
+        for (character in newText.split(''))
+        {
+            if (character != '\n')
+            {
+                var isSpace:Bool = (character == " ");
+                if (isSpace) consecutiveSpaces++;
+
+                // Do not display certain characters.
+                if (shouldIgnoreCharacter(character) || isSpace) continue;
+
+                var charCode:Int = character.charCodeAt(0);
+
+                var letterLocalScale:Float = 1;
+                var letterBold:Bool = false;
+
+                if (textData.exists(index))
+                {
+                    if (textData.get(index).scale != null)
+                    {
+                        letterLocalScale = textData.get(index).scale;
+                    }
+                    letterBold = textData.get(index).bold;
+                }
+                        
+                if (consecutiveSpaces > 0)
+                {
+                    posX += 28 * consecutiveSpaces * scaleX * letterLocalScale;
+                }
+
+                // var letter = new BAlphabetCharacter(0, 0);
+                // Use a revive system rather than creating a new letter EVERY TIME.
+                // Seems to have improved performance quite a bit.
+                var letter:BAlphabetCharacter;
+                if (getFirstDead() != null)
+                {
+                    letter = getFirstDead();
+                    letter.revive();
+                    letter.resetEffects();
+                }
+                else
+                {
+                    letter = new BAlphabetCharacter(0, 0);
+                }
+                letter.setupAlphaCharacter(posX, rows * Y_PER_ROW * scale.y, charCode, letterBold, letterLocalScale, [scaleX, scaleY]);
+                letter.row = rows;
+                letter.spacesBefore = consecutiveSpaces;
+
+                var xOff:Float = 2;
+                if (letterBold)
+                    xOff = -6;
+
+                posX += letter.width + (letter.letterOffset[0] + xOff) * scaleX * letterLocalScale;
+
+                this.add(letter);
+                letters.push(letter);
+                    
+                index++;
+                consecutiveSpaces = 0;
+            }
+            else
+            {
+                letters[index - 1].spacesTrailing = consecutiveSpaces;
+                rowWidths[rows] = posX;
+                consecutiveSpaces = 0;
+                posX = 0;
+                rows++;
+            }
+        }
+
+        if (letters.length > 0)
+        {
+            // Deal with trailing spaces.
+            if (consecutiveSpaces > 0)
+            {
+                posX += 28 * consecutiveSpaces * scaleX * letters[index - 1].localScale;
+            }
+            letters[index - 1].spacesTrailing = consecutiveSpaces;
+        }
+
+        rowWidths[rows] = posX;
+        
+        loadLetterModifiers();
+    }
+
+    public function refreshRowWidth():Void
+    {
+        var posX:Float = 0;
+        var prevRow:Int = -1;
+        for (letter in letters)
+        {
+            if (letter.row != prevRow)
+            {
+                prevRow = letter.row;
+                posX = 0;
+            }
+
+            if (letter.spacesBefore > 0)
+            {
+                posX += 28 * letter.spacesBefore * scaleX * letter.localScale;
+            }
+
+            if (letter.spacesTrailing > 0)
+            {
+                posX += 28 * letter.spacesTrailing * scaleX * letter.localScale;
+            }
+            
+            var off:Float = 2;
+            if (letter.bold)
+            {
+                off = -6;
+            }
+
+            posX += letter.width + (letter.letterOffset[0] + off) * scaleX * letter.localScale;
+            rowWidths[letter.row] = posX;
+        }
+
+        updateAlignment();
+    }
+
+    public function loadLetterModifiers():Void
+    {
+        for (i in 0...letters.length)
+        {
+            if (textData.exists(i))
+            {
+                if (textData.get(i).color != null)
+                {
+                    letters[i].setColor(textData.get(i).color);
+                }
+
+                if (textData.get(i).alpha != null)
+                {
+                    letters[i].alpha = textData.get(i).alpha;
+                }
+
+                if (textData.get(i).italics)
+                {
+                    letters[i].setItalics();
+                }
+
+                if (textData.get(i).effect == 1)
+                {
+                    letters[i].doWave = true;
+                    letters[i].waveOffset = i;
+                }
+
+                if (textData.get(i).effect == 2)
+                {
+                    letters[i].doShake = true;
+                }
+            }
+        }
+    }
+
+    override function update(elapsed:Float):Void
+    {
+        super.update(elapsed);
+    }
+
+    /**
+     * Do not render the following:
+     * 9 - Horizontal Tab
+     * 10 - Line Feed
+     * 13 - Carriage Return
+     */
+    public function shouldIgnoreCharacter(character:Int):Bool
+    {
+        return character == BAlphabetData.fromCharCode(9)
+            || character == BAlphabetData.fromCharCode(10)
+            || character == BAlphabetData.fromCharCode(13);
+    }
+}

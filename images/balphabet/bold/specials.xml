@@ -1,0 +1,6 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TextureAtlas imagePath="specials.png">
+	<!-- Created with Adobe Animate version 23.0.6.142 -->
+	<!-- http://www.adobe.com/products/animate.html -->
+	<SubTexture name="65533-FFFD0000" x="0" y="0" width="83" height="83"/>
+</TextureAtlas>

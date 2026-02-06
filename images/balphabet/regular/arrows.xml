@@ -1,0 +1,29 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TextureAtlas imagePath="arrows.png">
+	<!-- Created with Adobe Animate version 23.0.6.142 -->
+	<!-- http://www.adobe.com/products/animate.html -->
+	<SubTexture name="8592-21900000" x="43" y="195" width="52" height="40"/>
+	<SubTexture name="8593-21910000" x="84" y="82" width="40" height="52"/>
+	<SubTexture name="8594-21920000" x="180" y="79" width="52" height="40"/>
+	<SubTexture name="8595-21930000" x="125" y="84" width="40" height="52"/>
+	<SubTexture name="8596-21940000" x="63" y="0" width="62" height="40"/>
+	<SubTexture name="8597-21950000" x="0" y="104" width="40" height="62"/>
+	<SubTexture name="8598-21960000" x="175" y="120" width="42" height="40"/>
+	<SubTexture name="8599-21970000" x="164" y="202" width="40" height="42"/>
+	<SubTexture name="8600-21980000" x="175" y="161" width="42" height="40"/>
+	<SubTexture name="8601-21990000" x="205" y="202" width="40" height="42"/>
+	<SubTexture name="8617-21A90000" x="63" y="41" width="61" height="40"/>
+	<SubTexture name="8618-21AA0000" x="126" y="0" width="61" height="40"/>
+	<SubTexture name="8624-21B00000" x="96" y="195" width="33" height="51"/>
+	<SubTexture name="8625-21B10000" x="107" y="137" width="33" height="51"/>
+	<SubTexture name="8626-21B20000" x="141" y="137" width="33" height="51"/>
+	<SubTexture name="8627-21B30000" x="130" y="189" width="33" height="51"/>
+	<SubTexture name="8630-21B60000" x="180" y="43" width="63" height="35"/>
+	<SubTexture name="8631-21B70000" x="43" y="159" width="63" height="35"/>
+	<SubTexture name="8634-21BA0000" x="0" y="0" width="62" height="51"/>
+	<SubTexture name="8635-21BB0000" x="0" y="52" width="62" height="51"/>
+	<SubTexture name="8678-21E60000" x="125" y="41" width="54" height="42"/>
+	<SubTexture name="8679-21E70000" x="0" y="167" width="42" height="54"/>
+	<SubTexture name="8680-21E80000" x="188" y="0" width="54" height="42"/>
+	<SubTexture name="8681-21E90000" x="41" y="104" width="42" height="54"/>
+</TextureAtlas>
