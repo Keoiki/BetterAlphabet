@@ -7,7 +7,7 @@ import funkin.modding.base.ScriptedFlxSpriteGroup;
 
 class BAlphabet extends ScriptedFlxSpriteGroup
 {
-    // Base variable get_ overrides
+    // Base variable getter overrides
     override function get_width():Float
     {
         var widestRow:Float = 0;
@@ -59,7 +59,6 @@ class BAlphabet extends ScriptedFlxSpriteGroup
         return alignment;
     }
 
-    // var bold:Bool = false;
     var letters:Array<BAlphabetCharacter> = [];
     var rowWidths:Array<Float> = [];
     var scaleX:Float = 1;
@@ -113,10 +112,9 @@ class BAlphabet extends ScriptedFlxSpriteGroup
         {
             --i;
             var letter = letters[i];
-            if (letter != null) {
+            if (letter != null)
+            {
                 letter.kill();
-                // letters.remove(letter);
-                // this.remove(letter);
             }
         }
         letters = [];
@@ -127,8 +125,7 @@ class BAlphabet extends ScriptedFlxSpriteGroup
     {
         var lastX:Float = this.scale.x;
         var lastY:Float = this.scale.y;
-        if(newY == null)
-            newY = newX;
+        if(newY == null) newY = newX;
         scaleX = newX;
         scaleY = newY;
 
@@ -242,11 +239,11 @@ class BAlphabet extends ScriptedFlxSpriteGroup
                 letter.row = rows;
                 letter.spacesBefore = consecutiveSpaces;
 
-                var xOff:Float = 2;
+                var padding:Float = 2;
                 if (letterBold)
-                    xOff = -6;
+                    padding = -6;
 
-                posX += letter.width + (letter.letterOffset[0] + xOff) * scaleX * letterLocalScale;
+                posX += letter.width + (letter.letterOffset[0] + padding) * scaleX * letterLocalScale;
 
                 this.add(letter);
                 letters.push(letter);
@@ -301,13 +298,13 @@ class BAlphabet extends ScriptedFlxSpriteGroup
                 posX += 28 * letter.spacesTrailing * scaleX * letter.localScale;
             }
             
-            var off:Float = 2;
+            var padding:Float = 2;
             if (letter.bold)
             {
-                off = -6;
+                padding = -6;
             }
 
-            posX += letter.width + (letter.letterOffset[0] + off) * scaleX * letter.localScale;
+            posX += letter.width + (letter.letterOffset[0] + padding) * scaleX * letter.localScale;
             rowWidths[letter.row] = posX;
         }
 

@@ -75,7 +75,6 @@ class BAlphabetParser extends Module
             {
                 if (hasDelay)
                 {
-                    // trace("Wait tag added at " + (charIndex - 1));
                     charDataExtra.set(charIndex - 1, {
                         delay: addDelay
                     });
@@ -99,25 +98,15 @@ class BAlphabetParser extends Module
                 }
                 switch (charCheck)
                 {
-                    case 32:
-                        // trace("Space found at " + charIndex);
-                        charIndex--;
-                    case 10:
-                        // trace("Carriage Return found at " + charIndex);
-                        charIndex--;
-                    case 13:
-                        // trace("Line Feed found at " + charIndex);
-                        charIndex--;
-                    case 9:
-                        // trace("Horizontal Tab found at " + charIndex);
-                        charIndex--;
+                    case 32: charIndex--; // Space
+                    case 10: charIndex--; // Carriage Return
+                    case 13: charIndex--; // Line Feed
+                    case 9: charIndex--; // Horizontal Tab
                     default: // Continue as normal
                 }
                 charIndex++;
             }
         }
-        // trace(charDataList);
-        // var regex:EReg = new EReg('<.*?>', 'g');
         var regex:EReg = new EReg('<[!a-zA-Z\\/][^>]*>', 'g'); // Better regex
         text = regex.replace(text, '');
         return text;
@@ -125,7 +114,6 @@ class BAlphabetParser extends Module
 
     function parseUnicode(text:String)
     {
-        // var regex = ~/&#x?[A-Fa-f0-9]+;/g;
         var regex:EReg = new EReg("&#x?[A-Fa-f0-9]+;", "g");
         text = regex.map(text, (e) -> {
             var result:String = e.matched(0);
@@ -171,7 +159,9 @@ class BAlphabetParser extends Module
         {
             var closeTag:Bool = (i > 0 && fullText.charAt(i - 1) == '>');
             if (closeTag)
+            {
                 inTag = false;
+            }
         }
     }
 

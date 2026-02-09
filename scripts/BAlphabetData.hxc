@@ -8,10 +8,10 @@ import haxe.ds.IntMap;
 import StringTools;
 
 typedef BALetter = {
-    anim:Null<String>,
+    anim:String,
     offsets:Array<Float>,
-    colored:Null<Bool>,
-    typeface:Null<String>
+    colored:Bool,
+    typeface:String
 }
 
 /**

@@ -2,12 +2,10 @@ package balphabet;
 
 class BAlphabetTyped extends BAlphabet
 {
-    // This doesn't get called, call resetText() manually!
     function set_text(input:String):String
     {
-        trace("set_text from Typed");
-        resetText();
         super.set_text(input);
+        resetText();
     }
 
     var isTyping:Bool = false;
@@ -20,12 +18,6 @@ class BAlphabetTyped extends BAlphabet
 
     public var letterCallback:Void->Void;
     public var finishCallback:Void->Void;
-
-    override public function new(x:Float, y:Float, text:String = ""):Void
-    {
-        super(x, y, text);
-        // resetText();
-    }
 
     public function startTyping():Void
     {
