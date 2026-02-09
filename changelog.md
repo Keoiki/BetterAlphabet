@@ -30,3 +30,5 @@ Initial Release
     - Delay `<d>`: Delays a typed text for the given value in seconds.
         - `Hmm,<d=0.25/> I'll have a uhh,<d=0.5/> I'm not sure...`
 - Support for HTML Escape codes, either `&#65;` (decimal) or `&#x41;` (hexadecimal) will work.
+- Support for adding custom character sheets; read the `README` for more on that.
+- Support for adding custom fonts; read the `README` for more on that.
