@@ -30,12 +30,15 @@ class BAlphabetCharacter extends FunkinSprite
     public var spacesBefore:Int = 0;
     public var spacesTrailing:Int = 0;
 
+    public var font:String = "default";
+    public var fontData:BAFont = null;
+
     public function new(x, y)
     {
         super(x, y);
     }
 
-    public function setupAlphaCharacter(x:Float, y:Float, characterCode:Int = 0, ?isBold:Bool = false, ?newLocalScale:Float = 1, ?parentScale:Array<Float> = [1, 1]):Void
+    public function setupAlphaCharacter(x:Float, y:Float, characterCode:Int, isBold:Bool, newLocalScale:Float, parentScale:Array<Float>, _font:String):Void
     {
         this.x = x;
         this.y = y;
@@ -48,16 +51,17 @@ class BAlphabetCharacter extends FunkinSprite
         if (character != characterCode)
         {
             character = characterCode;
-            curLetter = BAlphabetData.getLetter(character);
+            curLetter = BAlphabetData.getLetter(character, _font);
 
-            // Only set type on the first setup or when typeface changes.
-            if (type == "unknown" || typeface != curLetter.typeface)
+            // Only set type on the first setup or when either typeface or font changes.
+            if (type == "unknown" || typeface != curLetter.typeface || font != _font)
             {
                 bold = isBold;
                 type = bold ? "bold" : "regular";
                 shouldUpdateFrames = true;
             }
 
+            font = _font;
             typeface = curLetter.typeface;
             setTypeface(typeface);
 
@@ -66,7 +70,7 @@ class BAlphabetCharacter extends FunkinSprite
             animation.play(alphaAnim, true);
         }
 
-        // Special case: the only change is boldness.
+        // Special cases: the only change is boldness or font.
         if (bold != isBold)
         {
             bold = isBold;
@@ -79,23 +83,39 @@ class BAlphabetCharacter extends FunkinSprite
             animation.play(alphaAnim, true);
         }
 
+        if (font != _font)
+        {
+            font = _font;
+            curLetter = BAlphabetData.getLetter(characterCode, font);
+            typeface = curLetter.typeface;
+            shouldUpdateFrames = true;
+            setTypeface(typeface);
+
+            var alphaAnim:String = curLetter.anim + '-';
+            animation.addByPrefix(alphaAnim, alphaAnim, 24, true);
+            animation.play(alphaAnim, true);
+        }
+
         updateHitbox();
         updateLetterOffset();
 
         alignOffset = 0;
-        // bold = isBold;
     }
 
     public function setTypeface(name:String):Void
     {
         if (frames == null || shouldUpdateFrames)
         {
-            frames = Paths.getSparrowAtlas('balphabet/' + type + "/" + name);
+            frames = Paths.getSparrowAtlas("balphabet/" + font + "/" + type + "/" + name);
             if (frames == null) // In case no bold version exists.
             {
                 bold = false;
                 type = "regular";
-                frames = Paths.getSparrowAtlas('balphabet/regular/' + name);
+                frames = Paths.getSparrowAtlas("balphabet/" + font + "/regular/" + name);
+            }
+            if (frames == null) // Does that typeface not exist in the current font? FALLBACK TIME!!!
+            {
+                frames = Paths.getSparrowAtlas("balphabet/default/regular/" + name);
             }
             shouldUpdateFrames = false;
         }
@@ -122,7 +142,7 @@ class BAlphabetCharacter extends FunkinSprite
             return;
         }
 
-        var add:Float = bold ? 60 : 54;
+        var add:Float = bold ? fontData.sizeBold : fontData.size;
 
         if (curLetter.offsets != null)
         {

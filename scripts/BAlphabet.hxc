@@ -23,14 +23,16 @@ class BAlphabet extends ScriptedFlxSpriteGroup
 
     override function get_height():Float
     {
-        return letters[letters.length - 1].row * Y_PER_ROW * scaleY;
+        return letters[letters.length - 1].row * fontData.lineHeight * scaleY;
     }
 
     // Regular variables
+    var textRaw:String;
     var text(default, set):String;
 
     function set_text(input:String):String
     {
+        textRaw = input;
         clearLetters();
         input = StringTools.replace(input, '\\n', '\n');
         input = textParser.parseText(input);
@@ -39,6 +41,34 @@ class BAlphabet extends ScriptedFlxSpriteGroup
         createLetters(input);
         updateAlignment();
         text = input;
+
+        return input;
+    }
+
+    var fontData:BAFont;
+    var font(default, set):String = 'default';
+
+    function set_font(input:String):String
+    {
+        trace(input);
+        if (!BAlphabetData.allFonts.exists(input))
+        {
+            fontData = BAlphabetData.allFonts.get('default');
+            trace("Font " + input + " not found. Defaulting to default font.");
+        }
+        else
+        {
+            fontData = BAlphabetData.allFonts.get(input);
+        }
+
+        font = input;
+
+        if (textRaw != null)
+        {
+            trace("font change");
+            trace(textRaw);
+            text = textRaw;
+        }
 
         return input;
     }
@@ -56,7 +86,7 @@ class BAlphabet extends ScriptedFlxSpriteGroup
         }
         updateAlignment();
 
-        return alignment;
+        return input;
     }
 
     var letters:Array<BAlphabetCharacter> = [];
@@ -65,17 +95,16 @@ class BAlphabet extends ScriptedFlxSpriteGroup
     var scaleY:Float = 1;
     var rows:Int = 0;
 
-    final Y_PER_ROW:Float = 85;
-
     var textParser;
     var textData;
     var textDataExtra;
 
-    public function new(x:Float, y:Float, _text:String = ""):Void
+    public function new(x:Float, y:Float, _text:String = "", _font:String = "default"):Void
     {
         super(x, y);
         textParser = ModuleHandler.getModule('balphabet-parser');
-        text = _text;
+        font = _font ?? "default";
+        text = _text ?? "";
     }
 
     public function setAlignment(align:String):Void
@@ -169,6 +198,7 @@ class BAlphabet extends ScriptedFlxSpriteGroup
         {
             if (letter != null)
             {
+                letter.font = this.font;
                 letter.setupAlphaCharacter(
                     (letter.x - x) * ratioX + x,
                     (letter.y - y) * ratioY + y,
@@ -218,7 +248,7 @@ class BAlphabet extends ScriptedFlxSpriteGroup
                         
                 if (consecutiveSpaces > 0)
                 {
-                    posX += 28 * consecutiveSpaces * scaleX * letterLocalScale;
+                    posX += fontData.spaceWidth * consecutiveSpaces * scaleX * letterLocalScale;
                 }
 
                 // var letter = new BAlphabetCharacter(0, 0);
@@ -235,14 +265,12 @@ class BAlphabet extends ScriptedFlxSpriteGroup
                 {
                     letter = new BAlphabetCharacter(0, 0);
                 }
-                letter.setupAlphaCharacter(posX, rows * Y_PER_ROW * scale.y, charCode, letterBold, letterLocalScale, [scaleX, scaleY]);
+                letter.fontData = this.fontData;
+                letter.setupAlphaCharacter(posX, rows * fontData.lineHeight * scale.y, charCode, letterBold, letterLocalScale, [scaleX, scaleY], font);
                 letter.row = rows;
                 letter.spacesBefore = consecutiveSpaces;
 
-                var padding:Float = 2;
-                if (letterBold)
-                    padding = -6;
-
+                var padding:Float = letterBold ? fontData.paddingBold : fontData.padding;
                 posX += letter.width + (letter.letterOffset[0] + padding) * scaleX * letterLocalScale;
 
                 this.add(letter);
@@ -266,7 +294,7 @@ class BAlphabet extends ScriptedFlxSpriteGroup
             // Deal with trailing spaces.
             if (consecutiveSpaces > 0)
             {
-                posX += 28 * consecutiveSpaces * scaleX * letters[index - 1].localScale;
+                posX += fontData.spaceWidth * consecutiveSpaces * scaleX * letters[index - 1].localScale;
             }
             letters[index - 1].spacesTrailing = consecutiveSpaces;
         }
@@ -290,20 +318,15 @@ class BAlphabet extends ScriptedFlxSpriteGroup
 
             if (letter.spacesBefore > 0)
             {
-                posX += 28 * letter.spacesBefore * scaleX * letter.localScale;
+                posX += fontData.spaceWidth * letter.spacesBefore * scaleX * letter.localScale;
             }
 
             if (letter.spacesTrailing > 0)
             {
-                posX += 28 * letter.spacesTrailing * scaleX * letter.localScale;
+                posX += fontData.spaceWidth * letter.spacesTrailing * scaleX * letter.localScale;
             }
             
-            var padding:Float = 2;
-            if (letter.bold)
-            {
-                padding = -6;
-            }
-
+            var padding:Float = letter.bold ? fontData.paddingBold : fontData.padding;
             posX += letter.width + (letter.letterOffset[0] + padding) * scaleX * letter.localScale;
             rowWidths[letter.row] = posX;
         }

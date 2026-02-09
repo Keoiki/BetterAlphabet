@@ -2,10 +2,22 @@ package balphabet;
 
 import funkin.modding.module.Module;
 import funkin.ui.mainmenu.MainMenuState;
+import funkin.util.SerializerUtil;
 import flixel.FlxG;
 import haxe.Utf8;
 import haxe.ds.IntMap;
+import haxe.ds.StringMap;
 import StringTools;
+
+typedef BAFont = {
+    size:Float,
+    sizeBold:Float,
+    padding:Float,
+    paddingBold:Float,
+    lineHeight:Float,
+    spaceWidth:Float,
+    letters:IntMap<Int, BALetter>
+}
 
 typedef BALetter = {
     anim:String,
@@ -16,32 +28,33 @@ typedef BALetter = {
 
 /**
  * This module contains the data relating to letters.
- * Letter sprites are stored in "images/balphabet/" and the data itself in "data/balphabet".
- * This system allows for unlimited letters, which can easily be added onto.
+ * Letter sprites are stored in "images/balphabet/FONTNAME" and the data itself in "data/balphabet/FONTNAME".
+ * This system allows for unlimited letters, which can easily be added onto. (Unlimited is a lie, it's actually up to FFFF)
  * Now if you're asking, why such a powerful letter system? I hate vanilla Alphabet.hx
  * (It's been since replaced by AtlasText.hx which is better, I guess.)
  */
 class BAlphabetData extends Module
 {
     /**
-     * Stores all loaded letter, big surprise...
-     * Assigned in loadLetterData()
+     * Stores all loaded fonts with their letter, big surprise...
+     * Assigned in loadFontData()
      * Letters are stored by their character code, instead of their represention as a string. (E.g. 65 instead of "A")
      */
-    public static var allLetters:IntMap<Int, Null<BALetter>> = new IntMap();
+    public static var allFonts:StringMap<String, BAFont> = new StringMap();
 
     public static var uniqueTypefaces:Array<String> = [];
+    public static var uniqueFonts:Array<String> = [];
 
     public function new()
     {
         super('balphabet-data', 2);
 
-        BAlphabetData.allLetters = new IntMap();
+        BAlphabetData.allFonts = new StringMap();
     }
 
     override public function onCreate(event:ScriptEvent):Void
     {
-        loadLetterData();
+        loadFontData();
 
         super.onCreate(event);
     }
@@ -61,34 +74,70 @@ class BAlphabetData extends Module
      * @param index 
      * @return BALetter
      */
-    public static function getLetter(index:Int):BALetter
+    public static function getLetter(index:Int, font:String = "default"):BALetter
     {
-        if (BAlphabetData.allLetters.exists(index))
+        font ??= "default";
+        if (BAlphabetData.allFonts.exists(font))
         {
-            return BAlphabetData.allLetters.get(index);
+            if (BAlphabetData.allFonts.get(font).letters.exists(index))
+            {
+                return BAlphabetData.allFonts.get(font).letters.get(index);
+            }
         }
-        trace("No letter found for number: " + index + ". Returning fallback letter.");
+        trace("No letter found for number: " + index + " in font: " + font + ". Returning fallback letter.");
         return {anim: "65533", offsets: [0, -8], colored: false, typeface: "specials"};
     }
 
     /**
-     * Loads the letter data from the "data/balphabet" folder.
-     * Ignores non-text files.
+     * Loads the data for all fonts the mod can find.
      */
-    public function loadLetterData():Void
+    function loadFontData():Void
     {
-        BAlphabetData.allLetters.clear();
+        BAlphabetData.allFonts.clear();
+
+        var fontList:Array<String> = Assets.list("TEXT").filter(function(file):Bool {
+            return StringTools.contains(file, "data/balphabet/") && StringTools.endsWith(file, ".json");
+        });
+
+        trace(fontList);
+
+        for (font in fontList)
+        {
+            font = font.substring(font.indexOf("/") + 1);
+            var data:String = Assets.getText(font);
+            data = SerializerUtil.fromJSON(data);
+            var name:String = font.substring(font.lastIndexOf("/") + 1, font.indexOf("."));
+            data.letters = loadLetterData(name);
+            BAlphabetData.allFonts.set(name, data);
+
+            if (!BAlphabetData.uniqueFonts.contains(name))
+            {
+                BAlphabetData.uniqueFonts.push(name);
+            }
+        }
+    }
+
+    /**
+     * Loads the letter data for the given font.
+     */
+    function loadLetterData(fontName:String):IntMap<Int, BALetter>
+    {
+        if (fontName == null)
+        {
+            return null;
+        }
+
+        var letters:IntMap<Int, BALetter> = new IntMap();
 
         var alphabetList:Array<String> = Assets.list("TEXT").filter(function(file):Bool {
-            return StringTools.contains(file, "data/balphabet/");
+            return StringTools.contains(file, "data/balphabet/" + fontName) && StringTools.endsWith(file, ".txt");
         });
 
         for (file in alphabetList)
         {
-            if (!StringTools.endsWith(file, ".txt")) continue;
             file = file.substring(file.indexOf("/") + 1);
-            var fullFile:String = Assets.getText(file);
-            fullFile = StringTools.trim(fullFile);
+            var data:String = Assets.getText(file);
+            data = StringTools.trim(data);
 
             var typeface:String = file.substring(file.lastIndexOf("/") + 1, file.indexOf("."));
             if (!BAlphabetData.uniqueTypefaces.contains(typeface))
@@ -96,7 +145,7 @@ class BAlphabetData extends Module
                 BAlphabetData.uniqueTypefaces.push(typeface);
             }
     
-            var eachLine:Array<String> = fullFile.split("\n");
+            var eachLine:Array<String> = data.split("\n");
             for (character in eachLine)
             {
                 var char:String = "";
@@ -121,11 +170,12 @@ class BAlphabetData extends Module
                             trace("Invalid data!", character);
                     }
                 }
-                BAlphabetData.allLetters.set(Std.int(char), {anim: char, offsets: offsets, colored: colored, typeface: typeface});
+                letters.set(Std.int(char), {anim: char, offsets: offsets, colored: colored, typeface: typeface});
             }
         }
-
         BAlphabetData.uniqueTypefaces.push("all");
+
+        return letters;
     }
 
     // it works now????????????? wtf

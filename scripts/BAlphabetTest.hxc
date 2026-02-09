@@ -33,6 +33,9 @@ class BAlphabetTest extends MusicBeatState
 
     var currentTypeface:Int = 0;
     var typefaceName:FlxText;
+    var currentFont:Int = 0;
+    var fontName:FlxText;
+    var changedFont:Bool = false;
 
     public function new():Void
     {
@@ -49,14 +52,14 @@ class BAlphabetTest extends MusicBeatState
             return FlxSort.byValues(-1, a, b);
         }
 
-        allLetterMap = BAlphabetData.allLetters;
+        allLetterMap = BAlphabetData.allFonts.get(BAlphabetData.uniqueFonts[currentFont]).letters;
         allLetterIndexes = MapTools.keyValues(allLetterMap);
         allLetterIndexes.sort(sortOrder);
         
-        normalText = new BAlphabet(0, 0, "");
+        normalText = new BAlphabet(0, 0, "", BAlphabetData.uniqueFonts[currentFont]);
         add(normalText);
         
-        boldText = new BAlphabet(normalText.width + 50, 0, "");
+        boldText = new BAlphabet(normalText.width + 50, 0, "", BAlphabetData.uniqueFonts[currentFont]);
         add(boldText);
 
         typedText = new BAlphabetTyped(0, -500, "<b>Typed text testing,</b> <c=00FFAA>make sure</c> <i>this is</i> <s=0.5>a</s> <a=0.5>really</a> <W>long string</W> <S>to test it properly!</S>");
@@ -75,7 +78,7 @@ class BAlphabetTest extends MusicBeatState
             add(alignmentLine);
         }
 
-        offsetText = new BAlphabet(150, -200, "i!Aa");
+        offsetText = new BAlphabet(150, -200, "i!Aa", BAlphabetData.uniqueFonts[currentFont]);
         offsetText.setAlignment("center");
         add(offsetText);
 
@@ -84,6 +87,10 @@ class BAlphabetTest extends MusicBeatState
 
         typefaceName = new FlxText(500, -125, 0, "aaa", 32);
         add(typefaceName);
+
+        fontName = new FlxText(500, -175, 0, "aaa", 32);
+        fontName.text = "Current font: " + BAlphabetData.uniqueFonts[currentFont];
+        add(fontName);
 
         var unicodeTest = new BAlphabet(-100, 0, "&#65;&#x42;&#0067;&#x00044; &#x2190; ABCD?");
         unicodeTest.alignment = "right";
@@ -143,6 +150,35 @@ class BAlphabetTest extends MusicBeatState
             regenGlyphs(1);
         }
 
+        if (FlxG.keys.justPressed.U)
+        {
+            currentFont = (currentFont + 1) % BAlphabetData.uniqueFonts.length;
+            var sortOrder = function(a, b) {
+                return FlxSort.byValues(-1, a, b);
+            }
+            allLetterMap = BAlphabetData.allFonts.get(BAlphabetData.uniqueFonts[currentFont]).letters;
+            allLetterIndexes = MapTools.keyValues(allLetterMap);
+            allLetterIndexes.sort(sortOrder);
+            fontName.text = "Current font: " + BAlphabetData.uniqueFonts[currentFont];
+            currentTypeface = BAlphabetData.uniqueTypefaces.indexOf("all");
+            changedFont = true;
+            regenGlyphs(0);
+        }
+        else if (FlxG.keys.justPressed.I)
+        {
+            currentFont = (currentFont + 1) % BAlphabetData.uniqueFonts.length;
+            var sortOrder = function(a, b) {
+                return FlxSort.byValues(-1, a, b);
+            }
+            allLetterMap = BAlphabetData.allFonts.get(BAlphabetData.uniqueFonts[currentFont]).letters;
+            allLetterIndexes = MapTools.keyValues(allLetterMap);
+            allLetterIndexes.sort(sortOrder);
+            fontName.text = "Current font: " + BAlphabetData.uniqueFonts[currentFont];
+            currentTypeface = BAlphabetData.uniqueTypefaces.indexOf("all");
+            changedFont = true;
+            regenGlyphs(0);
+        }
+
         if (FlxG.keys.justPressed.Z) {
             changeOffsetCharacter((FlxG.keys.pressed.SHIFT ? -10 : -1) * (FlxG.keys.pressed.ALT ? 10 : 1));
         }
@@ -183,6 +219,14 @@ class BAlphabetTest extends MusicBeatState
             }
         }
 
+        if (changedFont)
+        {
+            normalText.font = BAlphabetData.uniqueFonts[currentFont];
+            boldText.font = BAlphabetData.uniqueFonts[currentFont];
+            offsetText.font = BAlphabetData.uniqueFonts[currentFont];
+            changedFont = false;
+        }
+
         typefaceName.text = "Current typeface: " + name;
         normalText.text = allGlyphs;
         boldText.text = "<b>" + allGlyphs + "</b>";
@@ -194,11 +238,11 @@ class BAlphabetTest extends MusicBeatState
         letterIndex = wrapAround(letterIndex + change, 0, allLetterIndexes.length - 1);
         if (isOffsetBold)
         {
-            offsetText.text = "<b>i" + BAlphabetData.fromCharCode(allLetterIndexes[letterIndex]) + "îAa</b>";
+            offsetText.text = "<b>i" + BAlphabetData.fromCharCode(allLetterIndexes[letterIndex]) + "IAa</b>";
         }
         else
         {
-            offsetText.text = "i" + BAlphabetData.fromCharCode(allLetterIndexes[letterIndex]) + "îAa";
+            offsetText.text = "i" + BAlphabetData.fromCharCode(allLetterIndexes[letterIndex]) + "IAa";
         }
         var offsettedLetter = offsetText.letters[1];
         originalLetterOffsets[0] = offsettedLetter.offset.x;
