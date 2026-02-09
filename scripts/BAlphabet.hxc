@@ -32,15 +32,16 @@ class BAlphabet extends ScriptedFlxSpriteGroup
 
     function set_text(input:String):String
     {
+        if (input == textRaw) return textRaw;
+
         textRaw = input;
         clearLetters();
-        input = StringTools.replace(input, '\\n', '\n');
-        input = textParser.parseText(input);
+        text = StringTools.replace(input, '\\n', '\n');
+        text = textParser.parseText(input);
         textData = textParser.charDataList;
         textDataExtra = textParser.charDataExtra;
-        createLetters(input);
+        createLetters(text);
         updateAlignment();
-        text = input;
 
         return input;
     }
@@ -65,8 +66,6 @@ class BAlphabet extends ScriptedFlxSpriteGroup
 
         if (textRaw != null)
         {
-            trace("font change");
-            trace(textRaw);
             text = textRaw;
         }
 
@@ -162,32 +161,6 @@ class BAlphabet extends ScriptedFlxSpriteGroup
         this.scale.y = newY;
         softReloadLetters(newX / lastX, newY / lastY);
     }
-
-    // function set_scaleX(value:Float):Float
-    // {
-        // if (value == scaleX)
-            // return value;
-
-        // var ratio:Float = value / this.scale.x;
-        // this.scale.x = value;
-        // scaleX = value;
-        // softReloadLetters(ratio, 1);
-
-        // return value;
-    // }
-
-    // function set_scaleY(value:Float):Float
-    // {
-        // if (value == scaleY)
-            // return value;
-
-        // var ratio:Float = value / this.scale.y;
-        // this.scale.y = value;
-        // scaleY = value;
-        // softReloadLetters(1, ratio);
-
-        // return value;
-    // }
 
     function softReloadLetters(ratioX:Float = 1, ratioY:Null<Float> = null):Void
     {

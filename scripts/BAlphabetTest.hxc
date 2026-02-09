@@ -82,9 +82,9 @@ class BAlphabetTest extends MusicBeatState
         offsetText.setAlignment("center");
         add(offsetText);
 
-        var test01:BAlphabet = new BAlphabet(0, -350, "<c=FF0000>HUNDREC</c>", "beeg");
+        var test01:BAlphabet = new BAlphabet(0, -350, "<c=FF0000>HUNDREC</c>", "example");
         add(test01);
-        var test02:BAlphabet = new BAlphabet(-10, -350, "<c=00FF00>ONEREC</c>", "beeg");
+        var test02:BAlphabet = new BAlphabet(-10, -350, "<c=00FF00>ONEREC</c>", "example");
         test02.alignment = "right";
         add(test02);
 

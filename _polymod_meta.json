@@ -10,6 +10,6 @@
     }
   ],
   "api_version": "0.8.1",
-  "mod_version": "1.0.0-fonts",
+  "mod_version": "1.0.0",
   "license": "Apache-2.0"
 }

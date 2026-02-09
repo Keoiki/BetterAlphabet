@@ -71,7 +71,8 @@ class BAlphabetData extends Module
 
     /**
      * Returns the letter at the given map index.
-     * @param index 
+     * @param index Non-hex number of the letter
+     * @param font Name of the font
      * @return BALetter
      */
     public static function getLetter(index:Int, font:String = "default"):BALetter

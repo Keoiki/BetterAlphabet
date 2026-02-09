@@ -6,6 +6,7 @@ class BAlphabetTyped extends BAlphabet
     {
         super.set_text(input);
         resetText();
+        return input;
     }
 
     var isTyping:Bool = false;
