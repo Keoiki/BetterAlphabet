@@ -270,7 +270,7 @@ class BAlphabet extends ScriptedFlxSpriteGroup
                 letter.row = rows;
                 letter.spacesBefore = consecutiveSpaces;
 
-                var padding:Float = letterBold ? fontData.paddingBold : fontData.padding;
+                var padding:Float = letter.bold ? fontData.paddingBold : fontData.padding;
                 posX += letter.width + (letter.letterOffset[0] + padding) * scaleX * letterLocalScale;
 
                 this.add(letter);

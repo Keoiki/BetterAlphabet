@@ -71,10 +71,13 @@ class BAlphabetCharacter extends FunkinSprite
         }
 
         // Special cases: the only change is boldness or font.
-        if (bold != isBold)
+        if (font != _font)
         {
+            font = _font;
             bold = isBold;
             type = bold ? "bold" : "regular";
+            curLetter = BAlphabetData.getLetter(characterCode, font);
+            typeface = curLetter.typeface;
             shouldUpdateFrames = true;
             setTypeface(typeface);
 
@@ -82,12 +85,11 @@ class BAlphabetCharacter extends FunkinSprite
             animation.addByPrefix(alphaAnim, alphaAnim, 24, true);
             animation.play(alphaAnim, true);
         }
-
-        if (font != _font)
+        
+        if (bold != isBold)
         {
-            font = _font;
-            curLetter = BAlphabetData.getLetter(characterCode, font);
-            typeface = curLetter.typeface;
+            bold = isBold;
+            type = bold ? "bold" : "regular";
             shouldUpdateFrames = true;
             setTypeface(typeface);
 
