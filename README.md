@@ -103,6 +103,14 @@ Do you not want to use the letter assets that come with the mod? Oh... well good
 - Then, adding the letters is the same as in the above section, so go follow that next.
 - In the end, your folder `data/balphabet/FONTNAME` should have `FONTNAME.json` and all the related typeface `.txt` files.
 
+In order to use the custom font, input the name as the fourth parameter to the text's constructor, or change it on the fly by assigning it to the `font` field:
+```haxe
+... new BAlphabet(x, y, text, "fontnamehere"); // Same for BAlphabetTyped.
+// or
+text.font = "fontnamehere";
+```
+Omitting the font name will default the font to `default`.
+
 ## Debug State
 
 You can check if your fonts and/or characters were loaded properly *(granted no Polymod errors)* is by opening the Debug State by pressing `Shift + B` on the Main Menu.
