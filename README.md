@@ -70,8 +70,9 @@ Implementing custom characters is easy. However first you must understand the fo
 - The hex is not required, as the mod only checks for `decimal-` when adding the animation.
 
 With that out of the way, let's continue with the actual implementation:
-- Place your image and xml into `images/balphabet/TYPE/` of your mod, with `TYPE` being either `regular` or `bold`.
-- Create a `.txt` file in `data/balphabet/` of your mod. The name should be the same as the `.png` and `.xml` from the previous step.
+- Place your image and xml into `images/balphabet/FONTNAME/TYPE/` of your mod, with `TYPE` being either `regular` or `bold`.
+  - Let `FONTNAME` be `default` for this example.
+- Create a `.txt` file in `data/balphabet/FONTNAME/` of your mod. The name should be the same as the `.png` and `.xml` from the previous step.
 - Within the text file, each line will act as an entry for a character, with the following fields in the format `field=value`, separated by spaces:
   - `char`, being the decimal number of the character, not the hex,
   - `offsetX`, the offset in the X axis for the character (OPTIONAL)
@@ -83,11 +84,31 @@ An example is shown below, being the lone character from the `Special` sheet.
 char=65533 offsetY=-8
 ```
 
-### Debug State
+## Implementing custom fonts
 
-You can check if your characters were loaded properly *(granted no Polymod errors)* is by opening the Debug State by pressing `Shift + B` on the Main Menu.
+Do you not want to use the letter assets that come with the mod? Oh... well good news! It's possible to create custom fonts in order to not have the need to replace the default characters, because that would suck for compatibility between other mods.
+- Create a folder in `data/balphabet/FONTNAME` of your mod, with `FONTNAME` being the name you want to use.
+- Inside that folder, create a `.json` file with the name of the folder. Within that file, all 6 of the following fields must be present, or else a few errors might show up at your doorstep:
+```json 
+{
+    "size": 54, // The regular letter height
+    "sizeBold": 60, // Ditto, for bold
+    "padding": 2, // The horizontal spacing between each letter
+    "paddingBold": -6, // Ditto, for bold
+    "lineHeight": 85, // Vertical spacing between each new line
+    "spaceWidth": 28 // The width of a space character
+}
+```
+- The values seen above are from the `default` font.
+- Then, adding the letters is the same as in the above section, so go follow that next.
+- In the end, your folder `data/balphabet/FONTNAME` should have `FONTNAME.json` and all the related typeface `.txt` files.
+
+## Debug State
+
+You can check if your fonts and/or characters were loaded properly *(granted no Polymod errors)* is by opening the Debug State by pressing `Shift + B` on the Main Menu.
 - `WASD` to move the camera.
 - `Q/E` to zoom out/in.
+- `U/I` to switch between the available fonts.
 - `J/K` to switch between the shown typefaces.
 - `Z/C` to switch between the shown character in the offset area, above the main text area, hold `Shift` or `Alt` multiplies the switch by `10`.
 - `Arrow Keys` to move the offset area character, hold `Shift` to move by `10`.
