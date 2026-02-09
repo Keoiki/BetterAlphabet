@@ -110,5 +110,5 @@ You can check if your fonts and/or characters were loaded properly *(granted no 
 - `Q/E` to zoom out/in.
 - `U/I` to switch between the available fonts.
 - `J/K` to switch between the shown typefaces.
-- `Z/C` to switch between the shown character in the offset area, above the main text area, hold `Shift` or `Alt` multiplies the switch by `10`.
+- `Z/C` to switch between the shown character in the offset area, above the main text area, hold `Shift` or `Alt` to the switch by `10`, hold both to switch by `100`.
 - `Arrow Keys` to move the offset area character, hold `Shift` to move by `10`.
