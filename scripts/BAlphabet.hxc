@@ -36,8 +36,8 @@ class BAlphabet extends ScriptedFlxSpriteGroup
 
         textRaw = input;
         clearLetters();
-        text = StringTools.replace(input, '\\n', '\n');
-        text = textParser.parseText(input);
+        text = StringTools.replace(textRaw, '\\n', '\n');
+        text = textParser.parseText(text);
         textData = textParser.charDataList;
         textDataExtra = textParser.charDataExtra;
         createLetters(text);
@@ -51,7 +51,6 @@ class BAlphabet extends ScriptedFlxSpriteGroup
 
     function set_font(input:String):String
     {
-        trace(input);
         if (!BAlphabetData.allFonts.exists(input))
         {
             fontData = BAlphabetData.allFonts.get('default');
@@ -171,14 +170,14 @@ class BAlphabet extends ScriptedFlxSpriteGroup
         {
             if (letter != null)
             {
-                letter.font = this.font;
                 letter.setupAlphaCharacter(
                     (letter.x - x) * ratioX + x,
                     (letter.y - y) * ratioY + y,
                     letter.character,
                     letter.bold,
                     letter.localScale,
-                    [scaleX, scaleY]
+                    [scaleX, scaleY],
+                    font
                 );
             }
         }
