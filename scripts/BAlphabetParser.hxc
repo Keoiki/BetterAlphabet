@@ -112,13 +112,11 @@ class BAlphabetParser extends Module
         return text;
     }
 
-    function parseUnicode(text:String)
+    function parseUnicode(text:String):String
     {
-        var regex:EReg = new EReg("&#x?[A-Fa-f0-9]+;", "g");
+        var regex:EReg = new EReg("&#(x?)([A-Fa-f0-9]+);", "g");
         text = regex.map(text, (e) -> {
-            var result:String = e.matched(0);
-            var isHex:Bool = result.charAt(2) == "x";
-            return BAlphabetData.fromCharCode(Std.int((isHex ? "0x" : "") + result.substring((isHex ? 3 : 2), result.length - 1)));
+            return BAlphabetData.fromCharCode(Std.int((e.matched(1) == "x" ? "0x" : "") + e.matched(2)));
         });
     }
 
