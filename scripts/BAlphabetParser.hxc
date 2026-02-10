@@ -139,7 +139,6 @@ class BAlphabetParser extends Module
             var num:Int = Std.int((e.matched(1) == "x" ? "0x" : "") + e.matched(2));
             if (num > 0xFFFF)
             {
-                trace(num);
                 var pos:Int = (i == 0) ? e.matchedPos().pos : e.matchedPos().pos - (totalLength - i);
                 var plane:Int = Math.floor(num / 65535);
                 charDataPlanes.push({
