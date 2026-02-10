@@ -25,6 +25,8 @@ class BAlphabetCharacter extends FunkinSprite
     public var shouldUpdateFrames:Bool = false;
 
     public var character:Int = -1;
+    public var plane:Int = 0;
+    public var planeOffset:Int = 0;
     public var curLetter = null;
 
     public var spacesBefore:Int = 0;
@@ -50,7 +52,9 @@ class BAlphabetCharacter extends FunkinSprite
         // Only fetch on the first setup or when the character changes.
         if (character != characterCode)
         {
+            planeOffset = 0xFFFF * plane + plane;
             character = characterCode;
+            character += planeOffset;
             curLetter = BAlphabetData.getLetter(character, _font);
 
             // Only set type on the first setup or when either typeface or font changes.

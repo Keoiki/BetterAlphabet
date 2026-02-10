@@ -40,6 +40,7 @@ class BAlphabet extends ScriptedFlxSpriteGroup
         text = textParser.parseText(text);
         textData = textParser.charDataList;
         textDataExtra = textParser.charDataExtra;
+        textDataPlanes = textParser.charDataPlanes;
         createLetters(text);
         updateAlignment();
 
@@ -96,6 +97,7 @@ class BAlphabet extends ScriptedFlxSpriteGroup
     var textParser;
     var textData;
     var textDataExtra;
+    var textDataPlanes;
 
     public function new(x:Float, y:Float, _text:String = "", _font:String = "default"):Void
     {
@@ -194,8 +196,10 @@ class BAlphabet extends ScriptedFlxSpriteGroup
         var consecutiveSpaces:Int = 0;
         var posX:Float = 0;
         var index = 0;
+        var indexWithSpaces = 0;
         for (character in newText.split(''))
         {
+            indexWithSpaces++;
             if (character != '\n')
             {
                 var isSpace:Bool = (character == " ");
@@ -208,6 +212,7 @@ class BAlphabet extends ScriptedFlxSpriteGroup
 
                 var letterLocalScale:Float = 1;
                 var letterBold:Bool = false;
+                var letterPlane:Int = 0;
 
                 if (textData.exists(index))
                 {
@@ -216,6 +221,15 @@ class BAlphabet extends ScriptedFlxSpriteGroup
                         letterLocalScale = textData.get(index).scale;
                     }
                     letterBold = textData.get(index).bold;
+                }
+
+                for (plane in textDataPlanes)
+                {
+                    if (plane.pos == indexWithSpaces - 1)
+                    {
+                        letterPlane = plane.plane;
+                        break;
+                    }
                 }
                         
                 if (consecutiveSpaces > 0)
@@ -238,6 +252,7 @@ class BAlphabet extends ScriptedFlxSpriteGroup
                     letter = new BAlphabetCharacter(0, 0);
                 }
                 letter.fontData = this.fontData;
+                letter.plane = letterPlane;
                 letter.setupAlphaCharacter(posX, rows * fontData.lineHeight * scale.y, charCode, letterBold, letterLocalScale, [scaleX, scaleY], font);
                 letter.row = rows;
                 letter.spacesBefore = consecutiveSpaces;

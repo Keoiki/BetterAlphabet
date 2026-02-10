@@ -14,10 +14,16 @@ typedef TextData = {
     delay:Null<Float> // <d=0.5/> (Seconds, only on typed text)
 }
 
+typedef PlaneOffset = {
+    pos:Int,
+    plane:Int
+}
+
 class BAlphabetParser extends Module
 {
     public var charDataList:IntMap<Int, Null<TextData>> = new IntMap();
     public var charDataExtra:IntMap<Int, Null<TextData>> = new IntMap();
+    public var charDataPlanes:Array<PlaneOffset> = [];
 
     public var tagList:Array<String> = ["c", "s", "W", "S", "i", "b", "a", "d", "/"];
 
@@ -59,6 +65,7 @@ class BAlphabetParser extends Module
         inTag = false;
         charDataList.clear();
         charDataExtra.clear();
+        charDataPlanes = [];
         charsToPush = [];
     }
 
@@ -107,16 +114,42 @@ class BAlphabetParser extends Module
                 charIndex++;
             }
         }
-        var regex:EReg = new EReg('<[!a-zA-Z\\/][^>]*>', 'g'); // Better regex
-        text = regex.replace(text, '');
+        var regex:EReg = new EReg('<[!a-zA-Z\\/][^>]*>', 'g');
+        // text = regex.replace(text, '');
+        text = regex.map(text, (e) -> {
+            var match = e.matchedPos();
+            for (a in 0...charDataPlanes.length)
+            {
+                if (match.pos < charDataPlanes[a].pos)
+                {
+                    charDataPlanes[a].pos -= match.len;
+                }
+            }
+            return '';
+        });
         return text;
     }
 
     function parseUnicode(text:String):String
     {
+        var i:Int = 0;
+        var totalLength:Int = 0;
         var regex:EReg = new EReg("&#(x?)([A-Fa-f0-9]+);", "g");
         text = regex.map(text, (e) -> {
-            return BAlphabetData.fromCharCode(Std.int((e.matched(1) == "x" ? "0x" : "") + e.matched(2)));
+            var num:Int = Std.int((e.matched(1) == "x" ? "0x" : "") + e.matched(2));
+            if (num > 0xFFFF)
+            {
+                trace(num);
+                var pos:Int = (i == 0) ? e.matchedPos().pos : e.matchedPos().pos - (totalLength - i);
+                var plane:Int = Math.floor(num / 65535);
+                charDataPlanes.push({
+                    pos: pos,
+                    plane: plane
+                });
+            }
+            i++;
+            totalLength += e.matchedPos().len;
+            return BAlphabetData.fromCharCode(num);
         });
     }
 

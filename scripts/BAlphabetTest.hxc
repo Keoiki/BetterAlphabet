@@ -218,7 +218,7 @@ class BAlphabetTest extends MusicBeatState
             {
                 if (BAlphabetData.getLetter(allLetterIndexes[i]).typeface != name) continue;
             }
-            allGlyphs += BAlphabetData.fromCharCode(allLetterIndexes[i]);
+            allGlyphs += "&#" + allLetterIndexes[i] + ";";
             if (i % 30 == 0 && i != 0)
             {
                 allGlyphs += "\n";
@@ -244,11 +244,11 @@ class BAlphabetTest extends MusicBeatState
         letterIndex = wrapAround(letterIndex + change, 0, allLetterIndexes.length - 1);
         if (isOffsetBold)
         {
-            offsetText.text = "<b>i" + BAlphabetData.fromCharCode(allLetterIndexes[letterIndex]) + "IAa</b>";
+            offsetText.text = "<b>i&#" + allLetterIndexes[letterIndex] + ";IAa</b>";
         }
         else
         {
-            offsetText.text = "i" + BAlphabetData.fromCharCode(allLetterIndexes[letterIndex]) + "IAa";
+            offsetText.text = "i&#" + allLetterIndexes[letterIndex] + ";IAa";
         }
         var offsettedLetter = offsetText.letters[1];
         originalLetterOffsets[0] = offsettedLetter.offset.x;

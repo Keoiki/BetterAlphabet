@@ -29,7 +29,8 @@ typedef BALetter = {
 /**
  * This module contains the data relating to letters.
  * Letter sprites are stored in "images/balphabet/FONTNAME" and the data itself in "data/balphabet/FONTNAME".
- * This system allows for unlimited letters, which can easily be added onto. (Unlimited is a lie, it's actually up to FFFF)
+ * This system allows for unlimited letters, which can easily be added onto.
+ * (It's only unlimited if you're using `&#aaaa;` or `&#xaaaa;` for inputting the character. Otherwise the limit is `FFFF`)
  * Now if you're asking, why such a powerful letter system? I hate vanilla Alphabet.hx
  * (It's been since replaced by AtlasText.hx which is better, I guess.)
  */
