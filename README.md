@@ -49,9 +49,7 @@ Another thing that is supported is HTML Escape Codes, letting you type character
 import balphabet.BAlphabetTyped;
 ```
 
-This class allows you to make text that appears over a period of time, instead of instantly. However for the time being, you must reset the text MANUALLY (scary) because setters (and getters) don't god damn work properly with scripted class extending ._.
-
-The constructor for the class is the exact same, and calling `resetText() / reset()` is recommended right after adding the object or else your letters will be all over the screen and not hidden like is intended. But from there, there are a couple of variables that might be of interest:
+This class allows you to make text that appears over a period of time, instead of instantly. The constructor for the class is the exact same, from there, there are a couple of variables that might be of interest:
 - `speed:Float`, controls how fast the typing speed is, with the default of `0.05`,
 - `letterStep:Int`, controls how many letters are shown each time they're meant to be, with the default of `1`,
 - `finishedText:Bool`, for reading if the typing is done yet,

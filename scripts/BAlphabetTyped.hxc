@@ -20,6 +20,12 @@ class BAlphabetTyped extends BAlphabet
     public var letterCallback:Void->Void;
     public var finishCallback:Void->Void;
 
+    override public function new(x:Float, y:Float, text:String = "", font:String = "default")
+    {
+        super(x, y, text, font);
+        resetText();
+    }
+
     public function startTyping():Void
     {
         finishedText = false;

@@ -6,12 +6,13 @@ Initial Release
 
 ## Added
 
-- 5 unicode character sheets; Latin, Latin-1 Supplement, Arrows, Katakana, and Specials.
+- 6 unicode character sheets; Latin, Latin-1 Supplement, Arrows, Katakana, Specials, and Symbols for Legacy Computing.
     - Latin: All.
     - Latin-1 Supplement: All.
-    - Arrows: 2190-2199, 21A9 & 21AA, 21B0-21B3, 21B6 & 21B7, 21BA & 21BB and 21E6-21E9
+    - Arrows: 2190-2199, 21A9 & 21AA, 21B0-21B3, 21B6 & 21B7, 21BA & 21BB and 21E6-21E9.
     - Katakana: All.
-    - Specials: FFFD
+    - Specials: FFFD.
+    - Symbols for Legacy Computing: 1FBF0-1FBF9.
 - 8 tags that have their own special effect:
     - Bold `<b>`: Changes the letter graphics to one with a black outline. If no bold variant exists, the default one will be used instead.
         - `<b>Bold Text</b>`.
@@ -29,6 +30,6 @@ Initial Release
         - `<S>Ooh, scary!</S>`
     - Delay `<d>`: Delays a typed text for the given value in seconds.
         - `Hmm,<d=0.25/> I'll have a uhh,<d=0.5/> I'm not sure...`
-- Support for HTML Escape codes, either `&#65;` (decimal) or `&#x41;` (hexadecimal) will work.
+- Support for HTML Escape codes; either `&#65;` (decimal) or `&#x41;` (hexadecimal) will work.
 - Support for adding custom character sheets; read the `README` for more on that.
 - Support for adding custom fonts; read the `README` for more on that.

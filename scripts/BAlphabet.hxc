@@ -32,7 +32,7 @@ class BAlphabet extends ScriptedFlxSpriteGroup
 
     function set_text(input:String):String
     {
-        if (input == textRaw) return textRaw;
+        if (input == textRaw) return input;
 
         textRaw = input;
         clearLetters();
@@ -103,8 +103,8 @@ class BAlphabet extends ScriptedFlxSpriteGroup
     {
         super(x, y);
         textParser = ModuleHandler.getModule('balphabet-parser');
-        font = _font ?? "default";
-        text = _text ?? "";
+        font = _font;
+        text = _text;
     }
 
     public function setAlignment(align:String):Void
