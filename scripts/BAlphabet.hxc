@@ -258,7 +258,11 @@ class BAlphabet extends ScriptedFlxSpriteGroup
                 letter.spacesBefore = consecutiveSpaces;
 
                 var padding:Float = letter.bold ? fontData.paddingBold : fontData.padding;
-                posX += letter.width + (letter.letterOffset[0] + padding) * scaleX * letterLocalScale;
+                var monoWidth:Float = letter.bold ? fontData.widthBold : fontData.width;
+                if (monoWidth == 0 && letter.bold) monoWidth = fontData.width;
+                var useMonoWidth:Bool = fontData.monospace;
+                if (letter.monospace != null) useMonoWidth = letter.monospace;
+                posX += (useMonoWidth ? monoWidth : (letter.width + padding - letter.letterOffset[0])) * scaleX * letterLocalScale;
 
                 this.add(letter);
                 letters.push(letter);
@@ -314,7 +318,11 @@ class BAlphabet extends ScriptedFlxSpriteGroup
             }
             
             var padding:Float = letter.bold ? fontData.paddingBold : fontData.padding;
-            posX += letter.width + (letter.letterOffset[0] + padding) * scaleX * letter.localScale;
+            var monoWidth:Float = letter.bold ? fontData.widthBold : fontData.width;
+            if (monoWidth == 0 && letter.bold) monoWidth = fontData.width;
+            var useMonoWidth:Bool = fontData.monospace;
+            if (letter.monospace != null) useMonoWidth = letter.monospace;
+            posX += (useMonoWidth ? monoWidth : (letter.width + padding - letter.letterOffset[0])) * scaleX * letterLocalScale;
             rowWidths[letter.row] = posX;
         }
 

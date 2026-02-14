@@ -73,9 +73,10 @@ With that out of the way, let's continue with the actual implementation:
 - Create a `.txt` file in `data/balphabet/FONTNAME/` of your mod. The name should be the same as the `.png` and `.xml` from the previous step.
 - Within the text file, each line will act as an entry for a character, with the following fields in the format `field=value`, separated by spaces:
   - `char`, being the decimal number of the character, not the hex,
-  - `offsetX`, the offset in the X axis for the character (OPTIONAL)
-  - `offsetY`, the offset in the Y axis for the character (OPTIONAL, but highly suggested)
-  - `colored`, is this character colored? If `true` or `1`, color tags will not affect them.
+  - `offsetX`, the offset in the X axis for the character, particularly useful in positioning monospaced characters properly, `(OPTIONAL)`
+  - `offsetY`, the offset in the Y axis for the character, `(OPTIONAL, but highly suggested)`
+  - `monospace`, if `true` or `1` the letter will be monospaced, or not if set to anything else, overriding a font's monospace setting, `(OPTIONAL)`
+  - `colored`, is this character colored? If `true` or `1`, color tags will not affect them. `(OPTIONAL)`
 
 An example is shown below, being the lone character from the `Special` sheet.
 ```
@@ -89,8 +90,11 @@ Do you not want to use the letter assets that come with the mod? Oh... well good
 - Inside that folder, create a `.json` file with the name of the folder. Within that file, all 6 of the following fields must be present, or else a few errors might show up at your doorstep:
 ```json 
 {
-    "size": 54, // The regular letter height
-    "sizeBold": 60, // Ditto, for bold
+    "height": 54, // The regular letter height
+    "heightBold": 60, // Ditto, for bold
+    "width": 54, // The letter width, only used in monospaced fonts or letters
+    "widthBold": 54, // Ditto, for bold
+    "monospace": false, // Is this font monospaced? Individual letters can override this setting, meaning certain letters being monospaced is possible in a non-monospace font
     "padding": 2, // The horizontal spacing between each letter
     "paddingBold": -6, // Ditto, for bold
     "lineHeight": 85, // Vertical spacing between each new line

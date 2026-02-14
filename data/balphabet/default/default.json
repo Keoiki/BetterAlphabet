@@ -1,6 +1,9 @@
 {
-    "size": 54,
-    "sizeBold": 60,
+    "height": 54,
+    "heightBold": 60,
+    "width": 54,
+    "widthBold": 54,
+    "monospace": false,
     "padding": 2,
     "paddingBold": -6,
     "lineHeight": 85,

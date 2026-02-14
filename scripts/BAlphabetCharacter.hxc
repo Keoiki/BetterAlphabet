@@ -23,6 +23,7 @@ class BAlphabetCharacter extends FunkinSprite
     public var type:String = "unknown";
     public var typeface:String = "unknown";
     public var shouldUpdateFrames:Bool = false;
+    public var monospace:Null<Bool> = null;
 
     public var character:Int = -1;
     public var plane:Int = 0;
@@ -68,6 +69,18 @@ class BAlphabetCharacter extends FunkinSprite
             font = _font;
             typeface = curLetter.typeface;
             setTypeface(typeface);
+
+            if (fontData.monospace)
+            {
+                monospace = true;
+                // If set, letter monospace overrides font specific setting.
+                if (curLetter.monospace != null) monospace = curLetter.monospace;
+            }
+            else
+            {
+                // DO NOT set a default value via ?? here.
+                monospace = curLetter.monospace;
+            }
 
             var alphaAnim:String = curLetter.anim + '-';
             animation.addByPrefix(alphaAnim, alphaAnim, 24, true);
@@ -148,25 +161,30 @@ class BAlphabetCharacter extends FunkinSprite
             return;
         }
 
-        var add:Float = bold ? fontData.sizeBold : fontData.size;
+        var add:Float = bold ? fontData.heightBold : fontData.height;
 
-        if (curLetter.offsets != null)
+        letterOffset[0] = curLetter.offsets[0];
+        letterOffset[1] = curLetter.offsets[1];
+
+        if (monospace ?? false)
         {
-            letterOffset[0] = curLetter.offsets[0];
-            letterOffset[1] = curLetter.offsets[1];
+            var monowidth:Float = bold ? fontData.widthBold : fontData.width;
+            if (monowidth == 0 && bold) monowidth = fontData.width;
+            offset.x -= (monowidth / 2 - width / 2) * scale.x * localScale;
         }
 
-        add *= scale.y;
-        offset.x += letterOffset[0] * scale.x;
+        // Individual character x offsets can still apply even in monospace!
+        // This is so characters don't have rely on invisible pixels to offset themselves.
+        offset.x += letterOffset[0] * scale.x * localScale;
 
         if (scale.y < 0)
         {
-            offset.y += letterOffset[1] * scale.y - (add / 2 * localScale);
+            offset.y += (letterOffset[1] - (add / 2 * localScale)) * scale.y;
             flipX = true;
         }
         else
         {
-            offset.y += letterOffset[1] * scale.y - (add / localScale - height);
+            offset.y += (letterOffset[1] - (add / localScale - height)) * scale.y;
         }
     }
 

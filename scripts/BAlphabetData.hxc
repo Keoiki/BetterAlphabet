@@ -7,11 +7,14 @@ import flixel.FlxG;
 import haxe.Utf8;
 import haxe.ds.IntMap;
 import haxe.ds.StringMap;
-import StringTools;
+using StringTools;
 
 typedef BAFont = {
-    size:Float,
-    sizeBold:Float,
+    height:Float,
+    heightBold:Float,
+    width:Float,
+    widthBold:Float,
+    monospace:Bool,
     padding:Float,
     paddingBold:Float,
     lineHeight:Float,
@@ -22,6 +25,7 @@ typedef BAFont = {
 typedef BALetter = {
     anim:String,
     offsets:Array<Float>,
+    monospace:Null<Bool>,
     colored:Bool,
     typeface:String
 }
@@ -98,10 +102,8 @@ class BAlphabetData extends Module
         BAlphabetData.allFonts.clear();
 
         var fontList:Array<String> = Assets.list("TEXT").filter(function(file):Bool {
-            return StringTools.contains(file, "data/balphabet/") && StringTools.endsWith(file, ".json");
+            return file.contains("data/balphabet/") && file.endsWith(".json");
         });
-
-        trace(fontList);
 
         for (font in fontList)
         {
@@ -109,6 +111,18 @@ class BAlphabetData extends Module
             var data:String = Assets.getText(font);
             data = SerializerUtil.fromJSON(data);
             var name:String = font.substring(font.lastIndexOf("/") + 1, font.indexOf("."));
+
+            // Validate data, apply the "default" font's values if not set.
+            data.height ??= 54;
+            data.heightBold ??= 60;
+            data.width ??= 54;
+            data.widthBold ??= 54;
+            data.monospace ??= false;
+            data.padding ??= 2;
+            data.paddingBold ??= -6;
+            data.lineHeight ??= 85;
+            data.spaceWidth ??= 28;
+
             data.letters = loadLetterData(name);
             BAlphabetData.allFonts.set(name, data);
 
@@ -116,7 +130,11 @@ class BAlphabetData extends Module
             {
                 BAlphabetData.uniqueFonts.push(name);
             }
+
+            trace('Loaded font: $name');
         }
+
+        BAlphabetData.uniqueTypefaces.push("all");
     }
 
     /**
@@ -132,14 +150,14 @@ class BAlphabetData extends Module
         var letters:IntMap<Int, BALetter> = new IntMap();
 
         var alphabetList:Array<String> = Assets.list("TEXT").filter(function(file):Bool {
-            return StringTools.contains(file, "data/balphabet/" + fontName) && StringTools.endsWith(file, ".txt");
+            return file.contains("data/balphabet/" + fontName) && file.endsWith(".txt");
         });
 
         for (file in alphabetList)
         {
             file = file.substring(file.indexOf("/") + 1);
             var data:String = Assets.getText(file);
-            data = StringTools.trim(data);
+            data = data.trim();
 
             var typeface:String = file.substring(file.lastIndexOf("/") + 1, file.indexOf("."));
             if (!BAlphabetData.uniqueTypefaces.contains(typeface))
@@ -152,30 +170,34 @@ class BAlphabetData extends Module
             {
                 var char:String = "";
                 var offsets:Array<Float> = [0, 0];
+                var monospace:Null<Bool> = null;
                 var colored:Bool = false;
     
                 var elements:Array<String> = character.split(" ");
                 for (element in elements)
                 {
                     var elementInfo:Array<String> = element.split("=");
+                    elementInfo[0] = elementInfo[0].trim();
+                    elementInfo[1] = elementInfo[1].trim();
                     switch (elementInfo[0])
                     {
                         case "char":
-                            char = StringTools.trim(elementInfo[1]);
+                            char = elementInfo[1];
                         case "offsetX":
                             offsets[0] = Std.parseFloat(elementInfo[1]);
                         case "offsetY":
                             offsets[1] = Std.parseFloat(elementInfo[1]);
+                        case "monospace":
+                            monospace = (elementInfo[1].toLowerCase() == "true" || elementInfo[1] == "1");
                         case "colored":
                             colored = (elementInfo[1].toLowerCase() == "true" || elementInfo[1] == "1");
                         default:
                             trace("Invalid data!", character);
                     }
                 }
-                letters.set(Std.int(char), {anim: char, offsets: offsets, colored: colored, typeface: typeface});
+                letters.set(Std.int(char), {anim: char, offsets: offsets, monospace: monospace, colored: colored, typeface: typeface});
             }
         }
-        BAlphabetData.uniqueTypefaces.push("all");
 
         return letters;
     }
