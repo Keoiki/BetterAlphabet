@@ -170,21 +170,22 @@ class BAlphabetCharacter extends FunkinSprite
         {
             var monowidth:Float = bold ? fontData.widthBold : fontData.width;
             if (monowidth == 0 && bold) monowidth = fontData.width;
-            offset.x -= (monowidth / 2 - width / 2) * scale.x * localScale;
+            offset.x -= (monowidth / 2 - width / 2) * scale.x;
         }
 
         // Individual character x offsets can still apply even in monospace!
         // This is so characters don't have rely on invisible pixels to offset themselves.
-        offset.x += letterOffset[0] * scale.x * localScale;
+        offset.x += letterOffset[0] * scale.x;
 
+        add *= scale.y;
         if (scale.y < 0)
         {
-            offset.y += (letterOffset[1] - (add / 2 * localScale)) * scale.y;
+            offset.y += letterOffset[1] * scale.y - (add / 2 * localScale);
             flipX = true;
         }
         else
         {
-            offset.y += (letterOffset[1] - (add / localScale - height)) * scale.y;
+            offset.y += letterOffset[1] * scale.y - (add / localScale - height);
         }
     }
 
