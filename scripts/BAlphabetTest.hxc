@@ -193,13 +193,13 @@ class BAlphabetTest extends MusicBeatState
         }
 
         if (FlxG.keys.justPressed.RIGHT)
-            changeOffsetOffset((FlxG.keys.pressed.SHIFT ? -10 : -1), 0);
+            changeOffsetOffset((FlxG.keys.pressed.SHIFT ? -10 : -1) / (FlxG.keys.pressed.ALT ? 10 : 1), 0);
         else if (FlxG.keys.justPressed.LEFT)
-            changeOffsetOffset((FlxG.keys.pressed.SHIFT ? 10 : 1), 0);
+            changeOffsetOffset((FlxG.keys.pressed.SHIFT ? 10 : 1) / (FlxG.keys.pressed.ALT ? 10 : 1), 0);
         else if (FlxG.keys.justPressed.DOWN)
-            changeOffsetOffset(0, (FlxG.keys.pressed.SHIFT ? -10 : -1));
+            changeOffsetOffset(0, (FlxG.keys.pressed.SHIFT ? -10 : -1) / (FlxG.keys.pressed.ALT ? 10 : 1));
         else if (FlxG.keys.justPressed.UP)
-            changeOffsetOffset(0, (FlxG.keys.pressed.SHIFT ? 10 : 1));
+            changeOffsetOffset(0, (FlxG.keys.pressed.SHIFT ? 10 : 1) / (FlxG.keys.pressed.ALT ? 10 : 1));
 
         super.update(elapsed);
     }

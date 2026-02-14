@@ -1,10 +1,10 @@
-char=130032
-char=130033
-char=130034
-char=130035
-char=130036
-char=130037
-char=130038
-char=130039
-char=130040
-char=130041
+char=130032 monospace=true
+char=130033 monospace=true offsetX=-16 offsetY=6
+char=130034 monospace=true
+char=130035 monospace=true offsetX=-2.5
+char=130036 monospace=true offsetY=6
+char=130037 monospace=true
+char=130038 monospace=true
+char=130039 monospace=true offsetY=6
+char=130040 monospace=true
+char=130041 monospace=true
