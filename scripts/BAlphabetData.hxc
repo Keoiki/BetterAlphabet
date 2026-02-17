@@ -3,7 +3,6 @@ package balphabet;
 import funkin.modding.module.Module;
 import funkin.ui.mainmenu.MainMenuState;
 import funkin.util.SerializerUtil;
-import flixel.FlxG;
 import haxe.Utf8;
 import haxe.ds.IntMap;
 import haxe.ds.StringMap;
