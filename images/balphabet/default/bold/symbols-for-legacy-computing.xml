@@ -1,0 +1,15 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TextureAtlas imagePath="symbols-for-legacy-computing.png">
+	<!-- Created with Adobe Animate version 23.0.6.142 -->
+	<!-- http://www.adobe.com/products/animate.html -->
+	<SubTexture name="130032-1FBF00000" x="0" y="0" width="52" height="66"/>
+	<SubTexture name="130033-1FBF10000" x="157" y="68" width="20" height="54"/>
+	<SubTexture name="130034-1FBF20000" x="0" y="68" width="52" height="66"/>
+	<SubTexture name="130035-1FBF30000" x="108" y="68" width="47" height="66"/>
+	<SubTexture name="130036-1FBF40000" x="108" y="136" width="52" height="54"/>
+	<SubTexture name="130037-1FBF50000" x="0" y="136" width="52" height="66"/>
+	<SubTexture name="130038-1FBF60000" x="54" y="0" width="52" height="66"/>
+	<SubTexture name="130039-1FBF70000" x="54" y="136" width="52" height="60"/>
+	<SubTexture name="130040-1FBF80000" x="108" y="0" width="52" height="66"/>
+	<SubTexture name="130041-1FBF90000" x="54" y="68" width="52" height="66"/>
+</TextureAtlas>
