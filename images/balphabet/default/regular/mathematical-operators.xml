@@ -1,0 +1,50 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TextureAtlas imagePath="mathematical-operators.png">
+	<!-- Created with Adobe Animate version 23.0.6.142 -->
+	<!-- http://www.adobe.com/products/animate.html -->
+	<SubTexture name="8729-22190000" x="42" y="303" width="48" height="44"/>
+	<SubTexture name="8730-221A0000" x="226" y="69" width="46" height="49"/>
+	<SubTexture name="8731-221B0000" x="179" y="125" width="46" height="49"/>
+	<SubTexture name="8741-22250000" x="132" y="0" width="52" height="57"/>
+	<SubTexture name="8748-222C0000" x="92" y="321" width="24" height="24"/>
+	<SubTexture name="8749-222D0000" x="118" y="321" width="24" height="24"/>
+	<SubTexture name="8750-222E0000" x="0" y="0" width="64" height="64"/>
+	<SubTexture name="8751-222F0000" x="0" y="66" width="64" height="64"/>
+	<SubTexture name="8752-22300000" x="66" y="0" width="64" height="64"/>
+	<SubTexture name="8753-22310000" x="206" y="315" width="52" height="32"/>
+	<SubTexture name="8754-22320000" x="274" y="106" width="58" height="32"/>
+	<SubTexture name="8763-223B0000" x="275" y="140" width="40" height="41"/>
+	<SubTexture name="8764-223C0000" x="284" y="224" width="41" height="39"/>
+	<SubTexture name="8765-223D0000" x="225" y="178" width="48" height="43"/>
+	<SubTexture name="8766-223E0000" x="176" y="176" width="47" height="47"/>
+	<SubTexture name="8776-22480000" x="255" y="272" width="45" height="40"/>
+	<SubTexture name="8777-22490000" x="284" y="183" width="42" height="39"/>
+	<SubTexture name="8778-224A0000" x="317" y="140" width="12" height="38"/>
+	<SubTexture name="8779-224B0000" x="206" y="274" width="47" height="39"/>
+	<SubTexture name="8780-224C0000" x="151" y="317" width="53" height="23"/>
+	<SubTexture name="8781-224D0000" x="151" y="279" width="53" height="36"/>
+	<SubTexture name="8782-224E0000" x="100" y="278" width="49" height="41"/>
+	<SubTexture name="8820-22740000" x="198" y="225" width="43" height="47"/>
+	<SubTexture name="8821-22750000" x="302" y="265" width="38" height="41"/>
+	<SubTexture name="8822-22760000" x="227" y="120" width="38" height="56"/>
+	<SubTexture name="8823-22770000" x="243" y="223" width="39" height="47"/>
+	<SubTexture name="8824-22780000" x="179" y="67" width="45" height="56"/>
+	<SubTexture name="8825-22790000" x="155" y="225" width="41" height="52"/>
+	<SubTexture name="8826-227A0000" x="186" y="0" width="43" height="65"/>
+	<SubTexture name="8827-227B0000" x="231" y="0" width="41" height="67"/>
+	<SubTexture name="8828-227C0000" x="0" y="197" width="43" height="68"/>
+	<SubTexture name="8829-227D0000" x="0" y="267" width="40" height="70"/>
+	<SubTexture name="8873-22A90000" x="274" y="0" width="53" height="51"/>
+	<SubTexture name="8874-22AA0000" x="45" y="197" width="53" height="51"/>
+	<SubTexture name="8875-22AB0000" x="45" y="250" width="53" height="51"/>
+	<SubTexture name="8876-22AC0000" x="274" y="53" width="53" height="51"/>
+	<SubTexture name="8877-22AD0000" x="124" y="66" width="53" height="51"/>
+	<SubTexture name="8878-22AE0000" x="124" y="119" width="53" height="51"/>
+	<SubTexture name="8879-22AF0000" x="66" y="128" width="53" height="51"/>
+	<SubTexture name="8880-22B00000" x="121" y="172" width="53" height="51"/>
+	<SubTexture name="8881-22B10000" x="100" y="225" width="53" height="51"/>
+	<SubTexture name="8962-23020000" x="329" y="0" width="13" height="62"/>
+	<SubTexture name="8963-23030000" x="260" y="314" width="71" height="15"/>
+	<SubTexture name="8964-23040000" x="66" y="66" width="56" height="60"/>
+	<SubTexture name="8965-23050000" x="0" y="132" width="61" height="63"/>
+</TextureAtlas>
