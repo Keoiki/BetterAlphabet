@@ -1,7 +1,8 @@
 # Better Alphabet
 A data driven text system for vanilla Friday Night Funkin. (i.e. V-Slice)
 
-**Current FNF Version:** `0.8.1-develop`
+**Current Mod Version:** `1.0.0`<br>
+**Current FNF Version:** `0.8.2`
 
 Better Alphabet (or BAlphabet) is a Friday Night Funkin dependency mod which allows other modders to easily add cool looking text to whereever they want. It also offers customization of the written text and new character sheets can be added by modders easily.
 
