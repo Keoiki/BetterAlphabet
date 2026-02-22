@@ -6,10 +6,11 @@ Initial Release
 
 ## Added
 
-- 6 unicode character sheets; Latin, Latin-1 Supplement, Arrows, Katakana, Specials, and Symbols for Legacy Computing.
+- 6 unicode character sheets; Latin, Latin-1 Supplement, Arrows, Mathematical Operators, Katakana, Specials, and Symbols for Legacy Computing.
     - Latin: All.
     - Latin-1 Supplement: All.
     - Arrows: 2190-2199, 21A9 & 21AA, 21B0-21B3, 21B6 & 21B7, 21BA & 21BB and 21E6-21E9.
+    - Mathematical Operators: 2205-2207, 2211, 2218-221E, 2227-222A, 2223-223A, 2260-2269, 2295-229D, and 22EE-22F1.
     - Katakana: All.
     - Specials: FFFD.
     - Symbols for Legacy Computing: 1FBF0-1FBF9.
