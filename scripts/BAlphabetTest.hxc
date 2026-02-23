@@ -78,12 +78,12 @@ class BAlphabetTest extends MusicBeatState
         }
 
         offsetText = new BAlphabet(150, -200, "i!Aa", BAlphabetData.uniqueFonts[currentFont]);
-        offsetText.setAlignment("center");
+        offsetText.alignment = "center";
         add(offsetText);
 
         var test01:BAlphabet = new BAlphabet(0, -350, "<c=FF0000>HUNDREC</c>", "example");
         add(test01);
-        var test02:BAlphabet = new BAlphabet(-10, -350, "<c=00FF00>ONEREC</c>", "example");
+        var test02:BAlphabet = new BAlphabet(-10, -350, "<c=00FF00>ONEDREC</c>", "example");
         test02.alignment = "right";
         add(test02);
 
