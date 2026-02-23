@@ -23,7 +23,7 @@ class BAlphabet extends ScriptedFlxSpriteGroup
 
     override function get_height():Float
     {
-        return letters[letters.length - 1].row * fontData.lineHeight * scaleY;
+        return (letters[letters.length - 1].row + 1) * fontData.lineHeight * scaleY;
     }
 
     // Regular variables
