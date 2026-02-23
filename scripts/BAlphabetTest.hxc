@@ -61,7 +61,7 @@ class BAlphabetTest extends MusicBeatState
         boldText = new BAlphabet(normalText.width + 50, 0, "", BAlphabetData.uniqueFonts[currentFont]);
         add(boldText);
 
-        typedText = new BAlphabetTyped(0, -500, "<b>Typed text testing,</b> <c=00FFAA>make sure</c> <i>this is</i> <s=0.5>a</s> <a=0.5>really</a> <W>long string</W> <S>to test it properly!</S>");
+        typedText = new BAlphabetTyped(0, -900, "<b>Typed text testing,</b> <c=00FFAA>make sure</c> <i>this is</i> <s=0.5>a</s> <a=0.5>really</a> <W>long string</W> <S>to test it properly!</S>");
         add(typedText);
         typedText.letterCallback = () -> {
             FunkinSound.playOnce(Paths.sound("chartingSounds/keyboard" + FlxG.random.int(1, 3)), 1.5);  
