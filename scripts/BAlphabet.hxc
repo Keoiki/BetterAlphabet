@@ -2,29 +2,29 @@ package balphabet;
 
 import StringTools;
 import balphabet.BAlphabetCharacter;
+import funkin.group.FunkinGroup;
 import funkin.modding.module.ModuleHandler;
-import funkin.modding.base.ScriptedFlxSpriteGroup;
 
-class BAlphabet extends ScriptedFlxSpriteGroup
+class BAlphabet extends FunkinGroup
 {
     // Base variable getter overrides
-    override function get_width():Float
-    {
-        var widestRow:Float = 0;
-        for (row in rowWidths)
-        {
-            if (row > widestRow)
-            {
-                widestRow = row;
-            }
-        }
-        return widestRow;
-    }
+    // override function get_width():Float
+    // {
+        // var widestRow:Float = 0;
+        // for (row in rowWidths)
+        // {
+            // if (row > widestRow)
+            // {
+                // widestRow = row;
+            // }
+        // }
+        // return widestRow;
+    // }
 
-    override function get_height():Float
-    {
-        return (letters[letters.length - 1].row + 1) * fontData.lineHeight * scaleY;
-    }
+    // override function get_height():Float
+    // {
+        // return (letters[letters.length - 1].row + 1) * fontData.lineHeight * scaleY;
+    // }
 
     // Regular variables
     var textRaw:String;
@@ -42,7 +42,7 @@ class BAlphabet extends ScriptedFlxSpriteGroup
         textDataExtra = textParser.charDataExtra;
         textDataPlanes = textParser.charDataPlanes;
         createLetters(text);
-        updateAlignment();
+        // updateAlignment();
 
         return input;
     }
@@ -99,12 +99,12 @@ class BAlphabet extends ScriptedFlxSpriteGroup
     var textDataExtra;
     var textDataPlanes;
 
-    public function new(x:Float, y:Float, _text:String = "", _font:String = "default"):Void
+    public function new(x:Float, y:Float, text:String = "", font:String = "default"):Void
     {
         super(x, y);
         textParser = ModuleHandler.getModule('balphabet-parser');
-        font = _font;
-        text = _text;
+        this.font = font;
+        this.text = text;
     }
 
     public function setAlignment(align:String):Void
@@ -123,9 +123,11 @@ class BAlphabet extends ScriptedFlxSpriteGroup
                 case 'centered': newOffset = rowWidths[letter.row] / 2;
                 default: newOffset = 0;
             }
-            letter.offset.x -= letter.alignOffset;
+            // trace('Before alignment set: ${letter.localX}');
+            letter.localX += letter.alignOffset;
             letter.alignOffset = newOffset;
-            letter.offset.x += letter.alignOffset;
+            letter.localX -= letter.alignOffset;
+            // trace('After alignment set: ${letter.localX}');
         }
     }
 
@@ -136,57 +138,16 @@ class BAlphabet extends ScriptedFlxSpriteGroup
 
     function clearLetters():Void
     {
-        var i:Int = letters.length;
-        while (i > 0)
+        for (letter in children)
         {
-            --i;
-            var letter = letters[i];
-            if (letter != null)
+            if (letter != null && letter.exists && letter.active)
             {
                 letter.kill();
             }
         }
         letters = [];
-        rows = 0;
-    }
-
-    public function setScale(newX:Float, newY:Null<Float> = null):Void
-    {
-        var lastX:Float = this.scale.x;
-        var lastY:Float = this.scale.y;
-        if(newY == null) newY = newX;
-        scaleX = newX;
-        scaleY = newY;
-
-        this.scale.x = newX;
-        this.scale.y = newY;
-        softReloadLetters(newX / lastX, newY / lastY);
-    }
-
-    function softReloadLetters(ratioX:Float = 1, ratioY:Null<Float> = null):Void
-    {
-        if (ratioY == null)
-            ratioY = ratioX;
-
-        for (letter in letters)
-        {
-            if (letter != null)
-            {
-                letter.setupAlphaCharacter(
-                    (letter.x - x) * ratioX + x,
-                    (letter.y - y) * ratioY + y,
-                    letter.character,
-                    letter.bold,
-                    letter.localScale,
-                    [scaleX, scaleY],
-                    font
-                );
-            }
-        }
-
         rowWidths = [];
-        loadLetterModifiers();
-        refreshRowWidth();
+        rows = 0;
     }
 
     public function createLetters(newText:String):Void
@@ -210,34 +171,33 @@ class BAlphabet extends ScriptedFlxSpriteGroup
 
                 var charCode:Int = character.charCodeAt(0);
 
-                var letterLocalScale:Float = 1;
-                var letterBold:Bool = false;
-                var letterPlane:Int = 0;
+                var scaleMult:Float = 1;
+                var bold:Bool = false;
+                var _plane:Int = 0;
 
                 if (textData.exists(index))
                 {
                     if (textData.get(index).scale != null)
                     {
-                        letterLocalScale = textData.get(index).scale;
+                        scaleMult = textData.get(index).scale;
                     }
-                    letterBold = textData.get(index).bold;
+                    bold = textData.get(index).bold;
                 }
 
                 for (plane in textDataPlanes)
                 {
                     if (plane.pos == indexWithSpaces - 1)
                     {
-                        letterPlane = plane.plane;
+                        _plane = plane.plane;
                         break;
                     }
                 }
-                        
+
                 if (consecutiveSpaces > 0)
                 {
-                    posX += fontData.spaceWidth * consecutiveSpaces * scaleX * letterLocalScale;
+                    posX += fontData.spaceWidth * consecutiveSpaces * scaleMult;
                 }
 
-                // var letter = new BAlphabetCharacter(0, 0);
                 // Use a revive system rather than creating a new letter EVERY TIME.
                 // Seems to have improved performance quite a bit.
                 var letter:BAlphabetCharacter;
@@ -250,10 +210,12 @@ class BAlphabet extends ScriptedFlxSpriteGroup
                 else
                 {
                     letter = new BAlphabetCharacter(0, 0);
+                    // Only add a letter when it's brand new! Avoids accidentally duplicating it.
+                    this.add(letter);
                 }
                 letter.fontData = this.fontData;
-                letter.plane = letterPlane;
-                letter.setupAlphaCharacter(posX, rows * fontData.lineHeight * scale.y, charCode, letterBold, letterLocalScale, [scaleX, scaleY], font);
+                letter.plane = _plane;
+                letter.setupAlphaCharacter(posX, rows * fontData.lineHeight, charCode, bold, font, scaleMult);
                 letter.row = rows;
                 letter.spacesBefore = consecutiveSpaces;
 
@@ -264,23 +226,28 @@ class BAlphabet extends ScriptedFlxSpriteGroup
                 if (letter.monospace != null) useMonoWidth = letter.monospace;
                 if (useMonoWidth)
                 {
-                    posX += monoWidth * scaleX * letterLocalScale;
+                    posX += monoWidth * letter.localScale.x;
                 }
                 else
                 {
-                    posX += letter.width + (padding - letter.letterOffset[0]) * scaleX * letterLocalScale;
+                    posX += (letter.frameWidth + padding + letter.letterOffset[0]) * letter.localScale.x;
+                }
+                // trace(letter.width, padding, letter.letterOffset[0], letter.localScale.x);
+
+                if (charCode == 66)
+                {
+                    trace(letter.localX, letter.localY);
                 }
 
-                this.add(letter);
                 letters.push(letter);
-                    
+
                 index++;
                 consecutiveSpaces = 0;
             }
             else
             {
                 letters[index - 1].spacesTrailing = consecutiveSpaces;
-                rowWidths[rows] = posX;
+                // rowWidths[rows] = posX;
                 consecutiveSpaces = 0;
                 posX = 0;
                 rows++;
@@ -292,22 +259,26 @@ class BAlphabet extends ScriptedFlxSpriteGroup
             // Deal with trailing spaces.
             if (consecutiveSpaces > 0)
             {
-                posX += fontData.spaceWidth * consecutiveSpaces * scaleX * letters[index - 1].localScale;
+                posX += fontData.spaceWidth * consecutiveSpaces * letters[index - 1].scaleMult;
             }
             letters[index - 1].spacesTrailing = consecutiveSpaces;
         }
 
-        rowWidths[rows] = posX;
-        
+        // rowWidths[rows] = posX;
+        refreshRowWidth();
         loadLetterModifiers();
+        // trace(text);
+        // trace(rowWidths);
     }
 
     public function refreshRowWidth():Void
     {
         var posX:Float = 0;
         var prevRow:Int = -1;
-        for (letter in letters)
+        for (letter in children)
         {
+            if (letter == null || !letter.exists || !letter.active) continue;
+
             if (letter.row != prevRow)
             {
                 prevRow = letter.row;
@@ -316,12 +287,12 @@ class BAlphabet extends ScriptedFlxSpriteGroup
 
             if (letter.spacesBefore > 0)
             {
-                posX += fontData.spaceWidth * letter.spacesBefore * scaleX * letter.localScale;
+                posX += fontData.spaceWidth * letter.spacesBefore* letter.localScale.x;
             }
 
             if (letter.spacesTrailing > 0)
             {
-                posX += fontData.spaceWidth * letter.spacesTrailing * scaleX * letter.localScale;
+                posX += fontData.spaceWidth * letter.spacesTrailing * letter.localScale.x;
             }
             
             var padding:Float = letter.bold ? fontData.paddingBold : fontData.padding;
@@ -331,11 +302,11 @@ class BAlphabet extends ScriptedFlxSpriteGroup
             if (letter.monospace != null) useMonoWidth = letter.monospace;
             if (useMonoWidth)
             {
-                posX += monoWidth * scaleX * letter.localScale;
+                posX += monoWidth * letter.localScale.x;
             }
             else
             {
-                posX += letter.width + (padding - letter.letterOffset[0]) * scaleX * letter.localScale;
+                posX += (letter.frameWidth + padding + letter.letterOffset[0]) * letter.localScale.x;
             }
             rowWidths[letter.row] = posX;
         }
@@ -356,7 +327,7 @@ class BAlphabet extends ScriptedFlxSpriteGroup
 
                 if (textData.get(i).alpha != null)
                 {
-                    letters[i].alpha = textData.get(i).alpha;
+                    letters[i].localAlpha = textData.get(i).alpha;
                 }
 
                 if (textData.get(i).italics)
@@ -381,6 +352,22 @@ class BAlphabet extends ScriptedFlxSpriteGroup
     override function update(elapsed:Float):Void
     {
         super.update(elapsed);
+    }
+
+    override function updateChildren():Void
+    {
+        if (customChildUpdate) return;
+
+        for (child in children)
+        {
+            if (child != null && child.exists && child.active)
+            {
+                // This shit can be very laggy, thanks FlxPoint!
+                child.scrollFactor.set(this.scrollFactor.x, this.scrollFactor.y);
+            }
+        }
+
+        super.updateChildren();
     }
 
     /**

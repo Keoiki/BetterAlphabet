@@ -17,8 +17,8 @@ class BAlphabetCharacter extends FunkinSprite
     public var doWave:Bool = false;
     public var waveOffset:Int = 0;
 
-    public var bold:Bool = false;
-    public var localScale:Float = 1;
+    public var bold:Bool;
+    public var scaleMult:Float;
     public var type:String = "unknown";
     public var typeface:String = "unknown";
     public var shouldUpdateFrames:Bool = false;
@@ -37,17 +37,13 @@ class BAlphabetCharacter extends FunkinSprite
 
     public function new(x, y)
     {
-        super(x, y);
+        super(0, 0);
     }
 
-    public function setupAlphaCharacter(x:Float, y:Float, characterCode:Int, isBold:Bool, newLocalScale:Float, parentScale:Array<Float>, _font:String):Void
+    public function setupAlphaCharacter(x:Float, y:Float, characterCode:Int, bold:Bool = false, font:String = "default", scaleMult:Float = 1.0):Void
     {
-        this.x = x;
-        this.y = y;
-        
-        localScale = newLocalScale;
-        this.scale.x = parentScale[0] * localScale;
-        this.scale.y = parentScale[1] * localScale;
+        this.localX = x;
+        this.localY = y;
 
         // Only fetch on the first setup or when the character changes.
         if (character != characterCode)
@@ -55,17 +51,17 @@ class BAlphabetCharacter extends FunkinSprite
             planeOffset = 0xFFFF * plane + plane;
             character = characterCode;
             character += planeOffset;
-            curLetter = BAlphabetData.getLetter(character, _font);
+            curLetter = BAlphabetData.getLetter(character, font);
 
             // Only set type on the first setup or when either typeface or font changes.
-            if (type == "unknown" || typeface != curLetter.typeface || font != _font)
+            if (type == "unknown" || typeface != curLetter.typeface || this.font != font)
             {
-                bold = isBold;
-                type = bold ? "bold" : "regular";
+                this.bold = bold;
+                type = this.bold ? "bold" : "regular";
                 shouldUpdateFrames = true;
             }
 
-            font = _font;
+            this.font = font;
             typeface = curLetter.typeface;
             setTypeface(typeface);
 
@@ -87,11 +83,11 @@ class BAlphabetCharacter extends FunkinSprite
         }
 
         // Special cases: the only change is boldness or font.
-        if (font != _font)
+        if (this.font != font)
         {
-            font = _font;
-            bold = isBold;
-            type = bold ? "bold" : "regular";
+            this.font = font;
+            this.bold = bold;
+            type = this.bold ? "bold" : "regular";
             curLetter = BAlphabetData.getLetter(characterCode, font);
             typeface = curLetter.typeface;
             shouldUpdateFrames = true;
@@ -102,10 +98,10 @@ class BAlphabetCharacter extends FunkinSprite
             animation.play(alphaAnim, true);
         }
         
-        if (bold != isBold)
+        if (this.bold != bold)
         {
-            bold = isBold;
-            type = bold ? "bold" : "regular";
+            this.bold = bold;
+            type = this.bold ? "bold" : "regular";
             shouldUpdateFrames = true;
             setTypeface(typeface);
 
@@ -113,9 +109,16 @@ class BAlphabetCharacter extends FunkinSprite
             animation.addByPrefix(alphaAnim, alphaAnim, 24, true);
             animation.play(alphaAnim, true);
         }
+        
+        this.scaleMult = scaleMult;
+        this.localScale.x = this.scaleMult;
+        this.localScale.y = this.scaleMult;
 
         updateHitbox();
         updateLetterOffset();
+
+        // trace(character == 66);
+        // trace(frameWidth, frameHeight);
 
         alignOffset = 0;
     }
@@ -169,28 +172,29 @@ class BAlphabetCharacter extends FunkinSprite
         {
             var monowidth:Float = bold ? fontData.widthBold : fontData.width;
             if (monowidth == 0 && bold) monowidth = fontData.width;
-            offset.x -= (monowidth / 2 - width / 2) * scale.x;
+            localX += (monowidth / 2 - width / 2) * localScale.x;
         }
 
         // Individual character x offsets can still apply even in monospace!
         // This is so characters don't have rely on invisible pixels to offset themselves.
-        offset.x += letterOffset[0] * scale.x;
+        localX += letterOffset[0] * localScale.x;
 
-        add *= scale.y;
-        if (scale.y < 0)
+        // add *= localScale.y;
+        if (localScale.y < 0)
         {
-            offset.y += letterOffset[1] * scale.y - (add / 2 * localScale);
-            flipX = true;
+            localY -= letterOffset[1] * localScale.y - (add / 2 * localScale.y);
         }
         else
         {
-            offset.y += letterOffset[1] * scale.y - (add / localScale - height);
+            localY -= letterOffset[1] * localScale.y - (add - height);
+            localY += height / 2 * (1 - localScale.y);
         }
     }
 
     function resetEffects():Void
     {
-        this.alpha = 1;
+        this.localAlpha = 1;
+        scaleMult = 1;
         setColor(0xFFFFFFFF);
         this.skew.x = 0;
         doShake = false;
@@ -216,16 +220,16 @@ class BAlphabetCharacter extends FunkinSprite
                 shakeTick %= 1 / shakeFramerate;
                 if (!isShakeOffset)
                 {
-                    shakeXOffset = FlxG.random.float(-shakeSize * localScale, shakeSize * localScale);
-                    shakeYOffset = FlxG.random.float(-shakeSize * localScale, shakeSize * localScale);
-                    x += shakeXOffset;
-                    y += shakeYOffset;
+                    shakeXOffset = FlxG.random.float(-shakeSize * scaleMult, shakeSize * scaleMult);
+                    shakeYOffset = FlxG.random.float(-shakeSize * scaleMult, shakeSize * scaleMult);
+                    localX += shakeXOffset;
+                    localY += shakeYOffset;
                     isShakeOffset = true;
                 }
                 else
                 {
-                    x -= shakeXOffset;
-                    y -= shakeYOffset;
+                    localX -= shakeXOffset;
+                    localY -= shakeYOffset;
                     isShakeOffset = false;
                 }
             }
@@ -234,7 +238,7 @@ class BAlphabetCharacter extends FunkinSprite
         if (doWave)
         {
             waveSine += elapsed;
-            offset.y += (Math.sin((waveSine * 4) + (waveOffset * 0.5)) / 2) * scale.y;
+            localY += (Math.sin((waveSine * 4) + (waveOffset * 0.5)) / 2) * localScale.y;
         }
         
         super.update(elapsed);
