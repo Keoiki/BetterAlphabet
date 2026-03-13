@@ -163,6 +163,8 @@ class BAlphabetCharacter extends FunkinSprite
             return;
         }
 
+        return;
+
         var add:Float = bold ? fontData.heightBold : fontData.height;
 
         letterOffset[0] = curLetter.offsets[0];
@@ -172,7 +174,7 @@ class BAlphabetCharacter extends FunkinSprite
         {
             var monowidth:Float = bold ? fontData.widthBold : fontData.width;
             if (monowidth == 0 && bold) monowidth = fontData.width;
-            localX += (monowidth / 2 - width / 2) * localScale.x;
+            localX += (monowidth / 2 - frameWidth / 2) * localScale.x;
         }
 
         // Individual character x offsets can still apply even in monospace!
@@ -186,9 +188,12 @@ class BAlphabetCharacter extends FunkinSprite
         }
         else
         {
-            localY -= letterOffset[1] * localScale.y - (add - height);
-            localY += height / 2 * (1 - localScale.y);
+            localY -= letterOffset[1] * localScale.y - add + frameHeight;
+            localY += frameHeight / 2 * (1 - localScale.y);
         }
+
+        // offset.x = 0;
+        // offset.y = 0;
     }
 
     function resetEffects():Void

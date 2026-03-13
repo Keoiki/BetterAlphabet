@@ -90,8 +90,8 @@ class BAlphabet extends FunkinGroup
 
     var letters:Array<BAlphabetCharacter> = [];
     var rowWidths:Array<Float> = [];
-    var scaleX:Float = 1;
-    var scaleY:Float = 1;
+    // var scaleX:Float = 1;
+    // var scaleY:Float = 1;
     var rows:Int = 0;
 
     var textParser;
@@ -124,9 +124,9 @@ class BAlphabet extends FunkinGroup
                 default: newOffset = 0;
             }
             // trace('Before alignment set: ${letter.localX}');
-            letter.localX += letter.alignOffset;
-            letter.alignOffset = newOffset;
-            letter.localX -= letter.alignOffset;
+            // letter.localX += letter.alignOffset;
+            // letter.alignOffset = newOffset;
+            // letter.localX -= letter.alignOffset;
             // trace('After alignment set: ${letter.localX}');
         }
     }
@@ -234,10 +234,10 @@ class BAlphabet extends FunkinGroup
                 }
                 // trace(letter.width, padding, letter.letterOffset[0], letter.localScale.x);
 
-                if (charCode == 66)
-                {
-                    trace(letter.localX, letter.localY);
-                }
+                // if (charCode == 66)
+                // {
+                    // trace(letter.localX, letter.localY);
+                // }
 
                 letters.push(letter);
 
@@ -262,6 +262,12 @@ class BAlphabet extends FunkinGroup
                 posX += fontData.spaceWidth * consecutiveSpaces * letters[index - 1].scaleMult;
             }
             letters[index - 1].spacesTrailing = consecutiveSpaces;
+
+            if (text == "Boyfriend")
+            {
+                // trace(text);
+                // trace('TxX: ${this.x}, TxY: ${this.y}, LX: ${letters[0].x}, LY: ${letters[0].y}, LLoX: ${letters[0].localX}, LLoY: ${letters[0].localY}, LOffX: ${letters[0].offset.x}, LOffY: ${letters[0].offset.y}');
+            }
         }
 
         // rowWidths[rows] = posX;
@@ -351,6 +357,16 @@ class BAlphabet extends FunkinGroup
 
     override function update(elapsed:Float):Void
     {
+        if (letters.length > 0)
+        {
+            if (text == "Boyfriend")
+            {
+                trace(text);
+                trace("Letter X: " + children[0]?.x, "Letter Offset X: " + children[0]?.offset.x);
+                // trace('TxX: ${this.x}, TxY: ${this.y}, LX: ${letters[0].x}, LY: ${letters[0].y}, LLoX: ${letters[0].localX}, LLoY: ${letters[0].localY}, LOffX: ${letters[0].offset.x}, LOffY: ${letters[0].offset.y}');
+            }
+        }
+
         super.update(elapsed);
     }
 
