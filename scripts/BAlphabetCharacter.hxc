@@ -32,7 +32,10 @@ class BAlphabetCharacter extends FunkinSprite
     public var spacesBefore:Int = 0;
     public var spacesTrailing:Int = 0;
 
-    public var font:String = "default";
+    // So somehow setting the "font" variable of the parent text object sets this too???
+    // Meaning any comparisons of previous and new font names wouldn't work.
+    // Thus this has to have a "_" in the name.
+    public var _font:String = "default";
     public var fontData:BAFont = null;
 
     public function new(x, y)
@@ -44,6 +47,10 @@ class BAlphabetCharacter extends FunkinSprite
     {
         this.localX = x;
         this.localY = y;
+        
+        this.scaleMult = scaleMult;
+        this.localScale.x = this.scaleMult;
+        this.localScale.y = this.scaleMult;
 
         // Only fetch on the first setup or when the character changes.
         if (character != characterCode)
@@ -54,14 +61,14 @@ class BAlphabetCharacter extends FunkinSprite
             curLetter = BAlphabetData.getLetter(character, font);
 
             // Only set type on the first setup or when either typeface or font changes.
-            if (type == "unknown" || typeface != curLetter.typeface || this.font != font)
+            if (type == "unknown" || typeface != curLetter.typeface || _font != font)
             {
                 this.bold = bold;
                 type = this.bold ? "bold" : "regular";
                 shouldUpdateFrames = true;
             }
 
-            this.font = font;
+            _font = font;
             typeface = curLetter.typeface;
             setTypeface(typeface);
 
@@ -83,9 +90,9 @@ class BAlphabetCharacter extends FunkinSprite
         }
 
         // Special cases: the only change is boldness or font.
-        if (this.font != font)
+        if (_font != font)
         {
-            this.font = font;
+            _font = font;
             this.bold = bold;
             type = this.bold ? "bold" : "regular";
             curLetter = BAlphabetData.getLetter(characterCode, font);
@@ -109,16 +116,9 @@ class BAlphabetCharacter extends FunkinSprite
             animation.addByPrefix(alphaAnim, alphaAnim, 24, true);
             animation.play(alphaAnim, true);
         }
-        
-        this.scaleMult = scaleMult;
-        this.localScale.x = this.scaleMult;
-        this.localScale.y = this.scaleMult;
 
-        updateHitbox();
+        // updateHitbox();
         updateLetterOffset();
-
-        // trace(character == 66);
-        // trace(frameWidth, frameHeight);
 
         alignOffset = 0;
     }
@@ -163,9 +163,7 @@ class BAlphabetCharacter extends FunkinSprite
             return;
         }
 
-        return;
-
-        var add:Float = bold ? fontData.heightBold : fontData.height;
+        var letterHeight:Float = bold ? fontData.heightBold : fontData.height;
 
         letterOffset[0] = curLetter.offsets[0];
         letterOffset[1] = curLetter.offsets[1];
@@ -181,25 +179,20 @@ class BAlphabetCharacter extends FunkinSprite
         // This is so characters don't have rely on invisible pixels to offset themselves.
         localX += letterOffset[0] * localScale.x;
 
-        // add *= localScale.y;
         if (localScale.y < 0)
         {
-            localY -= letterOffset[1] * localScale.y - (add / 2 * localScale.y);
+            localY -= letterOffset[1] * localScale.y - (letterHeight / 2 * localScale.y);
         }
         else
         {
-            localY -= letterOffset[1] * localScale.y - add + frameHeight;
-            localY += frameHeight / 2 * (1 - localScale.y);
+            localY -= letterOffset[1] * localScale.y - letterHeight + frameHeight;
+            localY += (frameHeight - (frameHeight * localScale.y)) / 2.5;
         }
-
-        // offset.x = 0;
-        // offset.y = 0;
     }
 
     function resetEffects():Void
     {
         this.localAlpha = 1;
-        scaleMult = 1;
         setColor(0xFFFFFFFF);
         this.skew.x = 0;
         doShake = false;

@@ -42,7 +42,7 @@ class BAlphabet extends FunkinGroup
         textDataExtra = textParser.charDataExtra;
         textDataPlanes = textParser.charDataPlanes;
         createLetters(text);
-        // updateAlignment();
+        updateAlignment();
 
         return input;
     }
@@ -123,11 +123,9 @@ class BAlphabet extends FunkinGroup
                 case 'centered': newOffset = rowWidths[letter.row] / 2;
                 default: newOffset = 0;
             }
-            // trace('Before alignment set: ${letter.localX}');
-            // letter.localX += letter.alignOffset;
-            // letter.alignOffset = newOffset;
-            // letter.localX -= letter.alignOffset;
-            // trace('After alignment set: ${letter.localX}');
+            letter.localX += letter.alignOffset;
+            letter.alignOffset = newOffset;
+            letter.localX -= letter.alignOffset;
         }
     }
 
@@ -150,7 +148,7 @@ class BAlphabet extends FunkinGroup
         rows = 0;
     }
 
-    public function createLetters(newText:String):Void
+    function createLetters(newText:String):Void
     {
         rows = 0;
         rowWidths = [];
@@ -219,25 +217,17 @@ class BAlphabet extends FunkinGroup
                 letter.row = rows;
                 letter.spacesBefore = consecutiveSpaces;
 
-                var padding:Float = letter.bold ? fontData.paddingBold : fontData.padding;
-                var monoWidth:Float = letter.bold ? fontData.widthBold : fontData.width;
-                if (monoWidth == 0 && letter.bold) monoWidth = fontData.width;
-                var useMonoWidth:Bool = fontData.monospace;
-                if (letter.monospace != null) useMonoWidth = letter.monospace;
-                if (useMonoWidth)
+                if (letter.monospace ?? fontData.monospace)
                 {
+                    var monoWidth:Float = letter.bold ? fontData.widthBold : fontData.width;
+                    if (monoWidth == 0 && letter.bold) monoWidth = fontData.width;
                     posX += monoWidth * letter.localScale.x;
                 }
                 else
                 {
+                    var padding:Float = letter.bold ? fontData.paddingBold : fontData.padding;
                     posX += (letter.frameWidth + padding + letter.letterOffset[0]) * letter.localScale.x;
                 }
-                // trace(letter.width, padding, letter.letterOffset[0], letter.localScale.x);
-
-                // if (charCode == 66)
-                // {
-                    // trace(letter.localX, letter.localY);
-                // }
 
                 letters.push(letter);
 
@@ -247,7 +237,6 @@ class BAlphabet extends FunkinGroup
             else
             {
                 letters[index - 1].spacesTrailing = consecutiveSpaces;
-                // rowWidths[rows] = posX;
                 consecutiveSpaces = 0;
                 posX = 0;
                 rows++;
@@ -259,25 +248,16 @@ class BAlphabet extends FunkinGroup
             // Deal with trailing spaces.
             if (consecutiveSpaces > 0)
             {
-                posX += fontData.spaceWidth * consecutiveSpaces * letters[index - 1].scaleMult;
+                posX += fontData.spaceWidth * consecutiveSpaces * letters[index - 1].localScale.x;
             }
             letters[index - 1].spacesTrailing = consecutiveSpaces;
-
-            if (text == "Boyfriend")
-            {
-                // trace(text);
-                // trace('TxX: ${this.x}, TxY: ${this.y}, LX: ${letters[0].x}, LY: ${letters[0].y}, LLoX: ${letters[0].localX}, LLoY: ${letters[0].localY}, LOffX: ${letters[0].offset.x}, LOffY: ${letters[0].offset.y}');
-            }
         }
 
-        // rowWidths[rows] = posX;
-        refreshRowWidth();
+        setRowWidths();
         loadLetterModifiers();
-        // trace(text);
-        // trace(rowWidths);
     }
 
-    public function refreshRowWidth():Void
+    public function setRowWidths():Void
     {
         var posX:Float = 0;
         var prevRow:Int = -1;
@@ -293,7 +273,7 @@ class BAlphabet extends FunkinGroup
 
             if (letter.spacesBefore > 0)
             {
-                posX += fontData.spaceWidth * letter.spacesBefore* letter.localScale.x;
+                posX += fontData.spaceWidth * letter.spacesBefore * letter.localScale.x;
             }
 
             if (letter.spacesTrailing > 0)
@@ -301,23 +281,19 @@ class BAlphabet extends FunkinGroup
                 posX += fontData.spaceWidth * letter.spacesTrailing * letter.localScale.x;
             }
             
-            var padding:Float = letter.bold ? fontData.paddingBold : fontData.padding;
-            var monoWidth:Float = letter.bold ? fontData.widthBold : fontData.width;
-            if (monoWidth == 0 && letter.bold) monoWidth = fontData.width;
-            var useMonoWidth:Bool = fontData.monospace;
-            if (letter.monospace != null) useMonoWidth = letter.monospace;
-            if (useMonoWidth)
-            {
+            if (letter.monospace ?? fontData.monospace)
+            {   
+                var monoWidth:Float = letter.bold ? fontData.widthBold : fontData.width;
+                if (monoWidth == 0 && letter.bold) monoWidth = fontData.width;
                 posX += monoWidth * letter.localScale.x;
             }
             else
             {
+                var padding:Float = letter.bold ? fontData.paddingBold : fontData.padding;
                 posX += (letter.frameWidth + padding + letter.letterOffset[0]) * letter.localScale.x;
             }
             rowWidths[letter.row] = posX;
         }
-
-        updateAlignment();
     }
 
     public function loadLetterModifiers():Void
@@ -357,16 +333,6 @@ class BAlphabet extends FunkinGroup
 
     override function update(elapsed:Float):Void
     {
-        if (letters.length > 0)
-        {
-            if (text == "Boyfriend")
-            {
-                trace(text);
-                trace("Letter X: " + children[0]?.x, "Letter Offset X: " + children[0]?.offset.x);
-                // trace('TxX: ${this.x}, TxY: ${this.y}, LX: ${letters[0].x}, LY: ${letters[0].y}, LLoX: ${letters[0].localX}, LLoY: ${letters[0].localY}, LOffX: ${letters[0].offset.x}, LOffY: ${letters[0].offset.y}');
-            }
-        }
-
         super.update(elapsed);
     }
 
