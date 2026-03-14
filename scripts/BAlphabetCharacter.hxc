@@ -48,9 +48,9 @@ class BAlphabetCharacter extends FunkinSprite
         this.localX = x;
         this.localY = y;
         
-        this.scaleMult = scaleMult;
-        this.localScale.x = this.scaleMult;
-        this.localScale.y = this.scaleMult;
+        // this.scaleMult = scaleMult;
+        // this.localScale.x = this.scaleMult;
+        // this.localScale.y = this.scaleMult;
 
         // Only fetch on the first setup or when the character changes.
         if (character != characterCode)
@@ -117,7 +117,9 @@ class BAlphabetCharacter extends FunkinSprite
             animation.play(alphaAnim, true);
         }
 
+        // Do not uncomment this line, it was the cause of a million headaches...
         // updateHitbox();
+        
         updateLetterOffset();
 
         alignOffset = 0;
@@ -179,15 +181,17 @@ class BAlphabetCharacter extends FunkinSprite
         // This is so characters don't have rely on invisible pixels to offset themselves.
         localX += letterOffset[0] * localScale.x;
 
-        if (localScale.y < 0)
-        {
-            localY -= letterOffset[1] * localScale.y - (letterHeight / 2 * localScale.y);
-        }
-        else
-        {
-            localY -= letterOffset[1] * localScale.y - letterHeight + frameHeight;
-            localY += (frameHeight - (frameHeight * localScale.y)) / 2.5;
-        }
+        // <s> tags have been disabled due to SEVERE positioning issues, sorry!
+        localY -= letterOffset[1] * localScale.y - letterHeight + frameHeight;
+
+        // if (localScale.y < 0)
+        // {
+            // localY -= letterOffset[1] * localScale.y - (letterHeight / 2 * localScale.y);
+        // }
+        // else
+        // {
+            // localY += (frameHeight - (frameHeight * localScale.y)) / 2.5;
+        // }
     }
 
     function resetEffects():Void
