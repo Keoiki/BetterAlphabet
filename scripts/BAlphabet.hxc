@@ -8,23 +8,23 @@ import funkin.modding.module.ModuleHandler;
 class BAlphabet extends FunkinGroup
 {
     // Base variable getter overrides
-    // override function get_width():Float
-    // {
-        // var widestRow:Float = 0;
-        // for (row in rowWidths)
-        // {
-            // if (row > widestRow)
-            // {
-                // widestRow = row;
-            // }
-        // }
-        // return widestRow;
-    // }
+    override function get_width():Float
+    {
+        var widestRow:Float = 0;
+        for (row in rowWidths)
+        {
+            if (row > widestRow)
+            {
+                widestRow = row;
+            }
+        }
+        return widestRow;
+    }
 
-    // override function get_height():Float
-    // {
-        // return (letters[letters.length - 1].row + 1) * fontData.lineHeight * scaleY;
-    // }
+    override function get_height():Float
+    {
+        return (letters[letters.length - 1].row + 1) * fontData.lineHeight * scale.y;
+    }
 
     // Regular variables
     var textRaw:String;
