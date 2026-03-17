@@ -20,7 +20,7 @@ in whatever file you want to use it in, that's that, now it's ready to be used.
 ```haxe
 var testText:BAlphabet = new BAlphabet(FlxG.width / 2, 50, "Hello!");
 testText.alignment = "center";
-testText.setScale(0.75);
+testText.scale.set(0.75, 0.75);
 add(testText);
 ```
 
