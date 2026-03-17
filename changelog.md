@@ -8,6 +8,8 @@ Unicode sheets referenced in this file can be found here: https://www.unicode.or
     - Hiragana: All.
     - Miscellaneous Technical: 2326 & 2327, 232B, 23E9-23EF and 23F4-23FE.
 - Added a new `<m>` tag to force monospace on characters inside the tag.
+- Added a new `setScrollFactor(factorX:Float, ?factorY:Float)` function to set the scroll factor for the object.
+    - The regular `scrollFactor.set(x, y)` does not work due to FunkinGroup.
 
 ### Changed
 

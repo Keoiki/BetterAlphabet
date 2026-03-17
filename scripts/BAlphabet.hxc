@@ -90,8 +90,6 @@ class BAlphabet extends FunkinGroup
 
     var letters:Array<BAlphabetCharacter> = [];
     var rowWidths:Array<Float> = [];
-    // var scaleX:Float = 1;
-    // var scaleY:Float = 1;
     var rows:Int = 0;
 
     var textParser;
@@ -133,6 +131,17 @@ class BAlphabet extends FunkinGroup
     public function setScale(scaleX:Float, ?scaleY:Float):Void
     {
         this.scale.set(scaleX, scaleY ?? scaleX);
+    }
+
+    public function setScrollFactor(factorX:Float, ?factorY:Float):Void
+    {
+        for (child in children)
+        {
+            if (child != null && child.exists && child.active)
+            {
+                child.scrollFactor.set(factorX, factorY ?? factorX);
+            }
+        }
     }
 
     public function setText(newText:String):Void
@@ -349,6 +358,7 @@ class BAlphabet extends FunkinGroup
     {
         if (customChildUpdate) return;
 
+        /*
         for (child in children)
         {
             if (child != null && child.exists && child.active)
@@ -357,6 +367,7 @@ class BAlphabet extends FunkinGroup
                 child.scrollFactor.set(this.scrollFactor.x, this.scrollFactor.y);
             }
         }
+        */
 
         super.updateChildren();
     }
