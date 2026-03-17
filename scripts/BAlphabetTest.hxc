@@ -28,7 +28,6 @@ class BAlphabetTest extends MusicBeatState
     var letterIndex:Int = 0;
     var letterOffsets:Array<Float> = [0, 0];
     var modifiedOffsets:Array<Float> = [0, 0];
-    var originalLetterOffsets:Array<Float> = [0, 0];
 
     var currentTypeface:Int = 0;
     var typefaceName:FlxText;
@@ -255,8 +254,7 @@ class BAlphabetTest extends MusicBeatState
             offsetText.text = "i&#" + allLetterIndexes[letterIndex] + ";IAa";
         }
         var offsettedLetter = offsetText.letters[1];
-        originalLetterOffsets[0] = offsettedLetter.offset.x;
-        originalLetterOffsets[1] = offsettedLetter.offset.y;
+        offsettedLetter.offset.set(0, 0);
         modifiedOffsets = [0, 0];
         letterOffsets = allLetterMap.get(allLetterIndexes[letterIndex]).offsets;
         updateOffsetInfo();
@@ -267,15 +265,15 @@ class BAlphabetTest extends MusicBeatState
         modifiedOffsets[0] += changeX;
         modifiedOffsets[1] += changeY;
         var offsettedLetter = offsetText.letters[1];
-        offsettedLetter.offset.set(originalLetterOffsets[0] + modifiedOffsets[0], originalLetterOffsets[1] + modifiedOffsets[1]);
+        offsettedLetter.offset.set(modifiedOffsets[0], modifiedOffsets[1]);
         updateOffsetInfo();
     }
 
     public function updateOffsetInfo():Void
     {
         offsetInfo.text = "Glyph offset for glyph #" + allLetterIndexes[letterIndex] + " (" + StringTools.hex(allLetterIndexes[letterIndex], 4) + "):\n";
-        offsetInfo.text += "x: " + (letterOffsets[0] + modifiedOffsets[0]) + " (" + originalLetterOffsets[0] + ")\n";
-        offsetInfo.text += "y: " + (letterOffsets[1] + modifiedOffsets[1]) + " (" + originalLetterOffsets[1] + ")\n";
+        offsetInfo.text += "x: " + (letterOffsets[0]) + " (" + -modifiedOffsets[0] + ")\n";
+        offsetInfo.text += "y: " + (letterOffsets[1]) + " (" + modifiedOffsets[1] + ")\n";
         offsetInfo.text += "index: " + letterIndex;
     }
 

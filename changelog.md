@@ -12,11 +12,8 @@ Unicode sheets referenced in this file can be found here: https://www.unicode.or
 ### Changed
 
 - The text now uses the new `FunkinGroup` class as its base, allowing for better scaling and now; rotation!
-
-### Removed
-
-- `setScale()` has been removed, use `scale.set(x, y)` from now on.
-- The relative scale tag `<s>` has been disabled due to severe issues trying to get scaled characters to position properly. :whatthecrying:
+- The `setScale()` function is deprecated, please use the built-in scale field instead.
+    - The function still works for the time being for backwards compatibility.
 
 ## [1.0.0] - 23/02/2026
 

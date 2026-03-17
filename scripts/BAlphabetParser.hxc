@@ -98,7 +98,7 @@ class BAlphabetParser extends Module
                 {
                     charDataList.set(charIndex, {
                         color: addColor,
-                        // scale: addScale,
+                        scale: addScale,
                         effect: addEffect,
                         italics: hasItalics,
                         bold: hasBold,

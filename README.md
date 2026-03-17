@@ -90,7 +90,7 @@ Do you not want to use the letter assets that come with the mod? Oh... well good
 ```json 
 {
     "height": 54, // The regular letter height
-    "heightBold": 60, // Ditto, for bold
+    "heightBold": 66, // Ditto, for bold
     "width": 54, // The letter width, only used in monospaced fonts or letters
     "widthBold": 54, // Ditto, for bold
     "monospace": false, // Is this font monospaced? Individual letters can override this setting, meaning certain letters being monospaced is possible in a non-monospace font
@@ -120,4 +120,4 @@ You can check if your fonts and/or characters were loaded properly *(granted no 
 - `U/I` to switch between the available fonts.
 - `J/K` to switch between the shown typefaces.
 - `Z/C` to switch between the shown character in the offset area, above the main text area, hold `Shift` or `Alt` to the switch by `10`, hold both to switch by `100`.
-- `Arrow Keys` to move the offset area character, hold `Shift` to move by `10`.
+- `Arrow Keys` to move the offset area character, hold `Alt` to move by `0.1`, hold `Shift` to move by `10`.

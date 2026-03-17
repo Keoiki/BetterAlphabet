@@ -48,9 +48,7 @@ class BAlphabetCharacter extends FunkinSprite
         this.localX = x;
         this.localY = y;
         
-        // this.scaleMult = scaleMult;
-        // this.localScale.x = this.scaleMult;
-        // this.localScale.y = this.scaleMult;
+        this.scaleMult = scaleMult;
 
         // Only fetch on the first setup or when the character changes.
         if (character != characterCode)
@@ -169,10 +167,26 @@ class BAlphabetCharacter extends FunkinSprite
             return;
         }
 
-        var letterHeight:Float = bold ? fontData.heightBold : fontData.height;
+        var lineHeight:Float = bold ? fontData.heightBold : fontData.height;
 
         letterOffset[0] = curLetter.offsets[0];
         letterOffset[1] = curLetter.offsets[1];
+        
+        localScale.x = scaleMult;
+        localScale.y = scaleMult;
+
+        if (localScale.y > 0.0)
+        {
+            localY += (lineHeight - frameHeight) * localScale.y;
+            localY += (height * (1.0 - localScale.y)) / 2.5;
+        }
+        else
+        {
+            localX -= width / 1.5;
+            localY -= (lineHeight - frameHeight) * Math.abs(localScale.y);
+            if (bold) localY -= (fontData.heightBold - fontData.height) / 2;
+            localY -= (height * (1.0 + localScale.y)) / 2.5;
+        }
 
         if (monospace ?? false)
         {
@@ -184,18 +198,7 @@ class BAlphabetCharacter extends FunkinSprite
         // Individual character x offsets can still apply even in monospace!
         // This is so characters don't have rely on invisible pixels to offset themselves.
         localX += letterOffset[0] * localScale.x;
-
-        // <s> tags have been disabled due to SEVERE positioning issues, sorry!
-        localY -= letterOffset[1] * localScale.y - letterHeight + frameHeight;
-
-        // if (localScale.y < 0)
-        // {
-            // localY -= letterOffset[1] * localScale.y - (letterHeight / 2 * localScale.y);
-        // }
-        // else
-        // {
-            // localY += (frameHeight - (frameHeight * localScale.y)) / 2.5;
-        // }
+        localY -= letterOffset[1] * localScale.y;
     }
 
     function resetEffects():Void

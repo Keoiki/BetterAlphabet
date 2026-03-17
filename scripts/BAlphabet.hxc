@@ -129,6 +129,12 @@ class BAlphabet extends FunkinGroup
         }
     }
 
+    @:deprecated("setScale is deprecated, use the built-in scale property instead. (scale.set(x, y))")
+    public function setScale(scaleX:Float, ?scaleY:Float):Void
+    {
+        this.scale.set(scaleX, scaleY ?? scaleX);
+    }
+
     public function setText(newText:String):Void
     {
         text = newText;
@@ -224,12 +230,12 @@ class BAlphabet extends FunkinGroup
                 {
                     var monoWidth:Float = letter.bold ? fontData.widthBold : fontData.width;
                     if (monoWidth == 0 && letter.bold) monoWidth = fontData.width;
-                    posX += monoWidth * letter.localScale.x;
+                    posX += monoWidth * letter.scaleMult;
                 }
                 else
                 {
                     var padding:Float = letter.bold ? fontData.paddingBold : fontData.padding;
-                    posX += (letter.frameWidth + padding + letter.letterOffset[0]) * letter.localScale.x;
+                    posX += (letter.frameWidth + padding + letter.letterOffset[0]) * letter.scaleMult;
                 }
 
                 letters.push(letter);
@@ -251,7 +257,7 @@ class BAlphabet extends FunkinGroup
             // Deal with trailing spaces.
             if (consecutiveSpaces > 0)
             {
-                posX += fontData.spaceWidth * consecutiveSpaces * letters[index - 1].localScale.x;
+                posX += fontData.spaceWidth * consecutiveSpaces * letters[index - 1].scaleMult;
             }
             letters[index - 1].spacesTrailing = consecutiveSpaces;
         }
@@ -276,24 +282,24 @@ class BAlphabet extends FunkinGroup
 
             if (letter.spacesBefore > 0)
             {
-                posX += fontData.spaceWidth * letter.spacesBefore * letter.localScale.x;
+                posX += fontData.spaceWidth * letter.spacesBefore * letter.scaleMult;
             }
 
             if (letter.spacesTrailing > 0)
             {
-                posX += fontData.spaceWidth * letter.spacesTrailing * letter.localScale.x;
+                posX += fontData.spaceWidth * letter.spacesTrailing * letter.scaleMult;
             }
             
             if (letter.monospace ?? fontData.monospace)
             {   
                 var monoWidth:Float = letter.bold ? fontData.widthBold : fontData.width;
                 if (monoWidth == 0 && letter.bold) monoWidth = fontData.width;
-                posX += monoWidth * letter.localScale.x;
+                posX += monoWidth * letter.scaleMult;
             }
             else
             {
                 var padding:Float = letter.bold ? fontData.paddingBold : fontData.padding;
-                posX += (letter.frameWidth + padding + letter.letterOffset[0]) * letter.localScale.x;
+                posX += (letter.frameWidth + padding + letter.letterOffset[0]) * letter.scaleMult;
             }
             rowWidths[letter.row] = posX;
         }
