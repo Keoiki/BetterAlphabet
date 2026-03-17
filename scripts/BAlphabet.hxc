@@ -170,8 +170,9 @@ class BAlphabet extends FunkinGroup
                 var charCode:Int = character.charCodeAt(0);
 
                 var scaleMult:Float = 1;
-                var bold:Bool = false;
-                var _plane:Int = 0;
+                var isBold:Bool = false;
+                var isMonospaced:Bool = null;
+                var newPlane:Int = 0;
 
                 if (textData.exists(index))
                 {
@@ -179,14 +180,15 @@ class BAlphabet extends FunkinGroup
                     {
                         scaleMult = textData.get(index).scale;
                     }
-                    bold = textData.get(index).bold;
+                    isBold = textData.get(index).bold;
+                    isMonospaced = textData.get(index).monospace;
                 }
 
                 for (plane in textDataPlanes)
                 {
                     if (plane.pos == indexWithSpaces - 1)
                     {
-                        _plane = plane.plane;
+                        newPlane = plane.plane;
                         break;
                     }
                 }
@@ -211,9 +213,10 @@ class BAlphabet extends FunkinGroup
                     // Only add a letter when it's brand new! Avoids accidentally duplicating it.
                     this.add(letter);
                 }
+                letter.plane = newPlane;
+                if (isMonospaced) letter.monospace = isMonospaced;
                 letter.fontData = this.fontData;
-                letter.plane = _plane;
-                letter.setupAlphaCharacter(posX, rows * fontData.lineHeight, charCode, bold, font, scaleMult);
+                letter.setupAlphaCharacter(posX, rows * fontData.lineHeight, charCode, isBold, font, scaleMult);
                 letter.row = rows;
                 letter.spacesBefore = consecutiveSpaces;
 

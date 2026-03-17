@@ -72,16 +72,20 @@ class BAlphabetCharacter extends FunkinSprite
             typeface = curLetter.typeface;
             setTypeface(typeface);
 
-            if (fontData.monospace)
+            // Monospace can be forced with the <m> tag, so don't overwrite that.
+            if (monospace == null)
             {
-                monospace = true;
-                // If set, letter monospace overrides font specific setting.
-                if (curLetter.monospace != null) monospace = curLetter.monospace;
-            }
-            else
-            {
-                // DO NOT set a default value via ?? here.
-                monospace = curLetter.monospace;
+                if (fontData.monospace)
+                {
+                    monospace = true;
+                    // If set, letter monospace overrides font specific setting.
+                    if (curLetter.monospace != null) monospace = curLetter.monospace;
+                }
+                else
+                {
+                    // DO NOT set a default value via ?? here.
+                    monospace = curLetter.monospace;
+                }
             }
 
             var alphaAnim:String = curLetter.anim + '-';
@@ -205,6 +209,7 @@ class BAlphabetCharacter extends FunkinSprite
         shakeYOffset = 0;
         doWave = false;
         waveOffset = 0;
+        monospace = null;
     }
 
     var waveSine:Float = 0;

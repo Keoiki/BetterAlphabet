@@ -1,10 +1,28 @@
 Unicode sheets referenced in this file can be found here: https://www.unicode.org/charts/
 
-## [1.0.0] - ??/02/2026
+## [2.0.0] - ??/03/2026
+
+### Added
+
+- 2(?) unicode character sheets: 
+    - Hiragana: All.
+    - Miscellaneous Technical: 2326 & 2327, 232B, 23E9-23EF and 23F4-23FE.
+- Added a new `<m>` tag to force monospace on characters inside the tag.
+
+### Changed
+
+- The text now uses the new `FunkinGroup` class as its base, allowing for better scaling and now; rotation!
+
+### Removed
+
+- `setScale()` has been removed, use `scale.set(x, y)` from now on.
+- The relative scale tag `<s>` has been disabled due to severe issues trying to get scaled characters to position properly. :whatthecrying:
+
+## [1.0.0] - 23/02/2026
 
 Initial Release
 
-## Added
+### Added
 
 - 7 unicode character sheets; Latin, Latin-1 Supplement, Arrows, Mathematical Operators, Katakana, Specials, and Symbols for Legacy Computing.
     - Latin: All.
