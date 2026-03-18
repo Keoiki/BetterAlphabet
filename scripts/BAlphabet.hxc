@@ -23,7 +23,7 @@ class BAlphabet extends FunkinGroup
 
     override function get_height():Float
     {
-        return (letters[letters.length - 1]?.row + 1) * fontData.lineHeight * scale.y;
+        return (letters[letters.length - 1]?.row + 1) * this.lineHeight * scale.y;
     }
 
     // Regular variables
@@ -69,6 +69,8 @@ class BAlphabet extends FunkinGroup
             text = textRaw;
         }
 
+        this.lineHeight = fontData.lineHeight;
+
         return input;
     }
 
@@ -91,6 +93,7 @@ class BAlphabet extends FunkinGroup
     var letters:Array<BAlphabetCharacter> = [];
     var rowWidths:Array<Float> = [];
     var rows:Int = 0;
+    var lineHeight:Float = 0;
 
     var textParser;
     var textData;
@@ -231,7 +234,7 @@ class BAlphabet extends FunkinGroup
                 letter.plane = newPlane;
                 if (isMonospaced) letter.monospace = isMonospaced;
                 letter.fontData = this.fontData;
-                letter.setupAlphaCharacter(posX, rows * fontData.lineHeight, charCode, isBold, font, scaleMultiplier);
+                letter.setupAlphaCharacter(posX, rows * this.lineHeight, charCode, isBold, font, scaleMultiplier);
                 letter.row = rows;
                 letter.spacesBefore = consecutiveSpaces;
 

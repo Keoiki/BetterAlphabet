@@ -168,20 +168,20 @@ class BAlphabetCharacter extends FunkinSprite
 
         // if (type == "regular") isBold = false;
 
-        var lineHeight:Float = isBold ? fontData.heightBold : fontData.height;
+        var letterHeight:Float = isBold ? fontData.heightBold : fontData.height;
 
         letterOffset[0] = curLetter.offsets[0];
         letterOffset[1] = curLetter.offsets[1];
 
         if (localScale.y > 0.0)
         {
-            localY += (lineHeight - frameHeight) * localScale.y;
+            localY += (letterHeight - frameHeight) * localScale.y;
             localY += (height * (1.0 - localScale.y)) / 2.5;
         }
         else
         {
             localX -= width / 1.5;
-            localY -= (lineHeight - frameHeight) * Math.abs(localScale.y);
+            localY -= (letterHeight - frameHeight) * Math.abs(localScale.y);
             if (isBold) localY -= (fontData.heightBold - fontData.height) / 2;
             localY -= (height * (1.0 + localScale.y)) / 2.5;
         }
