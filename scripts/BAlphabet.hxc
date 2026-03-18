@@ -237,13 +237,13 @@ class BAlphabet extends FunkinGroup
 
                 if (letter.monospace ?? fontData.monospace)
                 {
-                    var monoWidth:Float = letter.bold ? fontData.widthBold : fontData.width;
-                    if (monoWidth == 0 && letter.bold) monoWidth = fontData.width;
+                    var monoWidth:Float = letter.isBold ? fontData.widthBold : fontData.width;
+                    if (monoWidth == 0 && letter.isBold) monoWidth = fontData.width;
                     posX += monoWidth * letter.scaleMult;
                 }
                 else
                 {
-                    var padding:Float = letter.bold ? fontData.paddingBold : fontData.padding;
+                    var padding:Float = letter.isBold ? fontData.paddingBold : fontData.padding;
                     posX += (letter.frameWidth + padding + letter.letterOffset[0]) * letter.scaleMult;
                 }
 
@@ -301,13 +301,13 @@ class BAlphabet extends FunkinGroup
             
             if (letter.monospace ?? fontData.monospace)
             {   
-                var monoWidth:Float = letter.bold ? fontData.widthBold : fontData.width;
-                if (monoWidth == 0 && letter.bold) monoWidth = fontData.width;
+                var monoWidth:Float = letter.isBold ? fontData.widthBold : fontData.width;
+                if (monoWidth == 0 && letter.isBold) monoWidth = fontData.width;
                 posX += monoWidth * letter.scaleMult;
             }
             else
             {
-                var padding:Float = letter.bold ? fontData.paddingBold : fontData.padding;
+                var padding:Float = letter.isBold ? fontData.paddingBold : fontData.padding;
                 posX += (letter.frameWidth + padding + letter.letterOffset[0]) * letter.scaleMult;
             }
             rowWidths[letter.row] = posX;

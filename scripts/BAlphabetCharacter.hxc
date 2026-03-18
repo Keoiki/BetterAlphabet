@@ -17,7 +17,7 @@ class BAlphabetCharacter extends FunkinSprite
     public var doWave:Bool = false;
     public var waveOffset:Int = 0;
 
-    public var bold:Bool;
+    public var isBold:Bool;
     public var scaleMult:Float;
     public var type:String = "unknown";
     public var typeface:String = "unknown";
@@ -61,8 +61,8 @@ class BAlphabetCharacter extends FunkinSprite
             // Only set type on the first setup or when either typeface or font changes.
             if (type == "unknown" || typeface != curLetter.typeface || _font != font)
             {
-                this.bold = bold;
-                type = this.bold ? "bold" : "regular";
+                this.isBold = bold;
+                type = this.isBold ? "bold" : "regular";
                 shouldUpdateFrames = true;
             }
 
@@ -95,8 +95,8 @@ class BAlphabetCharacter extends FunkinSprite
         if (_font != font)
         {
             _font = font;
-            this.bold = bold;
-            type = this.bold ? "bold" : "regular";
+            this.isBold = bold;
+            type = this.isBold ? "bold" : "regular";
             curLetter = BAlphabetData.getLetter(characterCode, font);
             typeface = curLetter.typeface;
             shouldUpdateFrames = true;
@@ -107,10 +107,10 @@ class BAlphabetCharacter extends FunkinSprite
             animation.play(alphaAnim, true);
         }
         
-        if (this.bold != bold)
+        if (this.isBold != bold)
         {
-            this.bold = bold;
-            type = this.bold ? "bold" : "regular";
+            this.isBold = bold;
+            type = this.isBold ? "bold" : "regular";
             shouldUpdateFrames = true;
             setTypeface(typeface);
 
@@ -134,7 +134,7 @@ class BAlphabetCharacter extends FunkinSprite
             frames = Paths.getSparrowAtlas("balphabet/" + font + "/" + type + "/" + name);
             if (frames == null) // In case no bold version exists.
             {
-                bold = false;
+                isBold = false;
                 type = "regular";
                 frames = Paths.getSparrowAtlas("balphabet/" + font + "/regular/" + name);
             }
@@ -167,7 +167,9 @@ class BAlphabetCharacter extends FunkinSprite
             return;
         }
 
-        var lineHeight:Float = bold ? fontData.heightBold : fontData.height;
+        // if (type == "regular") isBold = false;
+
+        var lineHeight:Float = isBold ? fontData.heightBold : fontData.height;
 
         letterOffset[0] = curLetter.offsets[0];
         letterOffset[1] = curLetter.offsets[1];
@@ -184,14 +186,14 @@ class BAlphabetCharacter extends FunkinSprite
         {
             localX -= width / 1.5;
             localY -= (lineHeight - frameHeight) * Math.abs(localScale.y);
-            if (bold) localY -= (fontData.heightBold - fontData.height) / 2;
+            if (isBold) localY -= (fontData.heightBold - fontData.height) / 2;
             localY -= (height * (1.0 + localScale.y)) / 2.5;
         }
 
         if (monospace ?? false)
         {
-            var monowidth:Float = bold ? fontData.widthBold : fontData.width;
-            if (monowidth == 0 && bold) monowidth = fontData.width;
+            var monowidth:Float = isBold ? fontData.widthBold : fontData.width;
+            if (monowidth == 0 && isBold) monowidth = fontData.width;
             localX += (monowidth / 2 - frameWidth / 2) * localScale.x;
         }
 
