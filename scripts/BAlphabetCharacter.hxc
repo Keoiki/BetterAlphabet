@@ -18,7 +18,6 @@ class BAlphabetCharacter extends FunkinSprite
     public var waveOffset:Int = 0;
 
     public var isBold:Bool;
-    public var scaleMult:Float;
     public var type:String = "unknown";
     public var typeface:String = "unknown";
     public var shouldUpdateFrames:Bool = false;
@@ -32,10 +31,9 @@ class BAlphabetCharacter extends FunkinSprite
     public var spacesBefore:Int = 0;
     public var spacesTrailing:Int = 0;
 
-    // So somehow setting the "font" variable of the parent text object sets this too???
+    // So somehow if this variable's name is "font", setting the "font" variable of the parent text object sets this too???
     // Meaning any comparisons of previous and new font names wouldn't work.
-    // Thus this has to have a "_" in the name.
-    public var _font:String = "default";
+    public var fontName:String = "default";
     public var fontData:BAFont = null;
 
     public function new(x, y)
@@ -48,7 +46,8 @@ class BAlphabetCharacter extends FunkinSprite
         this.localX = x;
         this.localY = y;
         
-        this.scaleMult = scaleMult;
+        localScale.x = scaleMult;
+        localScale.y = scaleMult;
 
         // Only fetch on the first setup or when the character changes.
         if (character != characterCode)
@@ -59,14 +58,14 @@ class BAlphabetCharacter extends FunkinSprite
             curLetter = BAlphabetData.getLetter(character, font);
 
             // Only set type on the first setup or when either typeface or font changes.
-            if (type == "unknown" || typeface != curLetter.typeface || _font != font)
+            if (type == "unknown" || typeface != curLetter.typeface || fontName != font)
             {
                 this.isBold = bold;
                 type = this.isBold ? "bold" : "regular";
                 shouldUpdateFrames = true;
             }
 
-            _font = font;
+            fontName = font;
             typeface = curLetter.typeface;
             setTypeface(typeface);
 
@@ -92,9 +91,9 @@ class BAlphabetCharacter extends FunkinSprite
         }
 
         // Special cases: the only change is boldness or font.
-        if (_font != font)
+        if (fontName != font)
         {
-            _font = font;
+            fontName = font;
             this.isBold = bold;
             type = this.isBold ? "bold" : "regular";
             curLetter = BAlphabetData.getLetter(characterCode, font);
@@ -173,9 +172,6 @@ class BAlphabetCharacter extends FunkinSprite
 
         letterOffset[0] = curLetter.offsets[0];
         letterOffset[1] = curLetter.offsets[1];
-        
-        localScale.x = scaleMult;
-        localScale.y = scaleMult;
 
         if (localScale.y > 0.0)
         {
@@ -232,8 +228,8 @@ class BAlphabetCharacter extends FunkinSprite
                 shakeTick %= 1 / shakeFramerate;
                 if (!isShakeOffset)
                 {
-                    shakeXOffset = FlxG.random.float(-shakeSize * scaleMult, shakeSize * scaleMult);
-                    shakeYOffset = FlxG.random.float(-shakeSize * scaleMult, shakeSize * scaleMult);
+                    shakeXOffset = FlxG.random.float(-shakeSize * localScale.x, shakeSize * localScale.x);
+                    shakeYOffset = FlxG.random.float(-shakeSize * localScale.y, shakeSize * localScale.y);
                     localX += shakeXOffset;
                     localY += shakeYOffset;
                     isShakeOffset = true;
