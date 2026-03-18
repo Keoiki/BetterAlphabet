@@ -23,7 +23,7 @@ class BAlphabet extends FunkinGroup
 
     override function get_height():Float
     {
-        return (letters[letters.length - 1].row + 1) * fontData.lineHeight * scale.y;
+        return (letters[letters.length - 1]?.row + 1) * fontData.lineHeight * scale.y;
     }
 
     // Regular variables
