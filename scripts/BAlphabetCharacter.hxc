@@ -196,7 +196,7 @@ class BAlphabetCharacter extends FunkinSprite
         // Individual character x offsets can still apply even in monospace!
         // This is so characters don't have rely on invisible pixels to offset themselves.
         localX += letterOffset[0] * localScale.x;
-        localY -= letterOffset[1] * localScale.y;
+        localY += letterOffset[1] * localScale.y;
     }
 
     function resetEffects():Void

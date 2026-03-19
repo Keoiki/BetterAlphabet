@@ -1,34 +1,34 @@
-char=161 offsetY=-19
-char=162 offsetY=5
+char=161 offsetY=19
+char=162 offsetY=-5
 char=163
-char=164 offsetY=10
+char=164 offsetY=-10
 char=165
-char=166 offsetY=-11
-char=167 offsetY=-4
-char=168 offsetY=44
+char=166 offsetY=11
+char=167 offsetY=4
+char=168 offsetY=-44
 char=169
-char=170 offsetY=35
-char=171 offsetY=7
-char=172 offsetY=16
-char=173 offsetY=22
-char=174 offsetY=14
-char=175 offsetY=47
-char=176 offsetY=34
-char=177 offsetY=4
-char=178 offsetY=30
-char=179 offsetY=30
-char=180 offsetY=54
-char=181 offsetY=-13
+char=170 offsetY=-35
+char=171 offsetY=-7
+char=172 offsetY=-16
+char=173 offsetY=-22
+char=174 offsetY=-14
+char=175 offsetY=-47
+char=176 offsetY=-34
+char=177 offsetY=-4
+char=178 offsetY=-30
+char=179 offsetY=-30
+char=180 offsetY=-54
+char=181 offsetY=13
 char=182
-char=183 offsetY=21
-char=184 offsetY=-14
-char=185 offsetY=30
-char=186 offsetY=30
-char=187 offsetY=7
+char=183 offsetY=-21
+char=184 offsetY=14
+char=185 offsetY=-30
+char=186 offsetY=-30
+char=187 offsetY=-7
 char=188
 char=189
 char=190
-char=191 offsetY=-19
+char=191 offsetY=19
 char=192
 char=193
 char=194
@@ -36,7 +36,7 @@ char=195
 char=196
 char=197
 char=198
-char=199 offsetY=-18
+char=199 offsetY=18
 char=200
 char=201
 char=202
@@ -52,7 +52,7 @@ char=211
 char=212
 char=213
 char=214
-char=215 offsetY=7
+char=215 offsetY=-7
 char=216
 char=217
 char=218
@@ -68,7 +68,7 @@ char=227
 char=228
 char=229
 char=230
-char=231 offsetY=-18
+char=231 offsetY=18
 char=232
 char=233
 char=234
@@ -84,12 +84,12 @@ char=243
 char=244
 char=245
 char=246
-char=247 offsetY=6
-char=248 offsetY=-2
+char=247 offsetY=-6
+char=248 offsetY=2
 char=249
 char=250
 char=251
 char=252
-char=253 offsetY=-18
+char=253 offsetY=18
 char=254
-char=255 offsetY=-18
+char=255 offsetY=18

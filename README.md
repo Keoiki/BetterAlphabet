@@ -79,7 +79,7 @@ With that out of the way, let's continue with the actual implementation:
 
 An example is shown below, being the lone character from the `Special` sheet.
 ```
-char=65533 offsetY=-8
+char=65533 offsetY=8
 ```
 
 ## Implementing custom fonts

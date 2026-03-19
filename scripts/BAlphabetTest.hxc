@@ -273,7 +273,7 @@ class BAlphabetTest extends MusicBeatState
     {
         offsetInfo.text = "Glyph offset for glyph #" + allLetterIndexes[letterIndex] + " (" + StringTools.hex(allLetterIndexes[letterIndex], 4) + "):\n";
         offsetInfo.text += "x: " + (letterOffsets[0]) + " (" + -modifiedOffsets[0] + ")\n";
-        offsetInfo.text += "y: " + (letterOffsets[1]) + " (" + modifiedOffsets[1] + ")\n";
+        offsetInfo.text += "y: " + (letterOffsets[1]) + " (" + -modifiedOffsets[1] + ")\n";
         offsetInfo.text += "index: " + letterIndex;
     }
 
