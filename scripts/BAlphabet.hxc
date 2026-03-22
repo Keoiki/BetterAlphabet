@@ -234,20 +234,28 @@ class BAlphabet extends FunkinGroup
                 letter.plane = newPlane;
                 if (isMonospaced) letter.monospace = isMonospaced;
                 letter.fontData = this.fontData;
-                letter.setupAlphaCharacter(posX, rows * this.lineHeight, charCode, isBold, font, scaleMultiplier);
+                letter.setupLetter(charCode, isBold, font, scaleMultiplier);
                 letter.row = rows;
                 letter.spacesBefore = consecutiveSpaces;
 
-                if (letter.monospace ?? fontData.monospace)
+                if (letter.combining)
                 {
-                    var monoWidth:Float = letter.isBold ? fontData.widthBold : fontData.width;
-                    if (monoWidth == 0 && letter.isBold) monoWidth = fontData.width;
-                    posX += monoWidth * letter.localScale.x;
+                    var previousLetter:BAlphabetCharacter = letters[index];
                 }
-                else
+                else 
                 {
-                    var padding:Float = letter.isBold ? fontData.paddingBold : fontData.padding;
-                    posX += (letter.frameWidth + padding + letter.letterOffset[0]) * letter.localScale.x;
+                    letter.setupPosition(posX, rows * this.lineHeight);
+                    if (letter.monospace ?? fontData.monospace)
+                    {
+                        var monoWidth:Float = letter.isBold ? fontData.widthBold : fontData.width;
+                        if (monoWidth == 0 && letter.isBold) monoWidth = fontData.width;
+                        posX += monoWidth * letter.localScale.x;
+                    }
+                    else
+                    {
+                        var padding:Float = letter.isBold ? fontData.paddingBold : fontData.padding;
+                        posX += (letter.frameWidth + padding + letter.letterOffset[0]) * letter.localScale.x;
+                    }
                 }
 
                 letters.push(letter);

@@ -22,11 +22,12 @@ class BAlphabetCharacter extends FunkinSprite
     public var typeface:String = "unknown";
     public var shouldUpdateFrames:Bool = false;
     public var monospace:Null<Bool> = null;
+    public var combining:Bool = false;
 
+    public var curLetter = null;
     public var character:Int = -1;
     public var plane:Int = 0;
     public var planeOffset:Int = 0;
-    public var curLetter = null;
 
     public var spacesBefore:Int = 0;
     public var spacesTrailing:Int = 0;
@@ -41,11 +42,8 @@ class BAlphabetCharacter extends FunkinSprite
         super(0, 0);
     }
 
-    public function setupAlphaCharacter(x:Float, y:Float, characterCode:Int, bold:Bool = false, font:String = "default", scaleMult:Float = 1.0):Void
+    public function setupLetter(characterCode:Int, bold:Bool = false, font:String = "default", scaleMult:Float = 1.0):Void
     {
-        this.localX = x;
-        this.localY = y;
-        
         localScale.x = scaleMult;
         localScale.y = scaleMult;
 
@@ -120,8 +118,6 @@ class BAlphabetCharacter extends FunkinSprite
 
         // Do not uncomment this line, it was the cause of a million headaches...
         // updateHitbox();
-        
-        updateLetterOffset();
 
         alignOffset = 0;
     }
@@ -146,6 +142,59 @@ class BAlphabetCharacter extends FunkinSprite
         }
     }
 
+    function setupPosition(x:Float, y:Float, prevLetter:BAlphabetCharacter = null):Void
+    {
+        if (animation.curAnim == null)
+        {
+            // trace(character);
+            return;
+        }
+
+        var letterHeight:Float = isBold ? fontData.heightBold : fontData.height;
+
+        letterOffset[0] = curLetter.offsets[0];
+        letterOffset[1] = curLetter.offsets[1];
+
+        if (combining)
+        {
+            localX = prevLetter.getGraphicMidpoint().x;
+            localY = prevLetter.getGraphicMidpoint().y;
+
+            localX -= width / 2;
+            localY -= height / 2;
+        }
+        else
+        {
+            localX = x;
+            localY = y;
+
+            if (localScale.y > 0.0)
+            {
+                localY += (letterHeight - frameHeight) * localScale.y;
+                localY += (height * (1.0 - localScale.y)) / 2.5;
+            }
+            else
+            {
+                localX -= width / 1.5;
+                localY -= (letterHeight - frameHeight) * Math.abs(localScale.y);
+                if (isBold) localY -= (fontData.heightBold - fontData.height) / 2;
+                localY -= (height * (1.0 + localScale.y)) / 2.5;
+            }
+
+            if (monospace ?? false)
+            {
+                var monowidth:Float = isBold ? fontData.widthBold : fontData.width;
+                if (monowidth == 0 && isBold) monowidth = fontData.width;
+                localX += (monowidth / 2 - frameWidth / 2) * localScale.x;
+            }
+        }
+        
+        // Individual character x offsets can still apply even in monospace!
+        // This is so characters don't have rely on invisible pixels to offset themselves.
+        localX += letterOffset[0] * localScale.x;
+        localY += letterOffset[1] * localScale.y;
+    }
+
     public function setItalics():Void
     {
         this.skew.x = -20;
@@ -157,47 +206,6 @@ class BAlphabetCharacter extends FunkinSprite
         {
             color = newColor;
         }
-    }
-
-    function updateLetterOffset():Void
-    {
-        if (animation.curAnim == null)
-        {
-            // trace(character);
-            return;
-        }
-
-        // if (type == "regular") isBold = false;
-
-        var letterHeight:Float = isBold ? fontData.heightBold : fontData.height;
-
-        letterOffset[0] = curLetter.offsets[0];
-        letterOffset[1] = curLetter.offsets[1];
-
-        if (localScale.y > 0.0)
-        {
-            localY += (letterHeight - frameHeight) * localScale.y;
-            localY += (height * (1.0 - localScale.y)) / 2.5;
-        }
-        else
-        {
-            localX -= width / 1.5;
-            localY -= (letterHeight - frameHeight) * Math.abs(localScale.y);
-            if (isBold) localY -= (fontData.heightBold - fontData.height) / 2;
-            localY -= (height * (1.0 + localScale.y)) / 2.5;
-        }
-
-        if (monospace ?? false)
-        {
-            var monowidth:Float = isBold ? fontData.widthBold : fontData.width;
-            if (monowidth == 0 && isBold) monowidth = fontData.width;
-            localX += (monowidth / 2 - frameWidth / 2) * localScale.x;
-        }
-
-        // Individual character x offsets can still apply even in monospace!
-        // This is so characters don't have rely on invisible pixels to offset themselves.
-        localX += letterOffset[0] * localScale.x;
-        localY += letterOffset[1] * localScale.y;
     }
 
     function resetEffects():Void

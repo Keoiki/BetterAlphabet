@@ -8,7 +8,8 @@ import haxe.ds.IntMap;
 import haxe.ds.StringMap;
 using StringTools;
 
-typedef BAFont = {
+typedef BAFont =
+{
     height:Float,
     heightBold:Float,
     width:Float,
@@ -18,15 +19,24 @@ typedef BAFont = {
     paddingBold:Float,
     lineHeight:Float,
     spaceWidth:Float,
-    letters:IntMap<Int, BALetter>
+    letters:IntMap<Int, BALetter>,
+    combiningMarks:IntMap<Int, Array<BACombiningMark>>
 }
 
-typedef BALetter = {
+typedef BALetter =
+{
     anim:String,
     offsets:Array<Float>,
     monospace:Null<Bool>,
     colored:Bool,
     typeface:String
+}
+
+typedef BACombiningMark =
+{
+    code:Int,
+    offsetX:Float,
+    offsetY:Float
 }
 
 /**
