@@ -130,17 +130,18 @@ class BAlphabetCharacter extends FunkinSprite
     {
         if (frames == null || shouldUpdateFrames)
         {
-            frames = Paths.getSparrowAtlas("balphabet/" + font + "/" + type + "/" + name);
-            if (frames == null) // In case no bold version exists.
+            var filePath:String = 'balphabet/$font/$type/$name';
+            if (!Assets.exists('images/$filePath.png')) // In case no bold version exists.
             {
                 isBold = false;
                 type = "regular";
-                frames = Paths.getSparrowAtlas("balphabet/" + font + "/regular/" + name);
+                filePath = 'balphabet/$font/regular/$name';
+                if (!Assets.exists('images/$filePath.png')) // Does that typeface not exist in the current font? FALLBACK #2 TIME!!!
+                {
+                    filePath = 'balphabet/default/regular/$name';
+                }
             }
-            if (frames == null) // Does that typeface not exist in the current font? FALLBACK TIME!!!
-            {
-                frames = Paths.getSparrowAtlas("balphabet/default/regular/" + name);
-            }
+            frames = Paths.getSparrowAtlas(filePath);
             shouldUpdateFrames = false;
         }
     }
