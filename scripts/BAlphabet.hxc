@@ -257,7 +257,7 @@ class BAlphabet extends FunkinGroup
             }
             else
             {
-                letters[index - 1].spacesTrailing = consecutiveSpaces;
+                letters[index - 1]?.spacesTrailing = consecutiveSpaces;
                 consecutiveSpaces = 0;
                 posX = 0;
                 rows++;
@@ -269,9 +269,9 @@ class BAlphabet extends FunkinGroup
             // Deal with trailing spaces.
             if (consecutiveSpaces > 0)
             {
-                posX += fontData.spaceWidth * consecutiveSpaces * letters[index - 1].localScale.x;
+                posX += fontData.spaceWidth * consecutiveSpaces * letters[index - 1]?.localScale.x;
             }
-            letters[index - 1].spacesTrailing = consecutiveSpaces;
+            letters[index - 1]?.spacesTrailing = consecutiveSpaces;
         }
 
         setRowWidths();
@@ -350,29 +350,6 @@ class BAlphabet extends FunkinGroup
                 }
             }
         }
-    }
-
-    override function update(elapsed:Float):Void
-    {
-        super.update(elapsed);
-    }
-
-    override function updateChildren():Void
-    {
-        if (customChildUpdate) return;
-
-        /*
-        for (child in children)
-        {
-            if (child != null && child.exists && child.active)
-            {
-                // This shit can be very laggy, thanks FlxPoint!
-                child.scrollFactor.set(this.scrollFactor.x, this.scrollFactor.y);
-            }
-        }
-        */
-
-        super.updateChildren();
     }
 
     /**
