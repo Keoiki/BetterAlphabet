@@ -5,7 +5,7 @@ Unicode sheets referenced in this file can be found here: https://www.unicode.or
 ### Added
 
 - 2(?) unicode character sheets: 
-    - Hiragana: All.
+    - Hiragana: All. (Except 3099-309C)
     - Miscellaneous Technical: 2326 & 2327, 232B, 23E9-23EF and 23F4-23FE.
 - Added a new `<m>` tag to force monospace on characters inside the tag.
 - Added a new `setScrollFactor(factorX:Float, ?factorY:Float)` function to set the scroll factor for the object.

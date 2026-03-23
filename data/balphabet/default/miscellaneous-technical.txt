@@ -1,0 +1,22 @@
+char=8998
+char=8999
+char=9003
+char=9055 offsetY=3
+char=9193 offsetY=-7
+char=9194 offsetY=-7
+char=9195 offsetY=-4
+char=9196 offsetY=-4
+char=9197 offsetY=-7
+char=9198 offsetY=-7
+char=9199 offsetY=-7
+char=9204 offsetY=-2
+char=9205 offsetY=-2
+char=9206 offsetY=-16
+char=9207 offsetY=-16
+char=9208 offsetY=-1
+char=9209 offsetY=-2
+char=9210 offsetY=-2
+char=9211 offsetY=2
+char=9212 offsetY=2
+char=9213
+char=9214 offsetY=-2
