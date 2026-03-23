@@ -84,6 +84,6 @@ char=12435
 char=12436
 char=12437
 char=12438
-char=12445 offset=-2
-char=12446 offset=-2
+char=12445 offsetY=-2
+char=12446 offsetY=-2
 char=12447
