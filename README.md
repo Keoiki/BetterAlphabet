@@ -90,14 +90,15 @@ Do you not want to use the letter assets that come with the mod? Oh... well good
 ```json 
 {
     "height": 54, // The regular letter height
-    "heightBold": 66, // Ditto, for bold
+    "heightBold": 60, // Ditto, for bold
     "width": 54, // The letter width, only used in monospaced fonts or letters
     "widthBold": 54, // Ditto, for bold
     "monospace": false, // Is this font monospaced? Individual letters can override this setting, meaning certain letters being monospaced is possible in a non-monospace font
     "padding": 2, // The horizontal spacing between each letter
     "paddingBold": -6, // Ditto, for bold
     "lineHeight": 85, // Vertical spacing between each new line
-    "spaceWidth": 28 // The width of a space character
+    "spaceWidth": 28, // The width of a space character
+    "antialiasing": true // Whether or not antialiasing should be enabled
 }
 ```
 - The values seen above are from the `default` font.

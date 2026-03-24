@@ -10,6 +10,7 @@ Unicode sheets referenced in this file can be found here: https://www.unicode.or
 - Added a new `<m>` tag to force monospace on characters inside the tag.
 - Added a new `setScrollFactor(factorX:Float, ?factorY:Float)` function to set the scroll factor for the object.
     - The regular `scrollFactor.set(x, y)` does not work due to FunkinGroup.
+- Added an `antialiasing` field to fonts. The default value is `true`.
 
 ### Changed
 

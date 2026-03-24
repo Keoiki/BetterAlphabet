@@ -118,6 +118,8 @@ class BAlphabetCharacter extends FunkinSprite
             animation.play(alphaAnim, true);
         }
 
+        antialiasing = fontData.antialiasing;
+
         // Do not uncomment this line, it was the cause of a million headaches...
         // updateHitbox();
         
