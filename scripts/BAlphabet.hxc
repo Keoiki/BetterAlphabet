@@ -136,13 +136,13 @@ class BAlphabet extends FunkinGroup
         this.scale.set(scaleX, scaleY ?? scaleX);
     }
 
-    public function setScrollFactor(factorX:Float, ?factorY:Float):Void
+    public function setScrollFactor(factorX:Float = 0.0, factorY:Float = 0.0):Void
     {
         for (child in children)
         {
             if (child != null && child.exists && child.active)
             {
-                child.scrollFactor.set(factorX, factorY ?? factorX);
+                child.scrollFactor.set(factorX, factorY);
             }
         }
     }
