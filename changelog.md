@@ -1,6 +1,6 @@
 Unicode sheets referenced in this file can be found here: https://www.unicode.org/charts/
 
-## [2.0.0] - ??/03/2026
+## [2.0.0] - 26/03/2026
 
 ### Added
 
