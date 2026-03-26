@@ -1,4 +1,4 @@
-char=12448 offsetY=16
+char=12448 offsetY=-16
 char=12449
 char=12450
 char=12451
@@ -41,7 +41,7 @@ char=12487
 char=12488
 char=12489
 char=12490
-char=12491 offsetY=13
+char=12491 offsetY=-13
 char=12492
 char=12493
 char=12494
@@ -63,7 +63,7 @@ char=12509
 char=12510
 char=12511
 char=12512
-char=12513 offsetY=4
+char=12513 offsetY=-4
 char=12514
 char=12515
 char=12516
@@ -89,8 +89,8 @@ char=12535
 char=12536
 char=12537
 char=12538
-char=12539 offsetY=16
-char=12540 offsetY=20
-char=12541 offsetY=10
-char=12542 offsetY=10
+char=12539 offsetY=-16
+char=12540 offsetY=-20
+char=12541 offsetY=-10
+char=12542 offsetY=-10
 char=12543

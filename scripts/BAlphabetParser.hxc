@@ -11,7 +11,8 @@ typedef TextData = {
     italics:Null<Bool>, // <i>
     bold:Null<Bool>, // <b>
     alpha:Null<Float>, // <a=0.5>Half opacity text!</a>
-    delay:Null<Float> // <d=0.5/> (Seconds, only on typed text)
+    delay:Null<Float>, // <d=0.5/> (Seconds, only on typed text)
+    monospace:Null<Bool> // <m>
 }
 
 typedef PlaneOffset = {
@@ -25,7 +26,7 @@ class BAlphabetParser extends Module
     public var charDataExtra:IntMap<Int, Null<TextData>> = new IntMap();
     public var charDataPlanes:Array<PlaneOffset> = [];
 
-    public var tagList:Array<String> = ["c", "s", "W", "S", "i", "b", "a", "d", "/"];
+    public var tagList:Array<String> = ["c", "s", "W", "S", "i", "b", "a", "d", "m", "/"];
 
     public var charIndex:Int = 0;
     public var inTag:Bool = false;
@@ -39,6 +40,7 @@ class BAlphabetParser extends Module
     var hasBold:Bool = false;
     var hasAlpha:Bool = false;
     var hasDelay:Bool = false;
+    var hasMonospace:Bool = false;
 
     var addColor:Int = null;
     var addScale:Float = null;
@@ -92,7 +94,7 @@ class BAlphabetParser extends Module
             if (!inTag)
             {
                 var charCheck = text.charCodeAt(i);
-                if (hasColor || hasEffect || hasItalics || hasBold || hasScale || hasAlpha)
+                if (hasColor || hasEffect || hasItalics || hasBold || hasScale || hasAlpha || hasMonospace)
                 {
                     charDataList.set(charIndex, {
                         color: addColor,
@@ -100,7 +102,8 @@ class BAlphabetParser extends Module
                         effect: addEffect,
                         italics: hasItalics,
                         bold: hasBold,
-                        alpha: addAlpha
+                        alpha: addAlpha,
+                        monospace: hasMonospace
                     });
                 }
                 switch (charCheck)
@@ -226,6 +229,8 @@ class BAlphabetParser extends Module
                     var scale:String = fullText.substring(tagStart, tagEnd);
                     addScale = Std.parseFloat(scale);
                     hasScale = true;
+                case 'm':
+                    hasMonospace = true;
                 default:
             }
         }
@@ -268,6 +273,8 @@ class BAlphabetParser extends Module
             case 'd':
                 addDelay = null;
                 hasDelay = false;
+            case 'm':
+                hasMonospace = false;
             default:
         }
     }

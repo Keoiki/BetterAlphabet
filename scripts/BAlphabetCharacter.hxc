@@ -17,8 +17,7 @@ class BAlphabetCharacter extends FunkinSprite
     public var doWave:Bool = false;
     public var waveOffset:Int = 0;
 
-    public var bold:Bool = false;
-    public var localScale:Float = 1;
+    public var isBold:Bool;
     public var type:String = "unknown";
     public var typeface:String = "unknown";
     public var shouldUpdateFrames:Bool = false;
@@ -32,22 +31,23 @@ class BAlphabetCharacter extends FunkinSprite
     public var spacesBefore:Int = 0;
     public var spacesTrailing:Int = 0;
 
-    public var font:String = "default";
+    // So somehow if this variable's name is "font", setting the "font" variable of the parent text object sets this too???
+    // Meaning any comparisons of previous and new font names wouldn't work.
+    public var fontName:String = "default";
     public var fontData:BAFont = null;
 
     public function new(x, y)
     {
-        super(x, y);
+        super(0, 0);
     }
 
-    public function setupAlphaCharacter(x:Float, y:Float, characterCode:Int, isBold:Bool, newLocalScale:Float, parentScale:Array<Float>, _font:String):Void
+    public function setupAlphaCharacter(x:Float, y:Float, characterCode:Int, bold:Bool = false, font:String = "default", scaleMult:Float = 1.0):Void
     {
-        this.x = x;
-        this.y = y;
+        this.localX = x;
+        this.localY = y;
         
-        localScale = newLocalScale;
-        this.scale.x = parentScale[0] * localScale;
-        this.scale.y = parentScale[1] * localScale;
+        localScale.x = scaleMult;
+        localScale.y = scaleMult;
 
         // Only fetch on the first setup or when the character changes.
         if (character != characterCode)
@@ -55,30 +55,34 @@ class BAlphabetCharacter extends FunkinSprite
             planeOffset = 0xFFFF * plane + plane;
             character = characterCode;
             character += planeOffset;
-            curLetter = BAlphabetData.getLetter(character, _font);
+            curLetter = BAlphabetData.getLetter(character, font);
 
             // Only set type on the first setup or when either typeface or font changes.
-            if (type == "unknown" || typeface != curLetter.typeface || font != _font)
+            if (type == "unknown" || typeface != curLetter.typeface || fontName != font)
             {
-                bold = isBold;
-                type = bold ? "bold" : "regular";
+                this.isBold = bold;
+                type = this.isBold ? "bold" : "regular";
                 shouldUpdateFrames = true;
             }
 
-            font = _font;
+            fontName = font;
             typeface = curLetter.typeface;
             setTypeface(typeface);
 
-            if (fontData.monospace)
+            // Monospace can be forced with the <m> tag, so don't overwrite that.
+            if (monospace == null)
             {
-                monospace = true;
-                // If set, letter monospace overrides font specific setting.
-                if (curLetter.monospace != null) monospace = curLetter.monospace;
-            }
-            else
-            {
-                // DO NOT set a default value via ?? here.
-                monospace = curLetter.monospace;
+                if (fontData.monospace)
+                {
+                    monospace = true;
+                    // If set, letter monospace overrides font specific setting.
+                    if (curLetter.monospace != null) monospace = curLetter.monospace;
+                }
+                else
+                {
+                    // DO NOT set a default value via ?? here.
+                    monospace = curLetter.monospace;
+                }
             }
 
             var alphaAnim:String = curLetter.anim + '-';
@@ -87,11 +91,11 @@ class BAlphabetCharacter extends FunkinSprite
         }
 
         // Special cases: the only change is boldness or font.
-        if (font != _font)
+        if (fontName != font)
         {
-            font = _font;
-            bold = isBold;
-            type = bold ? "bold" : "regular";
+            fontName = font;
+            this.isBold = bold;
+            type = this.isBold ? "bold" : "regular";
             curLetter = BAlphabetData.getLetter(characterCode, font);
             typeface = curLetter.typeface;
             shouldUpdateFrames = true;
@@ -102,10 +106,10 @@ class BAlphabetCharacter extends FunkinSprite
             animation.play(alphaAnim, true);
         }
         
-        if (bold != isBold)
+        if (this.isBold != bold)
         {
-            bold = isBold;
-            type = bold ? "bold" : "regular";
+            this.isBold = bold;
+            type = this.isBold ? "bold" : "regular";
             shouldUpdateFrames = true;
             setTypeface(typeface);
 
@@ -114,7 +118,11 @@ class BAlphabetCharacter extends FunkinSprite
             animation.play(alphaAnim, true);
         }
 
-        updateHitbox();
+        antialiasing = fontData.antialiasing;
+
+        // Do not uncomment this line, it was the cause of a million headaches...
+        // updateHitbox();
+        
         updateLetterOffset();
 
         alignOffset = 0;
@@ -124,17 +132,18 @@ class BAlphabetCharacter extends FunkinSprite
     {
         if (frames == null || shouldUpdateFrames)
         {
-            frames = Paths.getSparrowAtlas("balphabet/" + font + "/" + type + "/" + name);
-            if (frames == null) // In case no bold version exists.
+            var filePath:String = 'balphabet/$font/$type/$name';
+            if (!Assets.exists('images/$filePath.png')) // In case no bold version exists.
             {
-                bold = false;
+                isBold = false;
                 type = "regular";
-                frames = Paths.getSparrowAtlas("balphabet/" + font + "/regular/" + name);
+                filePath = 'balphabet/$font/regular/$name';
+                if (!Assets.exists('images/$filePath.png')) // Does that typeface not exist in the current font? FALLBACK #2 TIME!!!
+                {
+                    filePath = 'balphabet/default/regular/$name';
+                }
             }
-            if (frames == null) // Does that typeface not exist in the current font? FALLBACK TIME!!!
-            {
-                frames = Paths.getSparrowAtlas("balphabet/default/regular/" + name);
-            }
+            frames = Paths.getSparrowAtlas(filePath);
             shouldUpdateFrames = false;
         }
     }
@@ -160,37 +169,42 @@ class BAlphabetCharacter extends FunkinSprite
             return;
         }
 
-        var add:Float = bold ? fontData.heightBold : fontData.height;
+        // if (type == "regular") isBold = false;
+
+        var letterHeight:Float = isBold ? fontData.heightBold : fontData.height;
 
         letterOffset[0] = curLetter.offsets[0];
         letterOffset[1] = curLetter.offsets[1];
 
+        if (localScale.y > 0.0)
+        {
+            localY += (letterHeight - frameHeight) * localScale.y;
+            localY += (height * (1.0 - localScale.y)) / 2.5;
+        }
+        else
+        {
+            localX -= width / 1.5;
+            localY -= (letterHeight - frameHeight) * Math.abs(localScale.y);
+            if (isBold) localY -= (fontData.heightBold - fontData.height) / 2;
+            localY -= (height * (1.0 + localScale.y)) / 2.5;
+        }
+
         if (monospace ?? false)
         {
-            var monowidth:Float = bold ? fontData.widthBold : fontData.width;
-            if (monowidth == 0 && bold) monowidth = fontData.width;
-            offset.x -= (monowidth / 2 - width / 2) * scale.x;
+            var monowidth:Float = isBold ? fontData.widthBold : fontData.width;
+            if (monowidth == 0 && isBold) monowidth = fontData.width;
+            localX += (monowidth / 2 - frameWidth / 2) * localScale.x;
         }
 
         // Individual character x offsets can still apply even in monospace!
         // This is so characters don't have rely on invisible pixels to offset themselves.
-        offset.x += letterOffset[0] * scale.x;
-
-        add *= scale.y;
-        if (scale.y < 0)
-        {
-            offset.y += letterOffset[1] * scale.y - (add / 2 * localScale);
-            flipX = true;
-        }
-        else
-        {
-            offset.y += letterOffset[1] * scale.y - (add / localScale - height);
-        }
+        localX += letterOffset[0] * localScale.x;
+        localY += letterOffset[1] * localScale.y;
     }
 
     function resetEffects():Void
     {
-        this.alpha = 1;
+        this.localAlpha = 1;
         setColor(0xFFFFFFFF);
         this.skew.x = 0;
         doShake = false;
@@ -199,6 +213,7 @@ class BAlphabetCharacter extends FunkinSprite
         shakeYOffset = 0;
         doWave = false;
         waveOffset = 0;
+        monospace = null;
     }
 
     var waveSine:Float = 0;
@@ -216,16 +231,16 @@ class BAlphabetCharacter extends FunkinSprite
                 shakeTick %= 1 / shakeFramerate;
                 if (!isShakeOffset)
                 {
-                    shakeXOffset = FlxG.random.float(-shakeSize * localScale, shakeSize * localScale);
-                    shakeYOffset = FlxG.random.float(-shakeSize * localScale, shakeSize * localScale);
-                    x += shakeXOffset;
-                    y += shakeYOffset;
+                    shakeXOffset = FlxG.random.float(-shakeSize * localScale.x, shakeSize * localScale.x);
+                    shakeYOffset = FlxG.random.float(-shakeSize * localScale.y, shakeSize * localScale.y);
+                    localX += shakeXOffset;
+                    localY += shakeYOffset;
                     isShakeOffset = true;
                 }
                 else
                 {
-                    x -= shakeXOffset;
-                    y -= shakeYOffset;
+                    localX -= shakeXOffset;
+                    localY -= shakeYOffset;
                     isShakeOffset = false;
                 }
             }
@@ -234,7 +249,7 @@ class BAlphabetCharacter extends FunkinSprite
         if (doWave)
         {
             waveSine += elapsed;
-            offset.y += (Math.sin((waveSine * 4) + (waveOffset * 0.5)) / 2) * scale.y;
+            localY += (Math.sin((waveSine * 4) + (waveOffset * 0.5)) / 2) * localScale.y;
         }
         
         super.update(elapsed);

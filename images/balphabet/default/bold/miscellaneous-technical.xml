@@ -1,0 +1,27 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TextureAtlas imagePath="miscellaneous-technical.png">
+	<!-- Created with Adobe Animate version 23.0.6.142 -->
+	<!-- http://www.adobe.com/products/animate.html -->
+	<SubTexture name="8998-23260000" x="0" y="0" width="97" height="67"/>
+	<SubTexture name="8999-23270000" x="198" y="0" width="82" height="66"/>
+	<SubTexture name="9003-232B0000" x="99" y="0" width="97" height="66"/>
+	<SubTexture name="9055-235F0000" x="0" y="69" width="72" height="72"/>
+	<SubTexture name="9193-23E90000" x="129" y="263" width="59" height="51"/>
+	<SubTexture name="9194-23EA0000" x="190" y="263" width="59" height="51"/>
+	<SubTexture name="9195-23EB0000" x="247" y="68" width="51" height="59"/>
+	<SubTexture name="9196-23EC0000" x="247" y="129" width="51" height="59"/>
+	<SubTexture name="9197-23ED0000" x="173" y="68" width="72" height="52"/>
+	<SubTexture name="9198-23EE0000" x="173" y="122" width="72" height="52"/>
+	<SubTexture name="9199-23EF0000" x="129" y="209" width="69" height="52"/>
+	<SubTexture name="9204-23F40000" x="251" y="255" width="38" height="62"/>
+	<SubTexture name="9205-23F50000" x="200" y="176" width="38" height="62"/>
+	<SubTexture name="9206-23F60000" x="0" y="281" width="62" height="37"/>
+	<SubTexture name="9207-23F70000" x="64" y="281" width="62" height="37"/>
+	<SubTexture name="9208-23F80000" x="251" y="190" width="47" height="63"/>
+	<SubTexture name="9209-23F90000" x="65" y="217" width="62" height="62"/>
+	<SubTexture name="9210-23FA0000" x="0" y="217" width="63" height="62"/>
+	<SubTexture name="9211-23FB0000" x="99" y="68" width="72" height="75"/>
+	<SubTexture name="9212-23FC0000" x="0" y="143" width="72" height="72"/>
+	<SubTexture name="9213-23FD0000" x="74" y="69" width="22" height="67"/>
+	<SubTexture name="9214-23FE0000" x="74" y="145" width="62" height="62"/>
+</TextureAtlas>

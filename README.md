@@ -1,8 +1,8 @@
 # Better Alphabet
 A data driven text system for vanilla Friday Night Funkin. (i.e. V-Slice)
 
-**Current Mod Version:** `1.0.0`<br>
-**Current FNF Version:** `0.8.2`
+**Current Mod Version:** `2.0.0`<br>
+**Current FNF Version:** `0.8.4`
 
 Better Alphabet (or BAlphabet) is a Friday Night Funkin dependency mod which allows other modders to easily add cool looking text to whereever they want. It also offers customization of the written text and new character sheets can be added by modders easily.
 
@@ -20,7 +20,7 @@ in whatever file you want to use it in, that's that, now it's ready to be used.
 ```haxe
 var testText:BAlphabet = new BAlphabet(FlxG.width / 2, 50, "Hello!");
 testText.alignment = "center";
-testText.setScale(0.75);
+testText.scale.set(0.75, 0.75);
 add(testText);
 ```
 
@@ -28,9 +28,6 @@ The example above will create a new text object at the given position and with:
 - the text "Hello!",
 - with the alignment set to "center" so the text isn't offset from the middle of the screen,
 - and lastly scaled down a bit, since the characters can be quite large by default.
-
-> [!IMPORTANT]
-> Do not try to set the scale of the text with `text.scale.set(x, y)`, this will NOT WORK properly and will lead to letter misalignment. Similarly do not try to set the `angle` of the text, this will only rotate each letter around themselves and not the whole text object like you might imagine.
 
 But what if you wanted a bit more, like the customization I talked about earlier? The strings passed in support various tags, written as `<tag>Text</tag>`. The supported tags are as follows:
 - `<b>` for **Bold**, this causes letters to change their graphic to a bold one, granting them an outline. If no bold graphic is found the default one is used instead.
@@ -40,6 +37,7 @@ But what if you wanted a bit more, like the customization I talked about earlier
 - `<s>` for SCALE, allowing you to scale individual letters as you want. This stacks with the text object's own scale, meaning a scale of `0.5` on a text object already at `0.5` scale makes any letter inside said tag `0.25` the size of the default letter size.
 - `<W>` for Wavy, this one causes the letters to move in a sine wave pattern, with each letter moving slightly behind the previous one.
 - `<S>` for Shake, which causes the letters to tremble from their initial position briefly, before moving back, repeating ad infinitum.
+- `<m>` for Monospace, useful for forcing monospace on monospaceless characters.
 
 Another thing that is supported is HTML Escape Codes, letting you type characters without having to mindlessly copy paste them as long as you remember their (hexa)decimal codes. Just put them inside the string you're passing and they'll be parsed before any tags are.
 - Both `&#65;` and `&#x41;` work for getting the `A` character as an example.
@@ -81,7 +79,7 @@ With that out of the way, let's continue with the actual implementation:
 
 An example is shown below, being the lone character from the `Special` sheet.
 ```
-char=65533 offsetY=-8
+char=65533 offsetY=8
 ```
 
 ## Implementing custom fonts
@@ -99,7 +97,8 @@ Do you not want to use the letter assets that come with the mod? Oh... well good
     "padding": 2, // The horizontal spacing between each letter
     "paddingBold": -6, // Ditto, for bold
     "lineHeight": 85, // Vertical spacing between each new line
-    "spaceWidth": 28 // The width of a space character
+    "spaceWidth": 28, // The width of a space character
+    "antialiasing": true // Whether or not antialiasing should be enabled
 }
 ```
 - The values seen above are from the `default` font.
@@ -122,4 +121,4 @@ You can check if your fonts and/or characters were loaded properly *(granted no 
 - `U/I` to switch between the available fonts.
 - `J/K` to switch between the shown typefaces.
 - `Z/C` to switch between the shown character in the offset area, above the main text area, hold `Shift` or `Alt` to the switch by `10`, hold both to switch by `100`.
-- `Arrow Keys` to move the offset area character, hold `Shift` to move by `10`.
+- `Arrow Keys` to move the offset area character, hold `Alt` to move by `0.1`, hold `Shift` to move by `10`.

@@ -7,5 +7,6 @@
     "padding": 2,
     "paddingBold": -6,
     "lineHeight": 85,
-    "spaceWidth": 28
+    "spaceWidth": 28,
+    "antialiasing": true
 }

@@ -1,10 +1,28 @@
 Unicode sheets referenced in this file can be found here: https://www.unicode.org/charts/
 
-## [1.0.0] - ??/02/2026
+## [2.0.0] - 26/03/2026
+
+### Added
+
+- 2(?) unicode character sheets: 
+    - Hiragana: All. (Except 3099-309C)
+    - Miscellaneous Technical: 2326 & 2327, 232B, 23E9-23EF and 23F4-23FE.
+- Added a new `<m>` tag to force monospace on characters inside the tag.
+- Added a new `setScrollFactor(factorX:Float, ?factorY:Float)` function to set the scroll factor for the object.
+    - The regular `scrollFactor.set(x, y)` does not work due to FunkinGroup.
+- Added an `antialiasing` field to fonts. The default value is `true`.
+
+### Changed
+
+- The text now uses the new `FunkinGroup` class as its base, allowing for better scaling and now; rotation!
+- The `setScale()` function is deprecated, please use the built-in scale field instead.
+    - The function still works for the time being for backwards compatibility.
+
+## [1.0.0] - 23/02/2026
 
 Initial Release
 
-## Added
+### Added
 
 - 7 unicode character sheets; Latin, Latin-1 Supplement, Arrows, Mathematical Operators, Katakana, Specials, and Symbols for Legacy Computing.
     - Latin: All.

@@ -121,6 +121,7 @@ class BAlphabetData extends Module
             data.paddingBold ??= -6;
             data.lineHeight ??= 85;
             data.spaceWidth ??= 28;
+            data.antialiasing ??= true;
 
             data.letters = loadLetterData(name);
             BAlphabetData.allFonts.set(name, data);
