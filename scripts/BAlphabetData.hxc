@@ -122,6 +122,11 @@ class BAlphabetData extends Module
             data.lineHeight ??= 85;
             data.spaceWidth ??= 28;
             data.antialiasing ??= true;
+            data.shakeFramerate ??= 16;
+            data.shakeSizeX ??= 4;
+            data.shakeSizeY ??= 4;
+            data.waveSize ??= 16;
+            data.waveSpeed ??= 4;
 
             data.letters = loadLetterData(name);
             BAlphabetData.allFonts.set(name, data);

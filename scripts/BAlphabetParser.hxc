@@ -12,7 +12,8 @@ typedef TextData = {
     bold:Null<Bool>, // <b>
     alpha:Null<Float>, // <a=0.5>Half opacity text!</a>
     delay:Null<Float>, // <d=0.5/> (Seconds, only on typed text)
-    monospace:Null<Bool> // <m>
+    monospace:Null<Bool>, // <m>
+    event:Null<String> // <e=eventName/> (Only on typed text)
 }
 
 typedef PlaneOffset = {
@@ -22,33 +23,24 @@ typedef PlaneOffset = {
 
 class BAlphabetParser extends Module
 {
-    public var charDataList:IntMap<Int, Null<TextData>> = new IntMap();
-    public var charDataExtra:IntMap<Int, Null<TextData>> = new IntMap();
-    public var charDataPlanes:Array<PlaneOffset> = [];
+    public var letterData:IntMap<Int, Null<TextData>> = new IntMap();
+    public var letterPlanes:Array<PlaneOffset> = [];
 
-    public var tagList:Array<String> = ["c", "s", "W", "S", "i", "b", "a", "d", "m", "/"];
+    public var tagList:Array<String> = ["c", "s", "W", "S", "i", "b", "a", "d", "m", "e", "/"];
 
     public var charIndex:Int = 0;
     public var inTag:Bool = false;
     public var inSelfClosingTag:Bool = false;
-    public var stringOffset:Int = 0;
 
-    var hasColor:Bool = false;
-    var hasScale:Bool = false;
-    var hasEffect:Bool = false;
+    var hasColor:Null<Int> = null;
+    var hasScale:Null<Float> = null;
+    var hasEffect:Int = 0;
     var hasItalics:Bool = false;
     var hasBold:Bool = false;
-    var hasAlpha:Bool = false;
-    var hasDelay:Bool = false;
-    var hasMonospace:Bool = false;
-
-    var addColor:Int = null;
-    var addScale:Float = null;
-    var addEffect:Int = null;
-    var addAlpha:Int = null;
-    var addDelay:Float = null;
-
-    var charsToPush:Array<Dynamic> = [];
+    var hasAlpha:Null<Float> = null;
+    var hasDelay:Null<Float> = null;
+    var hasMono:Bool = false;
+    var hasEvent:Null<String> = null;
 
     public function new():Void
     {
@@ -63,74 +55,59 @@ class BAlphabetParser extends Module
     public function resetVariables():Void
     {
         charIndex = 0;
-        stringOffset = 0;
         inTag = false;
-        charDataList.clear();
-        charDataExtra.clear();
-        charDataPlanes = [];
-        charsToPush = [];
+        letterData.clear();
+        letterPlanes = [];
     }
 
-    public function parseText(text:String):String
+    public function parseText(text:String):Array<Dynamic>
     {
         resetVariables();
         text = parseUnicode(text);
+        // trace(text.length);
         for (i in 0...text.length)
         {
-            i += stringOffset;
             if (i > text.length) break;
             parseTags(text, text.charAt(i), i);
-            if (inSelfClosingTag)
-            {
-                if (hasDelay)
-                {
-                    charDataExtra.set(charIndex - 1, {
-                        delay: addDelay
-                    });
-                }
-                charIndex--;
-                inSelfClosingTag = false;
-            }
+            // trace(i, charIndex, text.charAt(i), hasBold, hasDelay, hasEvent);
             if (!inTag)
             {
                 var charCheck = text.charCodeAt(i);
-                if (hasColor || hasEffect || hasItalics || hasBold || hasScale || hasAlpha || hasMonospace)
-                {
-                    charDataList.set(charIndex, {
-                        color: addColor,
-                        scale: addScale,
-                        effect: addEffect,
-                        italics: hasItalics,
-                        bold: hasBold,
-                        alpha: addAlpha,
-                        monospace: hasMonospace
-                    });
-                }
-                switch (charCheck)
-                {
-                    case 32: charIndex--; // Space
-                    case 10: charIndex--; // Carriage Return
-                    case 13: charIndex--; // Line Feed
-                    case 9: charIndex--; // Horizontal Tab
-                    default: // Continue as normal
+                addLetterModifiers();
+                if (!inSelfClosingTag) {
+                    switch (charCheck)
+                    {
+                        case 32: charIndex--; // Space
+                        case 10: charIndex--; // Carriage Return
+                        case 13: charIndex--; // Line Feed
+                        case 9: charIndex--; // Horizontal Tab
+                        default: // Continue as normal
+                    }
                 }
                 charIndex++;
+            }
+            if (inSelfClosingTag)
+            {
+                // These effects should be terminated immediately.
+                hasDelay = null;
+                hasEvent = null;
+                charIndex--;
             }
         }
         var regex:EReg = new EReg('<[!a-zA-Z\\/][^>]*>', 'g');
         // text = regex.replace(text, '');
         text = regex.map(text, (e) -> {
             var match = e.matchedPos();
-            for (a in 0...charDataPlanes.length)
+            for (a in 0...letterPlanes.length)
             {
-                if (match.pos < charDataPlanes[a].pos)
+                if (match.pos < letterPlanes[a].pos)
                 {
-                    charDataPlanes[a].pos -= match.len;
+                    letterPlanes[a].pos -= match.len;
                 }
             }
             return '';
         });
-        return text;
+        return [text, letterData, letterPlanes];
     }
 
     function parseUnicode(text:String):String
@@ -144,7 +121,7 @@ class BAlphabetParser extends Module
             {
                 var pos:Int = (i == 0) ? e.matchedPos().pos : e.matchedPos().pos - (totalLength - i);
                 var plane:Int = Math.floor(num / 65535);
-                charDataPlanes.push({
+                letterPlanes.push({
                     pos: pos,
                     plane: plane
                 });
@@ -169,7 +146,6 @@ class BAlphabetParser extends Module
             var tagEnd:Int = fullText.indexOf('>', i);
             if (fullText.charAt(tagEnd - 1) == '/')
             {
-                stringOffset += fullText.substring(i, tagEnd + 1).length - 1;
                 inSelfClosingTag = true;
                 onEnterTag(fullText, i, next);
                 return;
@@ -194,6 +170,7 @@ class BAlphabetParser extends Module
             if (closeTag)
             {
                 inTag = false;
+                inSelfClosingTag = false;
             }
         }
     }
@@ -207,30 +184,14 @@ class BAlphabetParser extends Module
         {
             switch (tag)
             {
-                case 'c': 
-                    var color:String = fullText.substring(tagStart, tagEnd);
-                    addColor = Std.parseInt('0x' + color);
-                    hasColor = true;
-                case 'W':
-                    addEffect = 1;
-                    hasEffect = true;
-                case 'S':
-                    addEffect = 2;
-                    hasEffect = true;
-                case 'i':
-                    hasItalics = true;
-                case 'b':
-                    hasBold = true;
-                case 'a':
-                    var alpha:String = fullText.substring(tagStart, tagEnd);
-                    addAlpha = Std.parseFloat(alpha);
-                    hasAlpha = true;
-                case 's':
-                    var scale:String = fullText.substring(tagStart, tagEnd);
-                    addScale = Std.parseFloat(scale);
-                    hasScale = true;
-                case 'm':
-                    hasMonospace = true;
+                case 'c': hasColor = Std.parseInt('0x${fullText.substring(tagStart, tagEnd)}');
+                case 'W': hasEffect = 1;
+                case 'S': hasEffect = 2;
+                case 'i': hasItalics = true;
+                case 'b': hasBold = true;
+                case 'a': hasAlpha = Std.parseFloat(fullText.substring(tagStart, tagEnd));
+                case 's': hasScale = Std.parseFloat(fullText.substring(tagStart, tagEnd));
+                case 'm': hasMono = true;
                 default:
             }
         }
@@ -238,10 +199,8 @@ class BAlphabetParser extends Module
         {
             switch (tag)
             {
-                case 'd':
-                    var delay:String = fullText.substring(tagStart, tagEnd - 1);
-                    addDelay = Std.parseFloat(delay);
-                    hasDelay = true;
+                case 'd': hasDelay = Std.parseFloat(fullText.substring(tagStart, tagEnd - 1));
+                case 'e': hasEvent = fullText.substring(tagStart, tagEnd - 1);
                 default:
             }
         }
@@ -251,31 +210,58 @@ class BAlphabetParser extends Module
     {
         switch (tag)
         {
-            case 'c': 
-                addColor = null;
-                hasColor = false;
-            case 'W':
-                addEffect = null;
-                hasEffect = false;
-            case 'S':
-                addEffect = null;
-                hasEffect = false;
-            case 'i':
-                hasItalics = false;
-            case 'b':
-                hasBold = false;
-            case 'a':
-                addAlpha = null;
-                hasAlpha = false;
-            case 's':
-                addScale = null;
-                hasScale = false;
-            case 'd':
-                addDelay = null;
-                hasDelay = false;
-            case 'm':
-                hasMonospace = false;
+            case 'c': hasColor = null;
+            case 'W': hasEffect = 0;
+            case 'S': hasEffect = 0;
+            case 'i': hasItalics = false;
+            case 'b': hasBold = false;
+            case 'a': hasAlpha = null;
+            case 's': hasScale = null;
+            case 'm': hasMono = false;
             default:
+        }
+    }
+
+    function addLetterModifiers(offset:Int = 0):Void
+    {
+        if (letterData.exists(charIndex + offset))
+        {
+            var prevData:Dynamic = letterData.get(charIndex + offset);
+            letterData.set(charIndex + offset,
+            {
+                color: hasColor != null ? hasColor : prevData.color,
+                scale: hasScale != null ? hasScale : prevData.scale,
+                effect: hasEffect != 0 ? hasEffect : prevData.effect,
+                italics: hasItalics ? hasItalics : prevData.italics,
+                bold: hasBold ? hasBold : prevData.bold,
+                alpha: hasAlpha != null ? hasAlpha : prevData.alpha,
+                delay: hasDelay != null ? hasDelay : prevData.delay,
+                monospace: hasMono ? hasMono : prevData.monospace,
+                event: hasEvent != null ? hasEvent : prevData.event
+            });
+        }
+        else if (hasColor != null ||
+            hasEffect != 0 ||
+            hasItalics ||
+            hasBold ||
+            hasScale != null ||
+            hasAlpha != null ||
+            hasDelay != null ||
+            hasMono ||
+            hasEvent != null)
+        {
+            letterData.set(charIndex + offset,
+            {
+                color: hasColor,
+                scale: hasScale,
+                effect: hasEffect,
+                italics: hasItalics,
+                bold: hasBold,
+                alpha: hasAlpha,
+                delay: hasDelay,
+                monospace: hasMono,
+                event: hasEvent
+            });
         }
     }
 }

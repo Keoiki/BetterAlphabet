@@ -19,6 +19,7 @@ class BAlphabetTyped extends BAlphabet
 
     public var letterCallback:Void->Void;
     public var finishCallback:Void->Void;
+    public var eventCallback:String->Void;
 
     override public function new(x:Float, y:Float, text:String = "", font:String = "default")
     {
@@ -97,13 +98,20 @@ class BAlphabetTyped extends BAlphabet
 
                 if (letterCallback != null) letterCallback();
 
-                if (textDataExtra.exists(curLetter))
+                if (textData.exists(curLetter + 1))
                 {
-                    delayTime = textDataExtra.get(curLetter).delay;
-                    // trace("Wait time found for " + curLetter + ": " + delayTime);
+                    delayTime = textData.get(curLetter + 1).delay;
                     if (delayTime == null || delayTime < 0)
                     {
                         delayTime = 0;
+                    }
+                    if (delayTime > 0) trace("Delay found for " + (curLetter + 1) + ": " + delayTime);
+
+                    var eventName = textData.get(curLetter + 1).event;
+                    if (eventName != null)
+                    {
+                        trace("Event found for " + (curLetter + 1) + ": " + eventName);
+                        if (eventCallback != null) eventCallback(eventName);
                     }
                 }
 

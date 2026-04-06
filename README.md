@@ -1,7 +1,7 @@
 # Better Alphabet
 A data driven text system for vanilla Friday Night Funkin. (i.e. V-Slice)
 
-**Current Mod Version:** `2.0.0`<br>
+**Current Mod Version:** `3.0.0`<br>
 **Current FNF Version:** `0.8.4`
 
 Better Alphabet (or BAlphabet) is a Friday Night Funkin dependency mod which allows other modders to easily add cool looking text to whereever they want. It also offers customization of the written text and new character sheets can be added by modders easily.
@@ -52,14 +52,16 @@ This class allows you to make text that appears over a period of time, instead o
 - `speed:Float`, controls how fast the typing speed is, with the default of `0.05`,
 - `letterStep:Int`, controls how many letters are shown each time they're meant to be, with the default of `1`,
 - `finishedText:Bool`, for reading if the typing is done yet,
-- `letterCallback:Void`, for running a function each time letters are shown, useful for sounds,
-- and `finishCallback:Void`, for running a function once the text is done typing.
+- `letterCallback:Void->Void`, for running a function each time letters are shown, useful for sounds,
+- `finishCallback:Void->Void`, for running a function once the text is done typing,
+- and `eventCallback:String->Void`, for catching events from the `<e>` tag (explained below). The event name is the only argument: `text.eventCallback = (event) -> {}`.
 
 The function `startTyping() / start()` is used to start the typing effect, as it doesn't begin automatically, and `finishText() / finish()` can be used for finishing the text before it reaches the end itself.
 
-Typed text also supports one extra tag currently:
+Typed text also supports two extra tags:
 - `<d>` for Delay, delaying the typing effect for the given amount in seconds. `Hmm,<d=0.25/> I'll have a uhh,<d=0.5/> I'm not sure...`
-  - This tag is a self-closing one, meaning it has no ending partner unlike all the other tags.
+- `<e>` for Event, use this along with `eventCallback(event)` from above to make something happen when each event tag is reached. Implementations are on you, the mod developer to make! `Oh!<e=changeAnim/> Hi!`
+  - These tags are self-closing, meaning it has no ending partner unlike all the other tags.
 
 ## Implementing custom character sheets
 
@@ -98,7 +100,12 @@ Do you not want to use the letter assets that come with the mod? Oh... well good
     "paddingBold": -6, // Ditto, for bold
     "lineHeight": 85, // Vertical spacing between each new line
     "spaceWidth": 28, // The width of a space character
-    "antialiasing": true // Whether or not antialiasing should be enabled
+    "antialiasing": true, // Whether or not antialiasing should be enabled
+    "shakeFramerate": 16, // How often the shake effect offsets are applied
+    "shakeSizeX": 4, // Horizontal shake offset
+    "shakeSizeY": 4, // Vectical shake offset
+    "waveSize": 16, // Wave effect size, in pixels
+    "waveSpeed": 4 // Wave effect speed
 }
 ```
 - The values seen above are from the `default` font.

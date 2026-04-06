@@ -1,5 +1,24 @@
 Unicode sheets referenced in this file can be found here: https://www.unicode.org/charts/
 
+## [3.0.0] - ??/??/2026
+
+### Added
+
+- Added ? unicode character sheets:
+    - Cyrillic (All)
+    - Miscellaneous Symbols (some idk how many)
+    - Miscellaneous Symbols and Arrows (ditto)
+    - Musical Symbols (ditto)
+    - Dingbats (ditto)
+- Added a new `<e=String/>` tag to dispatch "event" signals from typed text.
+    - It's a self-closing tag that takes a string as an input. (No " or ' required)
+    - The event string is dispatched via the `eventCallback` function, what you do afterwards is up to you!
+- Added new font data fields:
+    - `shakeFramerate` - Controls how often shake offsets are applied. (Default: 16)
+    - `shakeSizeX` and `shakeSizeY` - Controls how large the shake offset is in pixels. (Default: 4 and 4)
+    - `waveSize` - Controls how large the wave effect is in pixels. (Default: 16)
+    - `waveSpeed` - Controls how fast the wave effect is. (Default: 4)
+
 ## [2.0.0] - 26/03/2026
 
 ### Added

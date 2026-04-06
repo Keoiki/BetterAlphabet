@@ -1,6 +1,6 @@
 package balphabet;
 
-import StringTools;
+using StringTools;
 import balphabet.BAlphabetCharacter;
 import funkin.group.FunkinGroup;
 import funkin.modding.module.ModuleHandler;
@@ -36,11 +36,12 @@ class BAlphabet extends FunkinGroup
 
         textRaw = input;
         clearLetters();
-        text = StringTools.replace(textRaw, '\\n', '\n');
-        text = textParser.parseText(text);
-        textData = textParser.charDataList;
-        textDataExtra = textParser.charDataExtra;
-        textDataPlanes = textParser.charDataPlanes;
+        text = textRaw.replace('\\n', '\n');
+        var parserResult:Array = textParser.parseText(text);
+        // trace(parserResult);
+        text = parserResult[0];
+        textData = parserResult[1];
+        textDataPlanes = parserResult[2];
         createLetters(text);
         updateAlignment();
 
@@ -78,7 +79,7 @@ class BAlphabet extends FunkinGroup
 
     function set_alignment(input:String):String
     {
-        input = StringTools.trim(input);
+        input = input.trim();
         switch (input.toLowerCase())
         {
             case 'right': alignment = 'right';
@@ -97,13 +98,12 @@ class BAlphabet extends FunkinGroup
 
     var textParser;
     var textData;
-    var textDataExtra;
     var textDataPlanes;
 
     public function new(x:Float, y:Float, text:String = "", font:String = "default"):Void
     {
-        super(x, y);
         textParser = ModuleHandler.getModule('balphabet-parser');
+        super(x, y);
         this.font = font;
         this.text = text;
     }

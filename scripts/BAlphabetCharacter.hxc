@@ -169,8 +169,6 @@ class BAlphabetCharacter extends FunkinSprite
             return;
         }
 
-        // if (type == "regular") isBold = false;
-
         var letterHeight:Float = isBold ? fontData.heightBold : fontData.height;
 
         letterOffset[0] = curLetter.offsets[0];
@@ -218,21 +216,19 @@ class BAlphabetCharacter extends FunkinSprite
 
     var waveSine:Float = 0;
     var shakeTick:Float = 0;
-    var shakeFramerate:Float = 16;
-    var shakeSize:Float = 4;
 
     function update(elapsed:Float):Void
     {
         if (doShake)
         {
             shakeTick += elapsed;
-            if (shakeTick >= 1 / shakeFramerate)
+            if (shakeTick >= 1 / fontData.shakeFramerate)
             {
-                shakeTick %= 1 / shakeFramerate;
+                shakeTick %= 1 / fontData.shakeFramerate;
                 if (!isShakeOffset)
                 {
-                    shakeXOffset = FlxG.random.float(-shakeSize * localScale.x, shakeSize * localScale.x);
-                    shakeYOffset = FlxG.random.float(-shakeSize * localScale.y, shakeSize * localScale.y);
+                    shakeXOffset = FlxG.random.float(-fontData.shakeSizeX * localScale.x, fontData.shakeSizeX * localScale.x);
+                    shakeYOffset = FlxG.random.float(-fontData.shakeSizeY * localScale.y, fontData.shakeSizeY * localScale.y);
                     localX += shakeXOffset;
                     localY += shakeYOffset;
                     isShakeOffset = true;
@@ -249,7 +245,7 @@ class BAlphabetCharacter extends FunkinSprite
         if (doWave)
         {
             waveSine += elapsed;
-            localY += (Math.sin((waveSine * 4) + (waveOffset * 0.5)) / 2) * localScale.y;
+            offset.y = fontData.waveSize * Math.sin((waveSine - waveOffset / 8) * fontData.waveSpeed) * localScale.y;
         }
         
         super.update(elapsed);

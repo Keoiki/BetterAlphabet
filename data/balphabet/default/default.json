@@ -8,5 +8,10 @@
     "paddingBold": -6,
     "lineHeight": 85,
     "spaceWidth": 28,
-    "antialiasing": true
+    "antialiasing": true,
+    "shakeFramerate": 16,
+    "shakeSizeX": 4,
+    "shakeSizeY": 4,
+    "waveSize": 16,
+    "waveSpeed": 4
 }
