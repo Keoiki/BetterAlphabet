@@ -212,6 +212,7 @@ class BAlphabetCharacter extends FunkinSprite
         doWave = false;
         waveOffset = 0;
         monospace = null;
+        this.filters = [];
     }
 
     var waveSine:Float = 0;

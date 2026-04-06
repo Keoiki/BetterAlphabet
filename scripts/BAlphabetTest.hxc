@@ -34,6 +34,7 @@ class BAlphabetTest extends MusicBeatState
     var currentFont:Int = 0;
     var fontName:FlxText;
     var changedFont:Bool = false;
+    var glyphCount:FlxText;
 
     public function new():Void
     {
@@ -57,8 +58,8 @@ class BAlphabetTest extends MusicBeatState
         normalText = new BAlphabet(0, 0, "", BAlphabetData.uniqueFonts[currentFont]);
         add(normalText);
         
-        boldText = new BAlphabet(normalText.width + 50, 0, "", BAlphabetData.uniqueFonts[currentFont]);
-        add(boldText);
+        // boldText = new BAlphabet(normalText.width + 50, 0, "", BAlphabetData.uniqueFonts[currentFont]);
+        // add(boldText);
 
         typedText = new BAlphabetTyped(0, -900, "<b>Typed text testing,</b> <c=00FFAA>make sure</c> <i>this is</i> <s=0.5>a</s> <a=0.5>really</a> <W>long string</W> <S>to test it properly!</S>");
         add(typedText);
@@ -91,18 +92,21 @@ class BAlphabetTest extends MusicBeatState
         offsetInfo = new FlxText(0, -125, 0, "aaa", 16);
         add(offsetInfo);
 
-        typefaceName = new FlxText(500, -125, 0, "aaa", 32);
-        add(typefaceName);
-
-        fontName = new FlxText(500, -175, 0, "aaa", 32);
+        fontName = new FlxText(500, -200, 0, "aaa", 32);
         fontName.text = "Current font: " + BAlphabetData.uniqueFonts[currentFont];
         add(fontName);
+
+        typefaceName = new FlxText(500, -150, 0, "aaa", 32);
+        add(typefaceName);
+
+        glyphCount = new FlxText(500, -100, 0, "aaa", 32);
+        add(glyphCount);
 
         var unicodeTest = new BAlphabet(-100, 0, "&#65;&#x42;&#0067;&#x00044; &#x2190; ABCD?");
         unicodeTest.alignment = "right";
         add(unicodeTest);
 
-        regenGlyphs(-1);
+        regenGlyphs(BAlphabetData.uniqueTypefaces.indexOf("latin"));
         changeOffsetCharacter(0);
     }
 
@@ -141,6 +145,7 @@ class BAlphabetTest extends MusicBeatState
         {
             isOffsetBold = !isOffsetBold;
             changeOffsetCharacter(0);
+            regenGlyphs(0);
         }
 
         if (FlxG.keys.justPressed.T)
@@ -169,7 +174,7 @@ class BAlphabetTest extends MusicBeatState
             allLetterIndexes = MapTools.keyValues(allLetterMap);
             allLetterIndexes.sort(sortOrder);
             fontName.text = "Current font: " + BAlphabetData.uniqueFonts[currentFont];
-            currentTypeface = BAlphabetData.uniqueTypefaces.indexOf("all");
+            currentTypeface = BAlphabetData.uniqueTypefaces.indexOf("latin");
             changedFont = true;
             regenGlyphs(0);
         }
@@ -183,7 +188,7 @@ class BAlphabetTest extends MusicBeatState
             allLetterIndexes = MapTools.keyValues(allLetterMap);
             allLetterIndexes.sort(sortOrder);
             fontName.text = "Current font: " + BAlphabetData.uniqueFonts[currentFont];
-            currentTypeface = BAlphabetData.uniqueTypefaces.indexOf("all");
+            currentTypeface = BAlphabetData.uniqueTypefaces.indexOf("latin");
             changedFont = true;
             regenGlyphs(0);
         }
@@ -214,7 +219,9 @@ class BAlphabetTest extends MusicBeatState
         currentTypeface = wrapAround(currentTypeface + change, 0, BAlphabetData.uniqueTypefaces.length - 1);
         var name:String = BAlphabetData.uniqueTypefaces[currentTypeface];
 
+        var glyphNum:Int = 0;
         var allGlyphs:String = "";
+        if (isOffsetBold) allGlyphs += "<b>";
         for (i in 0...allLetterIndexes.length)
         {
             if (name != "all")
@@ -226,20 +233,23 @@ class BAlphabetTest extends MusicBeatState
             {
                 allGlyphs += "\n";
             }
+            glyphNum++;
         }
+        if (isOffsetBold) allGlyphs += "</b>";
 
         if (changedFont)
         {
             normalText.font = BAlphabetData.uniqueFonts[currentFont];
-            boldText.font = BAlphabetData.uniqueFonts[currentFont];
+            // boldText.font = BAlphabetData.uniqueFonts[currentFont];
             offsetText.font = BAlphabetData.uniqueFonts[currentFont];
             changedFont = false;
         }
 
         typefaceName.text = "Current typeface: " + name;
         normalText.text = allGlyphs;
-        boldText.text = "<b>" + allGlyphs + "</b>";
-        boldText.x = normalText.width + 50;
+        glyphCount.text = "Glyphs: " + glyphNum;
+        // boldText.text = "<b>" + allGlyphs + "</b>";
+        // boldText.x = normalText.width + 50;
     }
 
     public function changeOffsetCharacter(change:Int = 0):Void

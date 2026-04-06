@@ -88,7 +88,7 @@ char=65533 offsetY=8
 
 Do you not want to use the letter assets that come with the mod? Oh... well good news! It's possible to create custom fonts in order to not have the need to replace the default characters, because that would suck for compatibility between other mods.
 - Create a folder in `data/balphabet/FONTNAME` of your mod, with `FONTNAME` being the name you want to use.
-- Inside that folder, create a `.json` file with the name of the folder. Within that file, all 6 of the following fields must be present, or else a few errors might show up at your doorstep:
+- Inside that folder, create a `.json` file with the name of the folder. Within that file, all of the following fields *should* be present, otherwise the values will default to the ones shown below:
 ```json 
 {
     "height": 54, // The regular letter height

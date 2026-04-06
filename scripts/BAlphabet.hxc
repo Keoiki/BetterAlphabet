@@ -5,6 +5,9 @@ import balphabet.BAlphabetCharacter;
 import funkin.group.FunkinGroup;
 import funkin.modding.module.ModuleHandler;
 
+// import openfl.filters.BitmapFilter;
+// import openfl.filters.DropShadowFilter;
+
 class BAlphabet extends FunkinGroup
 {
     // Base variable getter overrides
@@ -99,6 +102,8 @@ class BAlphabet extends FunkinGroup
     var textParser;
     var textData;
     var textDataPlanes;
+
+    // var boldFilter:Array<BitmapFilter> = [new DropShadowFilter(0, 0, 0xFF000000, 1, 8, 8, 128, 1, false, false, false)];
 
     public function new(x:Float, y:Float, text:String = "", font:String = "default"):Void
     {
@@ -251,6 +256,8 @@ class BAlphabet extends FunkinGroup
                 }
 
                 letters.push(letter);
+
+                // if (!letter.isBold) letter.filters = boldFilter;
 
                 index++;
                 consecutiveSpaces = 0;
