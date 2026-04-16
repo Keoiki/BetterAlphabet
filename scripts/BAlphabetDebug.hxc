@@ -251,7 +251,6 @@ class BAlphabetDebug extends MusicBeatState
         if (changedFont)
         {
             normalText.font = BAlphabetData.uniqueFonts[currentFont];
-            // boldText.font = BAlphabetData.uniqueFonts[currentFont];
             offsetText.font = BAlphabetData.uniqueFonts[currentFont];
 
             var letterHeight = BAlphabetData.allFonts.get(BAlphabetData.uniqueFonts[currentFont]).height;
@@ -266,6 +265,8 @@ class BAlphabetDebug extends MusicBeatState
         typefaceName.text = "Current typeface: " + name;
         normalText.text = allGlyphs;
         glyphCount.text = "Glyphs: " + glyphNum;
+        letterIndex--;
+        changeOffsetCharacter(-letterIndex);
         // boldText.text = "<b>" + allGlyphs + "</b>";
         // boldText.x = normalText.width + 50;
     }

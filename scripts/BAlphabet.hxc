@@ -264,9 +264,10 @@ class BAlphabet extends FunkinGroup
                 letter.plane = newPlane;
                 if (isMonospaced) letter.monospace = isMonospaced;
                 letter.fontData = this.fontData;
-                letter.setupAlphaCharacter(posX, rows * this.lineHeight, charCode, isBold, font, scaleMultiplier);
+                letter.setupAlphaCharacter(charCode, isBold, font, scaleMultiplier);
                 letter.row = rows;
                 letter.spacesBefore = consecutiveSpaces;
+                letter.setupPosition(posX, rows * this.lineHeight);
 
                 if (letter.monospace ?? fontData.monospace)
                 {

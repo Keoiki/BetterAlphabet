@@ -22,7 +22,7 @@ Unicode sheets referenced in this file can be found here: https://www.unicode.or
     - `waveSize` - Controls how large the wave effect is in pixels. (Default: 16)
     - `waveSpeed` - Controls how fast the wave effect is. (Default: 4)
 - Added support for `.txt` files in place of `.xml` for letter spritesheets. (Packer atlas instead of Sparrow atlas)
-- Added a `pixel-example` font to show pixel font, monospacing, and Packet Atlas capability.
+- Added a `pixel-example` font to show pixel font and packer atlas capability.
 
 ### Changed
 

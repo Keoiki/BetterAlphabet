@@ -41,11 +41,8 @@ class BAlphabetCharacter extends FunkinSprite
         super(0, 0);
     }
 
-    public function setupAlphaCharacter(x:Float, y:Float, characterCode:Int, bold:Bool = false, font:String = "default", scaleMult:Float = 1.0):Void
+    public function setupAlphaCharacter(characterCode:Int, bold:Bool = false, font:String = "default", scaleMult:Float = 1.0):Void
     {
-        this.localX = x;
-        this.localY = y;
-        
         localScale.x = scaleMult;
         localScale.y = scaleMult;
 
@@ -122,8 +119,6 @@ class BAlphabetCharacter extends FunkinSprite
 
         // Do not uncomment this line, it was the cause of a million headaches...
         // updateHitbox();
-        
-        updateLetterOffset();
 
         alignOffset = 0;
     }
@@ -162,7 +157,7 @@ class BAlphabetCharacter extends FunkinSprite
         }
     }
 
-    function updateLetterOffset():Void
+    function setupPosition(x:Float, y:Float):Void
     {
         if (animation.curAnim == null)
         {
@@ -171,6 +166,9 @@ class BAlphabetCharacter extends FunkinSprite
         }
 
         var letterHeight:Float = isBold ? fontData.heightBold : fontData.height;
+
+        localX = x;
+        localY = y;
 
         letterOffset[0] = curLetter.offsets[0];
         letterOffset[1] = curLetter.offsets[1];
@@ -184,7 +182,7 @@ class BAlphabetCharacter extends FunkinSprite
         {
             localX -= width / 1.5;
             localY -= (letterHeight - frameHeight) * Math.abs(localScale.y);
-            if (isBold) localY -= (fontData.heightBold - fontData.height) / 2;
+            if (isBold) localY -= (fontData.heightBold - fontData.height);
             localY -= (height * (1.0 + localScale.y)) / 2.5;
         }
 
