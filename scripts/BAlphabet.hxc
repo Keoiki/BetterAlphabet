@@ -8,6 +8,21 @@ import funkin.modding.module.ModuleHandler;
 // import openfl.filters.BitmapFilter;
 // import openfl.filters.DropShadowFilter;
 
+typedef TextConfig =
+{
+    ?font:String // Default: "default"
+    // ?direction:TextDirection // Default: TextDirection.LeftToRight
+}
+
+// :eyes:
+enum TextDirection
+{
+    LeftToRight;
+    RightToLeft;
+    UpToDown;
+    DownToUp;
+}
+
 class BAlphabet extends FunkinGroup
 {
     // Base variable getter overrides
@@ -99,17 +114,27 @@ class BAlphabet extends FunkinGroup
     var rows:Int = 0;
     var lineHeight:Float = 0;
 
+    var config:TextConfig;
+    function validateConfig(config:Null<TextConfig>):TextConfig
+    {
+        if (config == null) config = {};
+        config?.font ??= "default";
+        // config.direction ??= TextDirection.LeftToRight;
+        return config;
+    }
+
     var textParser;
     var textData;
     var textDataPlanes;
 
     // var boldFilter:Array<BitmapFilter> = [new DropShadowFilter(0, 0, 0xFF000000, 1, 8, 8, 128, 1, false, false, false)];
 
-    public function new(x:Float, y:Float, text:String = "", font:String = "default"):Void
+    public function new(x:Float, y:Float, text:String = "", ?config:TextConfig):Void
     {
         textParser = ModuleHandler.getModule('balphabet-parser');
         super(x, y);
-        this.font = font;
+        this.config = validateConfig(config);
+        this.font = this.config?.font ?? "default";
         this.text = text;
     }
 

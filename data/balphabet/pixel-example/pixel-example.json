@@ -1,0 +1,17 @@
+{
+    "height": 8,
+    "heightBold": 8,
+    "width": 8,
+    "widthBold": 8,
+    "monospace": true,
+    "padding": 1,
+    "paddingBold": 1,
+    "lineHeight": 12,
+    "spaceWidth": 8,
+    "antialiasing": false,
+    "shakeFramerate": 8,
+    "shakeSizeX": 1,
+    "shakeSizeY": 1,
+    "waveSize": 2,
+    "waveSpeed": 4
+}

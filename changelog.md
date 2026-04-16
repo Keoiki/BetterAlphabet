@@ -5,19 +5,32 @@ Unicode sheets referenced in this file can be found here: https://www.unicode.or
 ### Added
 
 - Added ? unicode character sheets:
-    - Cyrillic (All)
+    - Cyrillic (All but combination glyphs)
+    - Cyrillic Extended-B (All but combination glyphs)
+    - Cyrillic Extended-C (All)
+    - Cyrillic Extended-D (All but `1E08F`)
     - Miscellaneous Symbols (some idk how many)
     - Miscellaneous Symbols and Arrows (ditto)
     - Musical Symbols (ditto)
     - Dingbats (ditto)
 - Added a new `<e=String/>` tag to dispatch "event" signals from typed text.
-    - It's a self-closing tag that takes a string as an input. (No " or ' required)
+    - It's a self-closing tag that takes a string as an input. (No `"` or `'` required)
     - The event string is dispatched via the `eventCallback` function, what you do afterwards is up to you!
 - Added new font data fields:
     - `shakeFramerate` - Controls how often shake offsets are applied. (Default: 16)
     - `shakeSizeX` and `shakeSizeY` - Controls how large the shake offset is in pixels. (Default: 4 and 4)
     - `waveSize` - Controls how large the wave effect is in pixels. (Default: 16)
     - `waveSpeed` - Controls how fast the wave effect is. (Default: 4)
+- Added support for `.txt` files in place of `.xml` for letter spritesheets. (Packer atlas instead of Sparrow atlas)
+- Added a `pixel-example` font to show pixel font, monospacing, and Packet Atlas capability.
+
+### Changed
+
+- **[BREAKING CHANGE]** Replaced the `font` in the constructor for `BAlphabet` and `BAlphabetTyped` to `config`.
+    - `config` only contains `font` for the time being.
+    - New usage is as follows: `new BAlphabet(x, y, text, { font: "fontName" });`.
+    - Additions of new parameters will be easier this way.
+- Alphabet Debug now supports Middle Mouse button for camera movement and Mouse Wheel for zooming.
 
 ## [2.0.0] - 26/03/2026
 

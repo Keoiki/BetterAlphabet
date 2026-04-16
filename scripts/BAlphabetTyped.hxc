@@ -21,9 +21,9 @@ class BAlphabetTyped extends BAlphabet
     public var finishCallback:Void->Void;
     public var eventCallback:String->Void;
 
-    override public function new(x:Float, y:Float, text:String = "", font:String = "default")
+    override public function new(x:Float, y:Float, text:String = "", ?config:TextConfig)
     {
-        super(x, y, text, font);
+        super(x, y, text, config);
         resetText();
     }
 

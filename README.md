@@ -69,8 +69,9 @@ Implementing custom characters is easy. However first you must understand the fo
 - The hex is not required, as the mod only checks for `decimal-` when adding the animation.
 
 With that out of the way, let's continue with the actual implementation:
-- Place your image and xml into `images/balphabet/FONTNAME/TYPE/` of your mod, with `TYPE` being either `regular` or `bold`.
+- Place your `.png` and `.xml` into `images/balphabet/FONTNAME/TYPE/` of your mod, with `TYPE` being either `regular` or `bold`.
   - Let `FONTNAME` be `default` for this example.
+  - `.txt (for Packer Atlases)` files are also supported!
 - Create a `.txt` file in `data/balphabet/FONTNAME/` of your mod. The name should be the same as the `.png` and `.xml` from the previous step.
 - Within the text file, each line will act as an entry for a character, with the following fields in the format `field=value`, separated by spaces:
   - `char`, being the decimal number of the character, not the hex,
@@ -79,7 +80,7 @@ With that out of the way, let's continue with the actual implementation:
   - `monospace`, if `true` or `1` the letter will be monospaced, or not if set to anything else, overriding a font's monospace setting, `(OPTIONAL)`
   - `colored`, is this character colored? If `true` or `1`, color tags will not affect them. `(OPTIONAL)`
 
-An example is shown below, being the lone character from the `Special` sheet.
+An example is shown below, being the lone character from the `specials` sheet.
 ```
 char=65533 offsetY=8
 ```
@@ -114,7 +115,7 @@ Do you not want to use the letter assets that come with the mod? Oh... well good
 
 In order to use the custom font, input the name as the fourth parameter to the text's constructor, or change it on the fly by assigning it to the `font` field:
 ```haxe
-... new BAlphabet(x, y, text, "fontnamehere"); // Same for BAlphabetTyped.
+... new BAlphabet(x, y, text, { font: "fontnamehere" }); // Same for BAlphabetTyped.
 // or
 text.font = "fontnamehere";
 ```

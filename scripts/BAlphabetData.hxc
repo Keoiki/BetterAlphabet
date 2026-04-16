@@ -67,7 +67,7 @@ class BAlphabetData extends Module
     {   
         if ((FlxG.state is MainMenuState) && FlxG.state.subState == null && FlxG.keys.pressed.SHIFT && FlxG.keys.justPressed.B)
         {
-            FlxG.switchState(new BAlphabetTest());
+            FlxG.switchState(new BAlphabetDebug());
         }
 
         super.onUpdate(event);

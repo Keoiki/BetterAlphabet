@@ -6,13 +6,15 @@ import funkin.util.tools.MapTools;
 import funkin.ui.MusicBeatState;
 import funkin.graphics.FunkinSprite;
 import funkin.ui.mainmenu.MainMenuState;
+import funkin.util.MouseUtil;
 import flixel.util.FlxSort;
 import flixel.text.FlxText;
+import flixel.math.FlxMath;
 import StringTools;
 
 import funkin.audio.FunkinSound;
 
-class BAlphabetTest extends MusicBeatState
+class BAlphabetDebug extends MusicBeatState
 {
     var normalText:BAlphabet;
     var boldText:BAlphabet;
@@ -22,6 +24,7 @@ class BAlphabetTest extends MusicBeatState
     var allLetterMap;
     var allLetterIndexes:Array<Int> = [];
 
+    var offsetLines:Array<FukinSprite> = [];
     var offsetText;
     var offsetInfo:FlxText;
     var isOffsetBold:Bool = false;
@@ -55,7 +58,7 @@ class BAlphabetTest extends MusicBeatState
         allLetterIndexes = MapTools.keyValues(allLetterMap);
         allLetterIndexes.sort(sortOrder);
         
-        normalText = new BAlphabet(0, 0, "", BAlphabetData.uniqueFonts[currentFont]);
+        normalText = new BAlphabet(0, 0, "", { font: BAlphabetData.uniqueFonts[currentFont] });
         add(normalText);
         
         // boldText = new BAlphabet(normalText.width + 50, 0, "", BAlphabetData.uniqueFonts[currentFont]);
@@ -74,20 +77,21 @@ class BAlphabetTest extends MusicBeatState
 
         for (i in 0...3)
         {
-            var alignmentLine = new FunkinSprite(0, -200 + (i * 25));
-            alignmentLine.makeSolidColor(300, 4, 0x7F000000);
+            var alignmentLine = new FunkinSprite(0, -225 + (i * 26));
+            alignmentLine.makeSolidColor(300, 2, 0x7F000000);
             add(alignmentLine);
+            offsetLines.push(alignmentLine);
         }
 
-        offsetText = new BAlphabet(150, -200, "i!Aa", BAlphabetData.uniqueFonts[currentFont]);
-        offsetText.alignment = "center";
+        offsetText = new BAlphabet(0, -225, "i!Aa", { font: BAlphabetData.uniqueFonts[currentFont] });
+        // offsetText.alignment = "center";
         add(offsetText);
 
-        var test01:BAlphabet = new BAlphabet(0, -350, "<c=FF0000>HUNDREC</c>", "example");
-        add(test01);
-        var test02:BAlphabet = new BAlphabet(-10, -350, "<c=00FF00>ONEDREC</c>", "example");
-        test02.alignment = "right";
-        add(test02);
+        // var test01:BAlphabet = new BAlphabet(0, -350, "<c=FF0000>HUNDREC</c>", { font: "example" });
+        // add(test01);
+        // var test02:BAlphabet = new BAlphabet(-10, -350, "<c=00FF00>ONEDREC</c>", { font: "example" });
+        // test02.alignment = "right";
+        // add(test02);
 
         offsetInfo = new FlxText(0, -125, 0, "aaa", 16);
         add(offsetInfo);
@@ -105,6 +109,10 @@ class BAlphabetTest extends MusicBeatState
         var unicodeTest = new BAlphabet(-100, 0, "&#65;&#x42;&#0067;&#x00044; &#x2190; ABCD?");
         unicodeTest.alignment = "right";
         add(unicodeTest);
+
+        var test03:BAlphabet = new BAlphabet(-100, -32, "This is a tiny Hello World!", { font: "pixel-example"});
+        test03.alignment = "right";
+        add(test03);
 
         regenGlyphs(BAlphabetData.uniqueTypefaces.indexOf("latin"));
         changeOffsetCharacter(0);
@@ -166,7 +174,7 @@ class BAlphabetTest extends MusicBeatState
 
         if (FlxG.keys.justPressed.U)
         {
-            currentFont = (currentFont + 1) % BAlphabetData.uniqueFonts.length;
+            currentFont = FlxMath.bound(currentFont - 1, 0, BAlphabetData.uniqueFonts.length - 1);
             var sortOrder = function(a, b) {
                 return FlxSort.byValues(-1, a, b);
             }
@@ -180,7 +188,7 @@ class BAlphabetTest extends MusicBeatState
         }
         else if (FlxG.keys.justPressed.I)
         {
-            currentFont = (currentFont + 1) % BAlphabetData.uniqueFonts.length;
+            currentFont = FlxMath.bound(currentFont + 1, 0, BAlphabetData.uniqueFonts.length - 1);
             var sortOrder = function(a, b) {
                 return FlxSort.byValues(-1, a, b);
             }
@@ -208,6 +216,9 @@ class BAlphabetTest extends MusicBeatState
             changeOffsetOffset(0, (FlxG.keys.pressed.SHIFT ? -10 : -1) / (FlxG.keys.pressed.ALT ? 10 : 1));
         else if (FlxG.keys.justPressed.UP)
             changeOffsetOffset(0, (FlxG.keys.pressed.SHIFT ? 10 : 1) / (FlxG.keys.pressed.ALT ? 10 : 1));
+
+        MouseUtil.mouseCamDrag();
+        MouseUtil.mouseWheelZoom();
 
         super.update(elapsed);
     }
@@ -242,6 +253,13 @@ class BAlphabetTest extends MusicBeatState
             normalText.font = BAlphabetData.uniqueFonts[currentFont];
             // boldText.font = BAlphabetData.uniqueFonts[currentFont];
             offsetText.font = BAlphabetData.uniqueFonts[currentFont];
+
+            var letterHeight = BAlphabetData.allFonts.get(BAlphabetData.uniqueFonts[currentFont]).height;
+            for (i in 0...3)
+            {
+                offsetLines[i].y = -225 + letterHeight * (i / 2) - i;
+            }
+
             changedFont = false;
         }
 
