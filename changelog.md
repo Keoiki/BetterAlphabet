@@ -29,7 +29,7 @@ Unicode sheets referenced in this file can be found here: https://www.unicode.or
 - **[BREAKING CHANGE]** Replaced the `font` in the constructor for `BAlphabet` and `BAlphabetTyped` to `config`.
     - `config` only contains `font` for the time being.
     - New usage is as follows: `new BAlphabet(x, y, text, { font: "fontName" });`.
-    - Additions of new parameters will be easier this way.
+    - Adding new parameters will be easier this way.
 - Alphabet Debug now supports Middle Mouse button for camera movement and Mouse Wheel for zooming.
 
 ## [2.0.0] - 26/03/2026
