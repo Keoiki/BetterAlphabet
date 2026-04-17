@@ -17,7 +17,6 @@ import funkin.audio.FunkinSound;
 class BAlphabetDebug extends MusicBeatState
 {
     var normalText:BAlphabet;
-    var boldText:BAlphabet;
     var typedText:BAlphabetTyped;
 
     var textModule;
@@ -60,9 +59,6 @@ class BAlphabetDebug extends MusicBeatState
         
         normalText = new BAlphabet(0, 0, "", { font: BAlphabetData.uniqueFonts[currentFont] });
         add(normalText);
-        
-        // boldText = new BAlphabet(normalText.width + 50, 0, "", BAlphabetData.uniqueFonts[currentFont]);
-        // add(boldText);
 
         typedText = new BAlphabetTyped(0, -900, "<b>Typed text testing,</b> <c=00FFAA>make sure</c> <i>this is</i> <s=0.5>a</s> <a=0.5>really</a> <W>long string</W> <S>to test it properly!</S>");
         add(typedText);
@@ -106,12 +102,10 @@ class BAlphabetDebug extends MusicBeatState
         glyphCount = new FlxText(500, -100, 0, "aaa", 32);
         add(glyphCount);
 
-        var unicodeTest = new BAlphabet(-100, 0, "&#65;&#x42;&#0067;&#x00044; &#x2190; ABCD?");
-        unicodeTest.alignment = "right";
+        var unicodeTest = new BAlphabet(-100, 0, "&#65;&#x42;&#0067;&#x00044; &#x2190; ABCD?", { alignment: "right", baseColor: "282828" });
         add(unicodeTest);
 
-        var test03:BAlphabet = new BAlphabet(-100, -32, "This is a tiny Hello World!", { font: "pixel-example"});
-        test03.alignment = "right";
+        var test03:BAlphabet = new BAlphabet(-100, -32, "This is a tiny Hello World!", { font: "pixel-example", alignment: "right" });
         add(test03);
 
         regenGlyphs(BAlphabetData.uniqueTypefaces.indexOf("latin"));
@@ -265,10 +259,8 @@ class BAlphabetDebug extends MusicBeatState
         typefaceName.text = "Current typeface: " + name;
         normalText.text = allGlyphs;
         glyphCount.text = "Glyphs: " + glyphNum;
-        letterIndex--;
+        offsetText.text = "";
         changeOffsetCharacter(-letterIndex);
-        // boldText.text = "<b>" + allGlyphs + "</b>";
-        // boldText.x = normalText.width + 50;
     }
 
     public function changeOffsetCharacter(change:Int = 0):Void

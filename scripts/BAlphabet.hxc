@@ -1,16 +1,34 @@
 package balphabet;
 
-using StringTools;
 import balphabet.BAlphabetCharacter;
 import funkin.group.FunkinGroup;
 import funkin.modding.module.ModuleHandler;
+using StringTools;
 
 // import openfl.filters.BitmapFilter;
 // import openfl.filters.DropShadowFilter;
 
 typedef TextConfig =
 {
-    ?font:String // Default: "default"
+    /**
+     * The name of the font you want to use for the text.
+     * Default: "default"
+     */
+    ?font:String,
+
+    /**
+     * The default color of the text.
+     * Default: "FFFFFF"
+     */
+    ?baseColor:String,
+
+    /**
+     * The alignment of the text.
+     * Options: "left", "center" or "centered", "right".
+     * Default: "left"
+     */
+    ?alignment:String,
+
     // ?direction:TextDirection // Default: TextDirection.LeftToRight
 }
 
@@ -67,7 +85,7 @@ class BAlphabet extends FunkinGroup
     }
 
     var fontData:BAFont;
-    var font(default, set):String = 'default';
+    var font(get, set):String;
 
     function set_font(input:String):String
     {
@@ -81,7 +99,7 @@ class BAlphabet extends FunkinGroup
             fontData = BAlphabetData.allFonts.get(input);
         }
 
-        font = input;
+        config.font = input;
 
         if (textRaw != null)
         {
@@ -93,20 +111,49 @@ class BAlphabet extends FunkinGroup
         return input;
     }
 
-    var alignment(default, set):String = 'left';
+    function get_font():String
+    {
+        return config.font;
+    }
+
+    var alignment(get, set):String;
 
     function set_alignment(input:String):String
     {
         input = input.trim();
         switch (input.toLowerCase())
         {
-            case 'right': alignment = 'right';
-            case 'center', 'centered': alignment = 'centered';
-            default: alignment = 'left';
+            case 'right': input = 'right';
+            case 'center', 'centered': input = 'centered';
+            default: input = 'left';
         }
+        config.alignment = input;
         updateAlignment();
 
         return input;
+    }
+
+    function get_alignment():String
+    {
+        return config.alignment;
+    }
+
+    var baseColor(get, set):String;
+
+    function set_baseColor(input:String):String
+    {
+        baseColor = input;
+        config.baseColor = input;
+        for (letter in letters)
+        {
+            letter.setColor(Std.parseInt('0x${input}'));
+        }
+        return input;
+    }
+
+    function get_baseColor():String
+    {
+        return config.baseColor;
     }
 
     var letters:Array<BAlphabetCharacter> = [];
@@ -119,6 +166,8 @@ class BAlphabet extends FunkinGroup
     {
         if (config == null) config = {};
         config?.font ??= "default";
+        config?.baseColor ??= "FFFFFF";
+        config?.alignment ??= "left";
         // config.direction ??= TextDirection.LeftToRight;
         return config;
     }
@@ -134,7 +183,7 @@ class BAlphabet extends FunkinGroup
         textParser = ModuleHandler.getModule('balphabet-parser');
         super(x, y);
         this.config = validateConfig(config);
-        this.font = this.config?.font ?? "default";
+        this.font = this.config.font;
         this.text = text;
     }
 
@@ -148,7 +197,7 @@ class BAlphabet extends FunkinGroup
         for (letter in letters)
         {
             var newOffset:Float = 0;
-            switch (alignment)
+            switch (config.alignment)
             {
                 case 'right': newOffset = rowWidths[letter.row];
                 case 'centered': newOffset = rowWidths[letter.row] / 2;
@@ -168,11 +217,11 @@ class BAlphabet extends FunkinGroup
 
     public function setScrollFactor(factorX:Float = 0.0, factorY:Float = 0.0):Void
     {
-        for (child in children)
+        for (letter in children)
         {
-            if (child != null && child.exists && child.active)
+            if (letter != null && letter.exists && letter.active)
             {
-                child.scrollFactor.set(factorX, factorY);
+                letter.scrollFactor.set(factorX, factorY);
             }
         }
     }
@@ -268,6 +317,7 @@ class BAlphabet extends FunkinGroup
                 letter.row = rows;
                 letter.spacesBefore = consecutiveSpaces;
                 letter.setupPosition(posX, rows * this.lineHeight);
+                letter.setColor(Std.parseInt('0x${config.baseColor}'));
 
                 if (letter.monospace ?? fontData.monospace)
                 {
