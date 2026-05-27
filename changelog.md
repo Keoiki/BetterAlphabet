@@ -6,6 +6,7 @@ Unicode sheets referenced in this file can be found here: https://www.unicode.or
 
 - Added ? unicode character sheets:
     - Cyrillic (All but combination glyphs)
+    - Cyrillic Supplement (All)
     - Cyrillic Extended-B (All but combination glyphs)
     - Cyrillic Extended-C (All)
     - Cyrillic Extended-D (All but `1E08F`)
@@ -16,6 +17,9 @@ Unicode sheets referenced in this file can be found here: https://www.unicode.or
 - Added a new `<e=String/>` tag to dispatch "event" signals from typed text.
     - It's a self-closing tag that takes a string as an input. (No `"` or `'` required)
     - The event string is dispatched via the `eventCallback` function, what you do afterwards is up to you!
+- Added support for typing full names of tags instead of singular letters.
+    - `color`, `bold`, `italic`, `scale`, `alpha`, `monospace`, `shake`, `wave`, `delay`, and `event`.
+    - Tag names over 1 letter long get lowercased for the tag check, so `CoLoR` or `COLOR` both work.
 - Added new font data fields:
     - `shakeFramerate` - Controls how often shake offsets are applied. (Default: 16)
     - `shakeSizeX` and `shakeSizeY` - Controls how large the shake offset is in pixels. (Default: 4 and 4)

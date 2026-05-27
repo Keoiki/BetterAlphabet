@@ -27,6 +27,7 @@ class BAlphabetParser extends Module
     public var letterPlanes:Array<PlaneOffset> = [];
 
     public var tagList:Array<String> = ["c", "s", "W", "S", "i", "b", "a", "d", "m", "e", "/"];
+    public var tagListLong:Array<String> = ["color", "scale", "wave", "shake", "italic", "bold", "alpha", "delay", "monospace", "event"];
 
     public var charIndex:Int = 0;
     public var inTag:Bool = false;
@@ -137,31 +138,39 @@ class BAlphabetParser extends Module
         var isTag:Bool = char == '<';
         if (isTag)
         {
-            var next:String = fullText.charAt(i + 1);
-            if (!tagList.contains(next))
-            {
-                return;
-            } 
+            var enter:Bool = fullText.charAt(i + 1) != '/';
+            var end:Int = fullText.indexOf('>', i + 1);
+            var hasData:Bool = end > fullText.indexOf('=', i + 1) && fullText.indexOf('=', i + 1) != -1;
+            var tag:String = fullText.substring(enter ? i + 1 : i + 2, hasData ? fullText.indexOf('=', i + 1) : fullText.indexOf('>', i + 1));
 
-            var tagEnd:Int = fullText.indexOf('>', i);
-            if (fullText.charAt(tagEnd - 1) == '/')
+            if (tag.length > 1) tag = tag.toLowerCase();
+
+            if (!tagListLong.contains(tag))
+            {
+                if (!tagList.contains(tag))
+                {
+                    trace('Invalid tag name found: $tag at $i');
+                    return;
+                }
+            }
+
+            if (fullText.charAt(end - 1) == '/')
             {
                 inSelfClosingTag = true;
-                onEnterTag(fullText, i, next);
+                onEnterTag(fullText, i, tag);
                 return;
             }
 
             inTag = true;
-            var enter:Bool = next != '/';
             if (enter)
             {
-                onEnterTag(fullText, i, next);
+                onEnterTag(fullText, i, tag);
             }
             else
             {
                 // Not needed anymore? 
                 // NVM I'm actually stupid
-                onCloseTag(fullText.charAt(i + 2));
+                onCloseTag(tag);
             }
         }
         else
@@ -177,21 +186,21 @@ class BAlphabetParser extends Module
 
     public function onEnterTag(fullText:String, i:Int, tag:String):Void
     {
-        var tagStart:Int = i + 3; // <#=
+        var tagStart:Int = i + 2 + tag.length; // <#=
         var tagEnd:Int = fullText.indexOf('>', tagStart);
 
         if (inTag)
         {
             switch (tag)
             {
-                case 'c': hasColor = Std.parseInt('0x${fullText.substring(tagStart, tagEnd)}');
-                case 'W': hasEffect = 1;
-                case 'S': hasEffect = 2;
-                case 'i': hasItalics = true;
-                case 'b': hasBold = true;
-                case 'a': hasAlpha = Std.parseFloat(fullText.substring(tagStart, tagEnd));
-                case 's': hasScale = Std.parseFloat(fullText.substring(tagStart, tagEnd));
-                case 'm': hasMono = true;
+                case 'c', 'color':      hasColor = Std.parseInt('0x${fullText.substring(tagStart, tagEnd)}');
+                case 'W', 'wave':       hasEffect = 1;
+                case 'S', 'shake':      hasEffect = 2;
+                case 'i', 'italic':     hasItalics = true;
+                case 'b', 'bold':       hasBold = true;
+                case 'a', 'alpha':      hasAlpha = Std.parseFloat(fullText.substring(tagStart, tagEnd));
+                case 's', 'scale':      hasScale = Std.parseFloat(fullText.substring(tagStart, tagEnd));
+                case 'm', 'monospace':  hasMono = true;
                 default:
             }
         }
@@ -199,8 +208,8 @@ class BAlphabetParser extends Module
         {
             switch (tag)
             {
-                case 'd': hasDelay = Std.parseFloat(fullText.substring(tagStart, tagEnd - 1));
-                case 'e': hasEvent = fullText.substring(tagStart, tagEnd - 1);
+                case 'd', 'delay': hasDelay = Std.parseFloat(fullText.substring(tagStart, tagEnd - 1));
+                case 'e', 'event': hasEvent = fullText.substring(tagStart, tagEnd - 1);
                 default:
             }
         }
@@ -210,14 +219,14 @@ class BAlphabetParser extends Module
     {
         switch (tag)
         {
-            case 'c': hasColor = null;
-            case 'W': hasEffect = 0;
-            case 'S': hasEffect = 0;
-            case 'i': hasItalics = false;
-            case 'b': hasBold = false;
-            case 'a': hasAlpha = null;
-            case 's': hasScale = null;
-            case 'm': hasMono = false;
+            case 'c', 'color':      hasColor = null;
+            case 'W', 'wave':       hasEffect = 0;
+            case 'S', 'shake':      hasEffect = 0;
+            case 'i', 'italic':     hasItalics = false;
+            case 'b', 'bold':       hasBold = false;
+            case 'a', 'alpha':      hasAlpha = null;
+            case 's', 'scale':      hasScale = null;
+            case 'm', 'monospace':  hasMono = false;
             default:
         }
     }
