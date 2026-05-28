@@ -26,9 +26,6 @@ class BAlphabetParser extends Module
     public var letterData:IntMap<Int, Null<TextData>> = new IntMap();
     public var letterPlanes:Array<PlaneOffset> = [];
 
-    public var tagList:Array<String> = ["c", "s", "W", "S", "i", "b", "a", "d", "m", "e", "/"];
-    public var tagListLong:Array<String> = ["color", "scale", "wave", "shake", "italic", "bold", "alpha", "delay", "monospace", "event"];
-
     public var charIndex:Int = 0;
     public var inTag:Bool = false;
     public var inSelfClosingTag:Bool = false;
@@ -36,7 +33,7 @@ class BAlphabetParser extends Module
     var hasColor:Null<Int> = null;
     var hasScale:Null<Float> = null;
     var hasEffect:Int = 0;
-    var hasItalics:Bool = false;
+    var hasItalic:Bool = false;
     var hasBold:Bool = false;
     var hasAlpha:Null<Float> = null;
     var hasDelay:Null<Float> = null;
@@ -48,17 +45,23 @@ class BAlphabetParser extends Module
         super('balphabet-parser', 3);
     }
 
-    override public function onCreate(event:ScriptEvent):Void
-    {
-        super.onCreate(event);
-    }
-
     public function resetVariables():Void
     {
         charIndex = 0;
         inTag = false;
+        inSelfClosingTag = false;
         letterData.clear();
         letterPlanes = [];
+
+        hasColor = null;
+        hasScale = null;
+        hasEffect = 0;
+        hasItalic = false;
+        hasBold = false;
+        hasAlpha = null;
+        hasDelay = null;
+        hasMono = false;
+        hasEvent = null;
     }
 
     public function parseText(text:String):Array<Dynamic>
@@ -145,32 +148,23 @@ class BAlphabetParser extends Module
 
             if (tag.length > 1) tag = tag.toLowerCase();
 
-            if (!tagListLong.contains(tag))
-            {
-                if (!tagList.contains(tag))
-                {
-                    trace('Invalid tag name found: $tag at $i');
-                    return;
-                }
-            }
-
             if (fullText.charAt(end - 1) == '/')
             {
                 inSelfClosingTag = true;
-                onEnterTag(fullText, i, tag);
+                onEnterTag(fullText, tag, i);
                 return;
             }
 
             inTag = true;
             if (enter)
             {
-                onEnterTag(fullText, i, tag);
+                onEnterTag(fullText, tag, i);
             }
             else
             {
                 // Not needed anymore? 
                 // NVM I'm actually stupid
-                onCloseTag(tag);
+                onCloseTag(tag, i);
             }
         }
         else
@@ -184,9 +178,9 @@ class BAlphabetParser extends Module
         }
     }
 
-    public function onEnterTag(fullText:String, i:Int, tag:String):Void
+    public function onEnterTag(fullText:String, tag:String, position:Int):Void
     {
-        var tagStart:Int = i + 2 + tag.length; // <#=
+        var tagStart:Int = position + 2 + tag.length; // <#=
         var tagEnd:Int = fullText.indexOf('>', tagStart);
 
         if (inTag)
@@ -196,12 +190,12 @@ class BAlphabetParser extends Module
                 case 'c', 'color':      hasColor = Std.parseInt('0x${fullText.substring(tagStart, tagEnd)}');
                 case 'W', 'wave':       hasEffect = 1;
                 case 'S', 'shake':      hasEffect = 2;
-                case 'i', 'italic':     hasItalics = true;
+                case 'i', 'italic':     hasItalic = true;
                 case 'b', 'bold':       hasBold = true;
                 case 'a', 'alpha':      hasAlpha = Std.parseFloat(fullText.substring(tagStart, tagEnd));
                 case 's', 'scale':      hasScale = Std.parseFloat(fullText.substring(tagStart, tagEnd));
-                case 'm', 'monospace':  hasMono = true;
-                default:
+                case 'm', 'mono', 'monospace':  hasMono = true;
+                default: trace('Trying to enter an unknown tag $tag at $position');
             }
         }
         else if (inSelfClosingTag)
@@ -210,24 +204,24 @@ class BAlphabetParser extends Module
             {
                 case 'd', 'delay': hasDelay = Std.parseFloat(fullText.substring(tagStart, tagEnd - 1));
                 case 'e', 'event': hasEvent = fullText.substring(tagStart, tagEnd - 1);
-                default:
+                default: trace('Trying to enter an unknown self-closing tag $tag at $position');
             }
         }
     }
 
-    public function onCloseTag(tag:String):Void
+    public function onCloseTag(tag:String, position:Int):Void
     {
         switch (tag)
         {
             case 'c', 'color':      hasColor = null;
             case 'W', 'wave':       hasEffect = 0;
             case 'S', 'shake':      hasEffect = 0;
-            case 'i', 'italic':     hasItalics = false;
+            case 'i', 'italic':     hasItalic = false;
             case 'b', 'bold':       hasBold = false;
             case 'a', 'alpha':      hasAlpha = null;
             case 's', 'scale':      hasScale = null;
-            case 'm', 'monospace':  hasMono = false;
-            default:
+            case 'm', 'mono', 'monospace':  hasMono = false;
+            default: trace('Trying to exit an unknown tag $tag at $position');
         }
     }
 
@@ -241,7 +235,7 @@ class BAlphabetParser extends Module
                 color: hasColor != null ? hasColor : prevData.color,
                 scale: hasScale != null ? hasScale : prevData.scale,
                 effect: hasEffect != 0 ? hasEffect : prevData.effect,
-                italics: hasItalics ? hasItalics : prevData.italics,
+                italic: hasItalic ? hasItalic : prevData.italic,
                 bold: hasBold ? hasBold : prevData.bold,
                 alpha: hasAlpha != null ? hasAlpha : prevData.alpha,
                 delay: hasDelay != null ? hasDelay : prevData.delay,
@@ -251,7 +245,7 @@ class BAlphabetParser extends Module
         }
         else if (hasColor != null ||
             hasEffect != 0 ||
-            hasItalics ||
+            hasItalic ||
             hasBold ||
             hasScale != null ||
             hasAlpha != null ||
@@ -264,7 +258,7 @@ class BAlphabetParser extends Module
                 color: hasColor,
                 scale: hasScale,
                 effect: hasEffect,
-                italics: hasItalics,
+                italic: hasItalic,
                 bold: hasBold,
                 alpha: hasAlpha,
                 delay: hasDelay,

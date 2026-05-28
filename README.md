@@ -30,14 +30,14 @@ The example above will create a new text object at the given position and with:
 - and lastly scaled down a bit, since the characters can be quite large by default.
 
 But what if you wanted a bit more, like the customization I talked about earlier? The strings passed in support various tags, written as `<tag>Text</tag>`. The supported tags are as follows:
-- `<b>` for **Bold**, this causes letters to change their graphic to a bold one, granting them an outline. If no bold graphic is found the default one is used instead.
-- `<i>` for *Italics*, causing the characters to *skew a little bit*, making them Italic, wow. This may cause characters to overlap slightly however.
-- `<c>` for Color, this tag lets you color any area of text however you want. The usage is `<c=00FF00>Green Text</c>` for green colored text for example, replacing the `00FF00` with the hex color of your choosing. (Do NOT include the `#`)
-- `<a>` for Alpha, which allows you to change the opacity of the letters within the tag. `<a=0.5>This text is half visible</a> This half however, isn't.`
-- `<s>` for SCALE, allowing you to scale individual letters as you want. This stacks with the text object's own scale, meaning a scale of `0.5` on a text object already at `0.5` scale makes any letter inside said tag `0.25` the size of the default letter size.
-- `<W>` for Wavy, this one causes the letters to move in a sine wave pattern, with each letter moving slightly behind the previous one.
-- `<S>` for Shake, which causes the letters to tremble from their initial position briefly, before moving back, repeating ad infinitum.
-- `<m>` for Monospace, useful for forcing monospace on monospaceless characters.
+- `<b>` (or `<bold>`) for **Bold**, this causes letters to change their graphic to a bold one, granting them an outline. If no bold graphic is found the default one is used instead.
+- `<i>` (or `<italic>`) for *Italic*, causing the characters to *skew a little bit*, making them Italic, wow. This may cause characters to overlap slightly however.
+- `<c>` (or `<color>`) for Color, this tag lets you color any area of text however you want. The usage is `<c=00FF00>Green Text</c>` for green colored text for example, replacing the `00FF00` with the hex color of your choosing. (Do NOT include the `#`)
+- `<a>` (or `<alpha>`) for Alpha, which allows you to change the opacity of the letters within the tag. `<a=0.5>This text is half visible</a> This half however, isn't.`
+- `<s>` (or `<scale>`) for SCALE, allowing you to scale individual letters as you want. This stacks with the text object's own scale, meaning a scale of `0.5` on a text object already at `0.5` scale makes any letter inside said tag `0.25` the size of the default letter size.
+- `<W>` (or `<wave>`) for Wavy, this one causes the letters to move in a sine wave pattern, with each letter moving slightly behind the previous one.
+- `<S>` (or `<shake>`) for Shake, which causes the letters to tremble from their initial position briefly, before moving back, repeating ad infinitum.
+- `<m>` (or `<mono>` or `<monospace>`) for Monospace, useful for forcing monospace on monospaceless characters.
 
 Another thing that is supported is HTML Escape Codes, letting you type characters without having to mindlessly copy paste them as long as you remember their (hexa)decimal codes. Just put them inside the string you're passing and they'll be parsed before any tags are.
 - Both `&#65;` and `&#x41;` work for getting the `A` character as an example.
@@ -59,8 +59,8 @@ This class allows you to make text that appears over a period of time, instead o
 The function `startTyping() / start()` is used to start the typing effect, as it doesn't begin automatically, and `finishText() / finish()` can be used for finishing the text before it reaches the end itself.
 
 Typed text also supports two extra tags:
-- `<d>` for Delay, delaying the typing effect for the given amount in seconds. `Hmm,<d=0.25/> I'll have a uhh,<d=0.5/> I'm not sure...`
-- `<e>` for Event, use this along with `eventCallback(event)` from above to make something happen when each event tag is reached. Implementations are on you, the mod developer to make! `Oh!<e=changeAnim/> Hi!`
+- `<d>` (or `<delay>`) for Delay, delaying the typing effect for the given amount in seconds. `Hmm,<d=0.25/> I'll have a uhh,<d=0.5/> I'm not sure...`
+- `<e>` (or `<event>`) for Event, use this along with `eventCallback(event)` from above to make something happen when each event tag is reached. Implementations are on you, the mod developer to make! `Oh!<e=changeAnim/> Hi!`
   - These tags are self-closing, meaning it has no ending partner unlike all the other tags.
 
 ## Implementing custom character sheets
@@ -90,7 +90,7 @@ char=65533 offsetY=8
 Do you not want to use the letter assets that come with the mod? Oh... well good news! It's possible to create custom fonts in order to not have the need to replace the default characters, because that would suck for compatibility between other mods.
 - Create a folder in `data/balphabet/FONTNAME` of your mod, with `FONTNAME` being the name you want to use.
 - Inside that folder, create a `.json` file with the name of the folder. Within that file, all of the following fields *should* be present, otherwise the values will default to the ones shown below:
-```json 
+```jsonc
 {
     "height": 54, // The regular letter height
     "heightBold": 60, // Ditto, for bold
@@ -115,9 +115,9 @@ Do you not want to use the letter assets that come with the mod? Oh... well good
 
 In order to use the custom font, input the name as the fourth parameter to the text's constructor, or change it on the fly by assigning it to the `font` field:
 ```haxe
-... new BAlphabet(x, y, text, { font: "fontnamehere" }); // Same for BAlphabetTyped.
+new BAlphabet(x, y, text, { font: fontnamehere }); // Same for BAlphabetTyped.
 // or
-text.font = "fontnamehere";
+text.font = fontnamehere;
 ```
 Omitting the font name will default the font to `default`.
 

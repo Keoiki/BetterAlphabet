@@ -144,7 +144,7 @@ class BAlphabetCharacter extends FunkinSprite
         }
     }
 
-    public function setItalics():Void
+    public function setItalic():Void
     {
         this.skew.x = -20;
     }

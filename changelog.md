@@ -4,7 +4,7 @@ Unicode sheets referenced in this file can be found here: https://www.unicode.or
 
 ### Added
 
-- Added ? unicode character sheets:
+- Added 9 unicode character sheets:
     - Cyrillic (All but combination glyphs)
     - Cyrillic Supplement (All)
     - Cyrillic Extended-B (All but combination glyphs)
@@ -40,8 +40,8 @@ Unicode sheets referenced in this file can be found here: https://www.unicode.or
 
 ### Added
 
-- 2(?) unicode character sheets: 
-    - Hiragana: All. (Except `3099-309C`)
+- 2 unicode character sheets:
+    - Hiragana: `All`. (Except `3099-309C`)
     - Miscellaneous Technical: `2326` & `2327`, `232B`, `23E9-23EF`, and `23F4-23FE`.
 - Added a new `<m>` tag to force monospace on characters inside the tag.
 - Added a new `setScrollFactor(factorX:Float, ?factorY:Float)` function to set the scroll factor for the object.
@@ -60,14 +60,14 @@ Initial Release
 
 ### Added
 
-- 7 unicode character sheets; Latin, Latin-1 Supplement, Arrows, Mathematical Operators, Katakana, Specials, and Symbols for Legacy Computing.
-    - Latin: All.
-    - Latin-1 Supplement: All.
+- 7 unicode character sheets:
+    - Latin: `All`.
+    - Latin-1 Supplement: `All`.
     - Arrows: `2190-2199`, `21A9 & 21AA`, `21B0-21B3`, `21B6 & 21B7`, `21BA & 21BB`, and `21E6-21E9`.
     - Mathematical Operators: `2205-2207`, `2211`, `2218-221E`, `2227-222A`, `2223-223A`, `2260-2269`, `2295-229D`, and `22EE-22F1`.
-    - Katakana: All.
-    - Specials: FFFD.
-    - Symbols for Legacy Computing: 1FBF0-1FBF9.
+    - Katakana: `All`.
+    - Specials: `FFFD`.
+    - Symbols for Legacy Computing: `1FBF0-1FBF9`.
 - 8 tags that have their own special effect:
     - Bold `<b>`: Changes the letter graphics to one with a black outline. If no bold variant exists, the default one will be used instead.
         - `<b>Bold Text</b>`.
