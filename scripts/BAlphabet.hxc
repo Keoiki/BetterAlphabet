@@ -411,7 +411,7 @@ class BAlphabet extends FunkinGroup
 
                 if (textData.get(i).italic)
                 {
-                    letters[i].setItalics();
+                    letters[i].setItalic();
                 }
 
                 if (textData.get(i).effect == 1)
