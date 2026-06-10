@@ -52,7 +52,7 @@ This class allows you to make text that appears over a period of time, instead o
 - `speed:Float`, controls how fast the typing speed is, with the default of `0.05`,
 - `letterStep:Int`, controls how many letters are shown each time they're meant to be, with the default of `1`,
 - `finishedText:Bool`, for reading if the typing is done yet,
-- `letterCallback:Void->Void`, for running a function each time letters are shown, useful for sounds,
+- `letterCallback:Int->Void`, for running a function each time letters are shown, useful for sounds, the `Int` passed is the character code of the shown letter
 - `finishCallback:Void->Void`, for running a function once the text is done typing,
 - and `eventCallback:String->Void`, for catching events from the `<e>` tag (explained below). The event name is the only argument: `text.eventCallback = (event) -> {}`.
 

@@ -17,7 +17,7 @@ class BAlphabetTyped extends BAlphabet
     var letterStep:Int = 1;
     var delayTime:Float = 0;
 
-    public var letterCallback:Void->Void;
+    public var letterCallback:Int->Void;
     public var finishCallback:Void->Void;
     public var eventCallback:String->Void;
 
@@ -92,11 +92,11 @@ class BAlphabetTyped extends BAlphabet
             {
                 delayTime = 0;
 
-                displayUpTo(curLetter + letterStep);
-
                 curLetter += letterStep;
 
-                if (letterCallback != null) letterCallback();
+                displayUpTo(curLetter);
+
+                if (letterCallback != null) letterCallback(letters[curLetter].character);
 
                 if (textData.exists(curLetter + 1))
                 {
