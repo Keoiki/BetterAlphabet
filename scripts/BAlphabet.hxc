@@ -51,7 +51,7 @@ class BAlphabet extends FunkinGroup
                 widestRow = row;
             }
         }
-        return widestRow;
+        return widestRow * scale.x;
     }
 
     override function get_height():Float
