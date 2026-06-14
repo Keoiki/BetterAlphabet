@@ -25,6 +25,7 @@ class BAlphabetTyped extends BAlphabet
     {
         super(x, y, text, config);
         resetText();
+        trace(textData);
     }
 
     public function startTyping():Void
@@ -98,19 +99,19 @@ class BAlphabetTyped extends BAlphabet
 
                 if (letterCallback != null) letterCallback(letters[curLetter].character);
 
-                if (textData.exists(curLetter + 1))
+                if (textData.exists(curLetter))
                 {
-                    delayTime = textData.get(curLetter + 1).delay;
+                    delayTime = textData.get(curLetter).delay;
                     if (delayTime == null || delayTime < 0)
                     {
                         delayTime = 0;
                     }
-                    if (delayTime > 0) trace("Delay found for " + (curLetter + 1) + ": " + delayTime);
+                    if (delayTime > 0) trace("Delay found for " + (curLetter) + ": " + delayTime);
 
-                    var eventName = textData.get(curLetter + 1).event;
+                    var eventName = textData.get(curLetter).event;
                     if (eventName != null)
                     {
-                        trace("Event found for " + (curLetter + 1) + ": " + eventName);
+                        trace("Event found for " + (curLetter) + ": " + eventName);
                         if (eventCallback != null) eventCallback(eventName);
                     }
                 }

@@ -38,6 +38,8 @@ But what if you wanted a bit more, like the customization I talked about earlier
 - `<W>` (or `<wave>`) for Wavy, this one causes the letters to move in a sine wave pattern, with each letter moving slightly behind the previous one.
 - `<S>` (or `<shake>`) for Shake, which causes the letters to tremble from their initial position briefly, before moving back, repeating ad infinitum.
 - `<m>` (or `<mono>` or `<monospace>`) for Monospace, useful for forcing monospace on monospaceless characters.
+- `<o>` (or `<offset>`) for Offset, which can offset an individual letter based on the parameters passed, usage is `Hello, P<o=15,75/>, look, it's an offset P letter!`.
+  - This tag is self-closing, meaning it has no ending partner unlike all the other tags.
 
 Another thing that is supported is HTML Escape Codes, letting you type characters without having to mindlessly copy paste them as long as you remember their (hexa)decimal codes. Just put them inside the string you're passing and they'll be parsed before any tags are.
 - Both `&#65;` and `&#x41;` work for getting the `A` character as an example.
@@ -61,7 +63,7 @@ The function `startTyping() / start()` is used to start the typing effect, as it
 Typed text also supports two extra tags:
 - `<d>` (or `<delay>`) for Delay, delaying the typing effect for the given amount in seconds. `Hmm,<d=0.25/> I'll have a uhh,<d=0.5/> I'm not sure...`
 - `<e>` (or `<event>`) for Event, use this along with `eventCallback(event)` from above to make something happen when each event tag is reached. Implementations are on you, the mod developer to make! `Oh!<e=changeAnim/> Hi!`
-  - These tags are self-closing, meaning it has no ending partner unlike all the other tags.
+  - These tags are (also) self-closing, meaning they have no ending partner unlike all the other tags.
 
 ## Implementing custom character sheets
 

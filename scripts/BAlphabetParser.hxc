@@ -2,6 +2,7 @@ package balphabet;
 
 using StringTools;
 import funkin.modding.module.Module;
+import funkin.util.ReflectUtil;
 import haxe.ds.IntMap;
 
 typedef TextData = {
@@ -13,7 +14,8 @@ typedef TextData = {
     alpha:Null<Float>, // <a=0.5>Half opacity text!</a>
     delay:Null<Float>, // <d=0.5/> (Seconds, only on typed text)
     monospace:Null<Bool>, // <m>
-    event:Null<String> // <e=eventName/> (Only on typed text)
+    event:Null<String>, // <e=eventName/> (Only on typed text)
+    offset:Null<Array<Float>> // <o=x,y/>
 }
 
 typedef PlaneOffset = {
@@ -39,6 +41,7 @@ class BAlphabetParser extends Module
     var hasDelay:Null<Float> = null;
     var hasMono:Bool = false;
     var hasEvent:Null<String> = null;
+    var hasOffset:Null<Array<Float>> = null;
 
     public function new():Void
     {
@@ -62,40 +65,34 @@ class BAlphabetParser extends Module
         hasDelay = null;
         hasMono = false;
         hasEvent = null;
+        hasOffset = null;
     }
 
     public function parseText(text:String):Array<Dynamic>
     {
         resetVariables();
         text = parseUnicode(text);
-        // trace(text.length);
         for (i in 0...text.length)
         {
-            if (i > text.length) break;
             parseTags(text, text.charAt(i), i);
-            // trace(i, charIndex, text.charAt(i), hasBold, hasDelay, hasEvent);
-            if (!inTag)
-            {
-                var charCheck = text.charCodeAt(i);
-                addLetterModifiers();
-                if (!inSelfClosingTag) {
-                    switch (charCheck)
-                    {
-                        case 32: charIndex--; // Space
-                        case 10: charIndex--; // Carriage Return
-                        case 13: charIndex--; // Line Feed
-                        case 9: charIndex--; // Horizontal Tab
-                        default: // Continue as normal
-                    }
-                }
-                charIndex++;
-            }
             if (inSelfClosingTag)
             {
+                // trace('Adding SELF-CLOSING TAG STUFFS', i, charIndex, text.charAt(i), hasColor, hasScale, hasEffect, hasItalic, hasBold, hasAlpha, hasDelay, hasMono, hasEvent, hasOffset);
+                addLetterModifiers(-1);
                 // These effects should be terminated immediately.
                 hasDelay = null;
                 hasEvent = null;
-                charIndex--;
+                hasOffset = null;
+            }
+            // trace(i, charIndex, text.charAt(i), hasColor, hasScale, hasEffect, hasItalic, hasBold, hasAlpha, hasDelay, hasMono, hasEvent, hasOffset);
+            if (!inTag && !inSelfClosingTag)
+            {
+                var charCheck = text.charCodeAt(i);
+                if (charCheck != 9 && charCheck != 10 && charCheck != 13 && charCheck != 32)
+                {
+                    addLetterModifiers();
+                    charIndex++;
+                }
             }
         }
         var regex:EReg = new EReg('<[!a-zA-Z\\/][^>]*>', 'g');
@@ -183,6 +180,19 @@ class BAlphabetParser extends Module
         var tagStart:Int = position + 2 + tag.length; // <#=
         var tagEnd:Int = fullText.indexOf('>', tagStart);
 
+        if (inSelfClosingTag)
+        {
+            switch (tag)
+            {
+                case 'd', 'delay': hasDelay = Std.parseFloat(fullText.substring(tagStart, tagEnd - 1));
+                case 'e', 'event': hasEvent = fullText.substring(tagStart, tagEnd - 1);
+                case 'o', 'offset': 
+                    var commaIndex:Int = fullText.indexOf(',', tagStart);
+                    hasOffset = [Std.parseFloat(fullText.substring(tagStart, commaIndex)), Std.parseFloat(fullText.substring(commaIndex + 1, tagEnd - 1))];
+                default: trace('Trying to enter an unknown self-closing tag $tag at $position');
+            }
+        }
+
         if (inTag)
         {
             switch (tag)
@@ -196,15 +206,6 @@ class BAlphabetParser extends Module
                 case 's', 'scale':      hasScale = Std.parseFloat(fullText.substring(tagStart, tagEnd));
                 case 'm', 'mono', 'monospace':  hasMono = true;
                 default: trace('Trying to enter an unknown tag $tag at $position');
-            }
-        }
-        else if (inSelfClosingTag)
-        {
-            switch (tag)
-            {
-                case 'd', 'delay': hasDelay = Std.parseFloat(fullText.substring(tagStart, tagEnd - 1));
-                case 'e', 'event': hasEvent = fullText.substring(tagStart, tagEnd - 1);
-                default: trace('Trying to enter an unknown self-closing tag $tag at $position');
             }
         }
     }
@@ -227,6 +228,7 @@ class BAlphabetParser extends Module
 
     function addLetterModifiers(offset:Int = 0):Void
     {
+        // return;
         if (letterData.exists(charIndex + offset))
         {
             var prevData:Dynamic = letterData.get(charIndex + offset);
@@ -240,7 +242,8 @@ class BAlphabetParser extends Module
                 alpha: hasAlpha != null ? hasAlpha : prevData.alpha,
                 delay: hasDelay != null ? hasDelay : prevData.delay,
                 monospace: hasMono ? hasMono : prevData.monospace,
-                event: hasEvent != null ? hasEvent : prevData.event
+                event: hasEvent != null ? hasEvent : prevData.event,
+                offset: hasOffset != null ? hasOffset : prevData.offset
             });
         }
         else if (hasColor != null ||
@@ -251,7 +254,8 @@ class BAlphabetParser extends Module
             hasAlpha != null ||
             hasDelay != null ||
             hasMono ||
-            hasEvent != null)
+            hasEvent != null ||
+            hasOffset != null)
         {
             letterData.set(charIndex + offset,
             {
@@ -263,7 +267,8 @@ class BAlphabetParser extends Module
                 alpha: hasAlpha,
                 delay: hasDelay,
                 monospace: hasMono,
-                event: hasEvent
+                event: hasEvent,
+                offset: hasOffset
             });
         }
     }

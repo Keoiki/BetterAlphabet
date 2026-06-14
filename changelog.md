@@ -17,6 +17,9 @@ Unicode sheets referenced in this file can be found here: https://www.unicode.or
 - Added a new `<e=String/>` tag to dispatch "event" signals from typed text.
     - It's a self-closing tag that takes a string as an input. (No `"` or `'` required)
     - The event string is dispatched via the `eventCallback` function, what you do afterwards is up to you!
+- Added a new `<o=x,y/>` tag to offset individual letters.
+    - This is the first self-closing tag to work on non-typed text.
+    - Offsets function like the proper `x/y` coordinates work, not how `offset.x/y` function.
 - Added support for typing full names of tags instead of singular letters.
     - `color`, `bold`, `italic`, `scale`, `alpha`, `monospace`, `shake`, `wave`, `delay`, and `event`.
     - Tag names over 1 letter long get lowercased for the tag check, so `CoLoR` or `COLOR` both work.
@@ -31,7 +34,7 @@ Unicode sheets referenced in this file can be found here: https://www.unicode.or
 ### Changed
 
 - **[BREAKING CHANGE]** Replaced the `font` in the constructor for `BAlphabet` and `BAlphabetTyped` to `config`.
-    - `config` contains `font`, `baseColor`, and `alignment`.
+    - `config` contains `font`, `baseColor`, `alignment`, and `lineHeight`.
     - New usage is as follows: `new BAlphabet(0, 0, "text", { font: "default", baseColor: "FFFFFF", alignment: "left" });`.
     - Adding new parameters will be easier this way.
 - Alphabet Debug now supports Middle Mouse button for camera movement and Mouse Wheel for zooming.

@@ -26,6 +26,12 @@ typedef TextConfig =
      */
     ?alignment:String,
 
+    /**
+     * The line height of the text.
+     * Default: Whatever the font's lineheight is that you're using.
+     */
+    ?lineHeight:Float
+
     // ?direction:TextDirection // Default: TextDirection.LeftToRight
 }
 
@@ -62,10 +68,11 @@ class BAlphabet extends FunkinGroup
     // Regular variables
     var textRaw:String;
     var text(default, set):String;
+    var forceTextUpdate:Bool = false;
 
     function set_text(input:String):String
     {
-        if (input == textRaw) return input;
+        if (input == textRaw && !forceTextUpdate) return input;
 
         textRaw = input;
         clearLetters();
@@ -78,6 +85,7 @@ class BAlphabet extends FunkinGroup
         createLetters(text);
         updateAlignment();
 
+        forceTextUpdate = false;
         return input;
     }
 
@@ -103,7 +111,7 @@ class BAlphabet extends FunkinGroup
             text = textRaw;
         }
 
-        this.lineHeight = fontData.lineHeight;
+        // this.lineHeight = fontData.lineHeight;
 
         return input;
     }
@@ -141,10 +149,6 @@ class BAlphabet extends FunkinGroup
     {
         baseColor = input;
         config.baseColor = input;
-        for (letter in letters)
-        {
-            letter.setColor(Std.parseInt('0x${input}'));
-        }
         return input;
     }
 
@@ -153,18 +157,43 @@ class BAlphabet extends FunkinGroup
         return config.baseColor;
     }
 
+    var lineHeight(get, set):Float;
+
+    function set_lineHeight(input:Float):Float
+    {
+        lineHeight = input;
+        config.lineHeight = input;
+        if (textRaw != null)
+        {
+            forceTextUpdate = true;
+            text = textRaw;
+        }
+        return input;
+    }
+
+    function get_lineHeight():Float
+    {
+        return config.lineHeight;
+    }
+
+    function resetLineHeight():Void
+    {
+        lineHeight = fontData.lineHeight;
+    }
+
     var letters:Array<BAlphabetCharacter> = [];
     var rowWidths:Array<Float> = [];
     var rows:Int = 0;
-    var lineHeight:Float = 0;
 
     var config:TextConfig;
     function validateConfig(config:Null<TextConfig>):TextConfig
     {
         if (config == null) config = {};
         config?.font ??= "default";
+        this.font = config.font;
         config?.baseColor ??= "FFFFFF";
         config?.alignment ??= "left";
+        config?.lineHeight ??= this.fontData.lineHeight;
         // config.direction ??= TextDirection.LeftToRight;
         return config;
     }
@@ -178,7 +207,7 @@ class BAlphabet extends FunkinGroup
         textParser = ModuleHandler.getModule('balphabet-parser');
         super(x, y);
         this.config = validateConfig(config);
-        this.font = this.config.font;
+        // this.font = this.config.font;
         this.text = text;
     }
 
@@ -192,7 +221,7 @@ class BAlphabet extends FunkinGroup
         for (letter in letters)
         {
             var newOffset:Float = 0;
-            switch (config.alignment)
+            switch (alignment)
             {
                 case 'right': newOffset = rowWidths[letter.row];
                 case 'centered': newOffset = rowWidths[letter.row] / 2;
@@ -265,6 +294,7 @@ class BAlphabet extends FunkinGroup
                 var isBold:Bool = false;
                 var isMonospaced:Bool = null;
                 var newPlane:Int = 0;
+                var posOffsets:Array<Float> = [0, 0];
 
                 if (textData.exists(index))
                 {
@@ -274,6 +304,10 @@ class BAlphabet extends FunkinGroup
                     }
                     isBold = textData.get(index).bold;
                     isMonospaced = textData.get(index).monospace;
+                    if (textData.get(index).offset != null)
+                    {
+                        posOffsets = textData.get(index).offset;
+                    }
                 }
 
                 for (plane in textDataPlanes)
@@ -311,8 +345,8 @@ class BAlphabet extends FunkinGroup
                 letter.setupAlphaCharacter(charCode, isBold, font, scaleMultiplier);
                 letter.row = rows;
                 letter.spacesBefore = consecutiveSpaces;
-                letter.setupPosition(posX, rows * this.lineHeight);
-                letter.setColor(Std.parseInt('0x${config.baseColor}'));
+                letter.setupPosition(posX + posOffsets[0], rows * this.lineHeight + posOffsets[1]);
+                letter.setColor(Std.parseInt('0x${baseColor}'));
 
                 if (letter.monospace ?? fontData.monospace)
                 {
