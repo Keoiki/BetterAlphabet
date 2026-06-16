@@ -386,6 +386,7 @@ class BAlphabet extends FunkinGroup
 
         setRowWidths();
         loadLetterModifiers();
+        updateChildren();
     }
 
     public function setRowWidths():Void
