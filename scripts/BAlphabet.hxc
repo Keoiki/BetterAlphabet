@@ -105,13 +105,12 @@ class BAlphabet extends FunkinGroup
         }
 
         config.font = input;
+        config.lineHeight = fontData.lineHeight;
 
         if (textRaw != null)
         {
             text = textRaw;
         }
-
-        // this.lineHeight = fontData.lineHeight;
 
         return input;
     }
