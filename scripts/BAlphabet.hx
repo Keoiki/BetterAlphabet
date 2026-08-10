@@ -35,7 +35,7 @@ typedef TextConfig =
     // ?direction:TextDirection // Default: TextDirection.LeftToRight
 }
 
-// :eyes:
+/*
 enum TextDirection
 {
     LeftToRight;
@@ -43,6 +43,7 @@ enum TextDirection
     UpToDown;
     DownToUp;
 }
+*/
 
 class BAlphabet extends FunkinGroup
 {
@@ -206,7 +207,6 @@ class BAlphabet extends FunkinGroup
         textParser = ModuleHandler.getModule('balphabet-parser');
         super(x, y);
         this.config = validateConfig(config);
-        // this.font = this.config.font;
         this.text = text;
     }
 
@@ -335,7 +335,7 @@ class BAlphabet extends FunkinGroup
                 else
                 {
                     letter = new BAlphabetCharacter(0, 0);
-                    // Only add a letter when it's brand new! Avoids accidentally duplicating it.
+                    // Only add a letter when it's brand new!
                     this.add(letter);
                 }
                 letter.plane = newPlane;

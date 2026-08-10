@@ -19,9 +19,27 @@ class BAlphabetTyped extends BAlphabet
     var letterStep:Int = 1;
     var delayTime:Float = 0;
 
+    /**
+     * A function that is dispatched when a letter is typed.
+     * The `Int` passed is the character code of the shown letter.
+     */
     public var letterCallback:Int->Void;
+
+    /**
+     * A function that is dispatched when typing is finished.
+     */
     public var finishCallback:Void->Void;
+
+    /**
+     * A function that is dispatched when an event is reached.
+     * The `String` passed is the name of the event.
+     */
     public var eventCallback:String->Void;
+
+    /**
+     * With this variable set to `true`, events that have not yet been reached will be dispatched when `finishText()` is called.
+     */
+    public var dispatchEventsOnEarlyFinish:Bool = true;
 
     override public function new(x:Float, y:Float, text:String = "", ?config:TextConfig)
     {
@@ -51,6 +69,21 @@ class BAlphabetTyped extends BAlphabet
     {
         if (finishedText || !isTyping)
             return;
+
+        if (dispatchEventsOnEarlyFinish)
+        {
+            for (i in curLetter...letters.length)
+            {
+                if (textData.exists(i))
+                {
+                    var eventName = textData.get(i).event;
+                    if (eventName != null)
+                    {
+                        if (eventCallback != null) eventCallback(eventName);
+                    }
+                }
+            }
+        }
 
         displayUpTo(letters.length - 1);
 

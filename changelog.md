@@ -4,12 +4,13 @@ Unicode sheets referenced in this file can be found here: https://www.unicode.or
 
 ### Added
 
-- Added 9 unicode character sheets:
-    - Cyrillic (All but combination glyphs)
-    - Cyrillic Supplement (All)
-    - Cyrillic Extended-B (All but combination glyphs)
-    - Cyrillic Extended-C (All)
-    - Cyrillic Extended-D (All but `1E08F`)
+- Added 6 unicode character sheets:
+    - Cyrillic: All but combination glyphs.
+    - Cyrillic Supplement: All.
+    - Cyrillic Extended-B: All but combination glyphs.
+    - Cyrillic Extended-C: All.
+    - Cyrillic Extended-D: All but `1E08F`.
+    - General Punctuation: `8208`, `8210-8231`, `8242-8254`, `8258-8259`, and `8263-8265`.
 - Added a new `<e=String/>` tag to dispatch "event" signals from typed text.
     - It's a self-closing tag that takes a string as an input. (No `"` or `'` required)
     - The event string is dispatched via the `eventCallback` function, what you do afterwards is up to you!
@@ -26,6 +27,8 @@ Unicode sheets referenced in this file can be found here: https://www.unicode.or
     - `waveSpeed` - Controls how fast the wave effect is. (Default: 4)
 - Added support for `.txt` files in place of `.xml` for letter spritesheets. (Packer atlas instead of Sparrow atlas)
 - Added a `pixel-example` font to show pixel font and packer atlas capability.
+- Added `dispatchEventsOnEarlyFinish` to typed text, to dispatch events that have not yet been reached if the `finishText()` function is called early.
+    - Default setting is `true`.
 
 ### Changed
 
