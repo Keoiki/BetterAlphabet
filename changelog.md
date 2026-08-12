@@ -38,6 +38,9 @@ Unicode sheets referenced in this file can be found here: https://www.unicode.or
     - Adding new parameters will be easier this way.
 - Alphabet Debug now supports Middle Mouse button for camera movement and Mouse Wheel for zooming.
 
+### Fixed
+- Fixed `mathematical-operators` glyph indexes being off by 20.
+
 ## [2.0.0] - 26/03/2026
 
 ### Added

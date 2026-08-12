@@ -1,45 +1,45 @@
-char=8729 offsetY=-5
-char=8730 offsetY=-2
-char=8731 offsetY=-2
-char=8741
-char=8748 offsetY=-15
-char=8749 offsetY=-15
-char=8750
-char=8751
-char=8752
-char=8753 offsetY=-10
-char=8754 offsetY=-10
-char=8763 offsetY=-7
-char=8764 offsetY=-7
-char=8765 offsetY=-5
-char=8766 offsetY=-3
-char=8776 offsetY=-7
-char=8777 offsetY=-7
-char=8778 offsetY=-7
-char=8779 offsetY=-8
-char=8780 offsetY=-22
-char=8781 offsetY=-9
-char=8782 offsetY=-6
-char=8820 offsetY=-4
-char=8821 offsetY=-6
-char=8822
-char=8823 offsetY=-3
-char=8824
-char=8825
-char=8826 offsetY=5
-char=8827 offsetY=5
-char=8828 offsetY=8
-char=8829 offsetY=8
-char=8873 offsetY=-2
-char=8874 offsetY=-2
-char=8875 offsetY=-2
-char=8876 offsetY=-2
-char=8877 offsetY=-2
-char=8878 offsetY=-2
-char=8879 offsetY=-2
-char=8880 offsetY=-2
-char=8881 offsetY=-2
-char=8962 offsetY=4
-char=8963 offsetY=-19
-char=8964 offsetY=4
-char=8965 offsetY=4
+char=8709 offsetY=-5
+char=8710 offsetY=-2
+char=8711 offsetY=-2
+char=8721
+char=8728 offsetY=-15
+char=8729 offsetY=-15
+char=8730
+char=8731
+char=8732
+char=8733 offsetY=-10
+char=8734 offsetY=-10
+char=8743 offsetY=-7
+char=8744 offsetY=-7
+char=8745 offsetY=-5
+char=8746 offsetY=-3
+char=8756 offsetY=-7
+char=8757 offsetY=-7
+char=8758 offsetY=-7
+char=8759 offsetY=-8
+char=8760 offsetY=-22
+char=8761 offsetY=-9
+char=8762 offsetY=-6
+char=8800 offsetY=-4
+char=8801 offsetY=-6
+char=8802
+char=8803 offsetY=-3
+char=8804
+char=8805
+char=8806 offsetY=5
+char=8807 offsetY=5
+char=8808 offsetY=8
+char=8809 offsetY=8
+char=8853 offsetY=-2
+char=8854 offsetY=-2
+char=8855 offsetY=-2
+char=8856 offsetY=-2
+char=8857 offsetY=-2
+char=8858 offsetY=-2
+char=8859 offsetY=-2
+char=8860 offsetY=-2
+char=8861 offsetY=-2
+char=8942 offsetY=4
+char=8943 offsetY=-19
+char=8944 offsetY=4
+char=8945 offsetY=4
