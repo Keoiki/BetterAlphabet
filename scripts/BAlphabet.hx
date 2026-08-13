@@ -291,6 +291,7 @@ class BAlphabet extends FunkinGroup
 
                 var scaleMultiplier:Float = 1;
                 var isBold:Bool = false;
+                var isItalic:Bool = false;
                 var isMonospaced:Bool = null;
                 var newPlane:Int = 0;
                 var posOffsets:Array<Float> = [0, 0];
@@ -303,6 +304,7 @@ class BAlphabet extends FunkinGroup
                     }
                     isBold = textData.get(index).bold;
                     isMonospaced = textData.get(index).monospace;
+                    isItalic = textData.get(index).italic;
                     if (textData.get(index).offset != null)
                     {
                         posOffsets = textData.get(index).offset;
@@ -356,6 +358,7 @@ class BAlphabet extends FunkinGroup
                 else
                 {
                     var padding:Float = letter.isBold ? fontData.paddingBold : fontData.padding;
+                    if (isItalic) padding *= 2;
                     posX += (letter.frameWidth + padding + letter.letterOffset[0]) * letter.localScale.x;
                 }
 

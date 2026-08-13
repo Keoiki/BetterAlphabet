@@ -147,6 +147,11 @@ class BAlphabetCharacter extends FunkinSprite
     public function setItalic():Void
     {
         this.skew.x = -20;
+        var letterWidth:Float = isBold ? fontData.widthBold : fontData.width;
+        localX += Math.sqrt(letterWidth) * localScale.x;
+        if (frameWidth / frameHeight > 0.6) return;
+        var letterHeight:Float = isBold ? fontData.heightBold : fontData.height;
+        localX += (frameWidth / 4 * localScale.x) * (letterWidth / frameWidth * 0.5) * (frameHeight / letterHeight);
     }
 
     public function setColor(newColor:Int):Void
