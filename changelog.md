@@ -1,24 +1,31 @@
 Unicode sheets referenced in this file can be found here: https://www.unicode.org/charts/
 
-## [3.0.0] - ??/??/2026
+## [3.1.0] - 2026
 
 ### Added
 
-- Added 6 unicode character sheets:
+- Added 5 unicode character sheets:
     - Cyrillic: All but combination glyphs.
     - Cyrillic Supplement: All.
     - Cyrillic Extended-B: All but combination glyphs.
     - Cyrillic Extended-C: All.
     - Cyrillic Extended-D: All but `1E08F`.
+
+## [3.0.0] - ??/??/2026
+
+### Added
+
+- Added 2 unicode character sheets:
     - General Punctuation: `8208`, `8210-8231`, `8242-8254`, `8258-8259`, and `8263-8265`.
-- Added a new `<e=String/>` tag to dispatch "event" signals from typed text.
+    - Dingbats: `something, compile a proper list of glyphs later....`
+- Added a new `<e=name/>` tag to dispatch "event" signals from typed text.
     - It's a self-closing tag that takes a string as an input. (No `"` or `'` required)
     - The event string is dispatched via the `eventCallback` function, what you do afterwards is up to you!
-- Added a new `<o=x,y/>` tag to offset individual letters.
-    - This is the first self-closing tag to work on non-typed text.
+- Added a new `<o=x,y>` tag to offset individual letters.
+    - This is the first tag to work as a self-closing one and a regular tag.
     - Offsets function like the proper `x/y` coordinates work, not how `offset.x/y` function.
 - Added support for typing full names of tags instead of singular letters.
-    - `color`, `bold`, `italic`, `scale`, `alpha`, `monospace`, `shake`, `wave`, `delay`, and `event`.
+    - `color`, `bold`, `italic`, `scale`, `alpha`, `monospace`, `offset`, `shake`, `wave`, `delay`, and `event`.
     - Tag names over 1 letter long get lowercased for the tag check, so `CoLoR` or `COLOR` both work.
 - Added new font data fields:
     - `shakeFramerate` - Controls how often shake offsets are applied. (Default: 16)

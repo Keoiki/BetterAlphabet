@@ -205,6 +205,9 @@ class BAlphabetParser extends Module
                 case 'a', 'alpha':      hasAlpha = Std.parseFloat(fullText.substring(tagStart, tagEnd));
                 case 's', 'scale':      hasScale = Std.parseFloat(fullText.substring(tagStart, tagEnd));
                 case 'm', 'mono', 'monospace':  hasMono = true;
+                case 'o', 'offset': 
+                    var commaIndex:Int = fullText.indexOf(',', tagStart);
+                    hasOffset = [Std.parseFloat(fullText.substring(tagStart, commaIndex)), Std.parseFloat(fullText.substring(commaIndex + 1, tagEnd))];
                 default: trace('Trying to enter an unknown tag $tag at $position');
             }
         }
@@ -222,6 +225,7 @@ class BAlphabetParser extends Module
             case 'a', 'alpha':      hasAlpha = null;
             case 's', 'scale':      hasScale = null;
             case 'm', 'mono', 'monospace':  hasMono = false;
+            case 'o', 'offset':     hasOffset = null;
             default: trace('Trying to exit an unknown tag $tag at $position');
         }
     }

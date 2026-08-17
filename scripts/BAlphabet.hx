@@ -84,7 +84,6 @@ class BAlphabet extends FunkinGroup
         textData = parserResult[1];
         textDataPlanes = parserResult[2];
         createLetters(text);
-        updateAlignment();
 
         forceTextUpdate = false;
         return input;
@@ -388,6 +387,7 @@ class BAlphabet extends FunkinGroup
 
         setRowWidths();
         loadLetterModifiers();
+        updateAlignment();
         updateChildren();
     }
 
