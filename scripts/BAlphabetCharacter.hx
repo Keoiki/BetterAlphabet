@@ -26,7 +26,7 @@ class BAlphabetCharacter extends FunkinSprite
     public var character:Int = -1;
     public var plane:Int = 0;
     public var planeOffset:Int = 0;
-    public var curLetter = null;
+    public var curLetter:BALetter = null;
 
     public var spacesBefore:Int = 0;
     public var spacesTrailing:Int = 0;
@@ -138,7 +138,7 @@ class BAlphabetCharacter extends FunkinSprite
                     filePath = 'balphabet/default/regular/$name';
                 }
             }
-            var isPacker:Bool = Assets.exists('images/$filePath.txt');
+            final isPacker:Bool = Assets.exists('images/$filePath.txt');
             frames = isPacker ? Paths.getPackerAtlas(filePath) : Paths.getSparrowAtlas(filePath);
             shouldUpdateFrames = false;
         }
@@ -147,10 +147,10 @@ class BAlphabetCharacter extends FunkinSprite
     public function setItalic():Void
     {
         this.skew.x = -20;
-        var letterWidth:Float = isBold ? fontData.widthBold : fontData.width;
+        final letterWidth:Float = isBold ? fontData.widthBold : fontData.width;
         localX += Math.sqrt(letterWidth) * localScale.x;
         if (frameWidth / frameHeight > 0.6) return;
-        var letterHeight:Float = isBold ? fontData.heightBold : fontData.height;
+        final letterHeight:Float = isBold ? fontData.heightBold : fontData.height;
         localX += (frameWidth / 4 * localScale.x) * (letterWidth / frameWidth * 0.5) * (frameHeight / letterHeight);
     }
 
@@ -170,7 +170,7 @@ class BAlphabetCharacter extends FunkinSprite
             return;
         }
 
-        var letterHeight:Float = isBold ? fontData.heightBold : fontData.height;
+        final letterHeight:Float = isBold ? fontData.heightBold : fontData.height;
 
         localX = x;
         localY = y;

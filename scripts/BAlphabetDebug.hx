@@ -19,12 +19,11 @@ class BAlphabetDebug extends MusicBeatState
     var normalText:BAlphabet;
     var typedText:BAlphabetTyped;
 
-    var textModule;
-    var allLetterMap;
+    var allLetterMap:IntMap<Int, BALetter>;
     var allLetterIndexes:Array<Int> = [];
 
     var offsetLines:Array<FukinSprite> = [];
-    var offsetText;
+    var offsetText:BAlphabet;
     var offsetInfo:FlxText;
     var isOffsetBold:Bool = false;
     var letterIndex:Int = 0;

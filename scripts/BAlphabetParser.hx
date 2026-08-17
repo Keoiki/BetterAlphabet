@@ -15,7 +15,7 @@ typedef TextData = {
     delay:Null<Float>, // <d=0.5/> (Seconds, only on typed text)
     monospace:Null<Bool>, // <m>
     event:Null<String>, // <e=eventName/> (Only on typed text)
-    offset:Null<Array<Float>> // <o=x,y/>
+    offset:Null<Array<Float>> // <o=x,y> (Also words as a self-closing tag: <o=x,y/>)
 }
 
 typedef PlaneOffset = {

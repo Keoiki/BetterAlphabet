@@ -209,6 +209,7 @@ class BAlphabet extends FunkinGroup
         this.text = text;
     }
 
+    @:deprecated("Use the built-in alignment property instead.")
     public function setAlignment(align:String):Void
     {
         alignment = align;
@@ -231,7 +232,7 @@ class BAlphabet extends FunkinGroup
         }
     }
 
-    @:deprecated("setScale is deprecated, use the built-in scale property instead. (scale.set(x, y))")
+    @:deprecated("Use the built-in scale property instead.")
     public function setScale(scaleX:Float, ?scaleY:Float):Void
     {
         this.scale.set(scaleX, scaleY ?? scaleX);
@@ -248,6 +249,7 @@ class BAlphabet extends FunkinGroup
         }
     }
 
+    @:deprecated("Use the built-in text property instead.")
     public function setText(newText:String):Void
     {
         text = newText;
@@ -273,8 +275,8 @@ class BAlphabet extends FunkinGroup
         rowWidths = [];
         var consecutiveSpaces:Int = 0;
         var posX:Float = 0;
-        var index = 0;
-        var indexWithSpaces = 0;
+        var index:Int = 0;
+        var indexWithSpaces:Int = 0;
         for (character in newText.split(''))
         {
             indexWithSpaces++;
@@ -471,7 +473,7 @@ class BAlphabet extends FunkinGroup
      * 10 - Line Feed
      * 13 - Carriage Return
      */
-    public function shouldIgnoreCharacter(character:Int):Bool
+    public function shouldIgnoreCharacter(character:String):Bool
     {
         return character == BAlphabetData.fromCharCode(9)
             || character == BAlphabetData.fromCharCode(10)

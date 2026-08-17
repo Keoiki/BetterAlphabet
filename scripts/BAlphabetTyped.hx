@@ -11,13 +11,13 @@ class BAlphabetTyped extends BAlphabet
         return input;
     }
 
-    var isTyping:Bool = false;
-    var finishedText:Bool = false;
-    var speed:Float = 0.05;
-    var curLetter:Int = -1;
-    var timeToUpdate:Float = 0;
-    var letterStep:Int = 1;
-    var delayTime:Float = 0;
+    public var isTyping:Bool = false;
+    public var finishedText:Bool = false;
+    public var speed:Float = 0.05;
+    public var curLetter:Int = -1;
+    public var timeToUpdate:Float = 0;
+    public var letterStep:Int = 1;
+    public var delayTime:Float = 0;
 
     /**
      * A function that is dispatched when a letter is typed.
