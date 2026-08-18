@@ -244,7 +244,7 @@ class BAlphabetDebug extends MusicBeatState
             allGlyphs += "&#" + allLetterIndexes[i] + ";";
             if (i % 30 == 0 && i != 0)
             {
-                // allGlyphs += "\n";
+                allGlyphs += "\n";
             }
             glyphNum++;
         }

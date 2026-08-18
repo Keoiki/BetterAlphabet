@@ -88,7 +88,7 @@ char=119
 char=120
 char=121 offsetY=18
 char=122
-char=123 offsetY=3
-char=124 offsetY=8
-char=125 offsetY=3
+char=123 offsetY=3 offsetI=9
+char=124 offsetY=8 offsetI=9
+char=125 offsetY=3 offsetI=9
 char=126 offsetY=-20
