@@ -148,10 +148,10 @@ class BAlphabetCharacter extends FunkinSprite
     {
         this.skew.x = -20;
         final letterWidth:Float = isBold ? fontData.widthBold : fontData.width;
-        localX += Math.sqrt(letterWidth) * localScale.x;
-        if (frameWidth / frameHeight > 0.6) return;
+        localX -= Math.sqrt(letterWidth / localScale.x);
+        if (frameWidth / frameHeight > 0.725) return;
         final letterHeight:Float = isBold ? fontData.heightBold : fontData.height;
-        localX += (frameWidth / 4 * localScale.x) * (letterWidth / frameWidth * 0.5) * (frameHeight / letterHeight);
+        localX += (frameWidth / 4 * localScale.x) * (letterWidth / frameWidth * 0.5) * (frameHeight / letterHeight) - (curLetter.offsets[1] * localScale.y * 0.5);
     }
 
     public function setColor(newColor:Int):Void
