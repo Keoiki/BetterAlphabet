@@ -1,5 +1,12 @@
 Unicode sheets referenced in this file can be found here: https://www.unicode.org/charts/
 
+## [2.0.1] - 18/08/2026
+
+### Fixed
+
+- Fixed the mod for FNF 0.8.6.
+- Fixed the BAlphabet width getter not accounting for the text's `scale.x`.
+
 ## [2.0.0] - 26/03/2026
 
 ### Added

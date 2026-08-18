@@ -1,6 +1,7 @@
 package balphabet;
 
 using StringTools;
+import EReg;
 import funkin.modding.module.Module;
 import haxe.ds.IntMap;
 
