@@ -138,6 +138,8 @@ class BAlphabetParser extends Module
         var isTag:Bool = char == '<';
         if (isTag)
         {
+            // final validationRegex:EReg = new EReg('[a-zA-Z0-9!/]', 'g');
+            // if (!validationRegex.match(fullText.charAt(i + 1))) return;
             var enter:Bool = fullText.charAt(i + 1) != '/';
             var end:Int = fullText.indexOf('>', i + 1);
             var hasData:Bool = end > fullText.indexOf('=', i + 1) && fullText.indexOf('=', i + 1) != -1;
@@ -189,7 +191,9 @@ class BAlphabetParser extends Module
                 case 'o', 'offset': 
                     var commaIndex:Int = fullText.indexOf(',', tagStart);
                     hasOffset = [Std.parseFloat(fullText.substring(tagStart, commaIndex)), Std.parseFloat(fullText.substring(commaIndex + 1, tagEnd - 1))];
-                default: trace('Trying to enter an unknown self-closing tag $tag at $position');
+                default:
+                    trace('Trying to enter an unknown self-closing tag $tag at $position');
+                    inSelfClosingTag = false;
             }
         }
 
@@ -208,7 +212,9 @@ class BAlphabetParser extends Module
                 case 'o', 'offset': 
                     var commaIndex:Int = fullText.indexOf(',', tagStart);
                     hasOffset = [Std.parseFloat(fullText.substring(tagStart, commaIndex)), Std.parseFloat(fullText.substring(commaIndex + 1, tagEnd))];
-                default: trace('Trying to enter an unknown tag $tag at $position');
+                default:
+                    trace('Trying to enter an unknown tag $tag at $position');
+                    inTag = false;
             }
         }
     }

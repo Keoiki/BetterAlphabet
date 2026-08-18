@@ -36,6 +36,7 @@ Unicode sheets referenced in this file can be found here: https://www.unicode.or
 - Added a `pixel-example` font to show pixel font and packer atlas capability.
 - Added `dispatchEventsOnEarlyFinish` to typed text, to dispatch events that have not yet been reached if the `finishText()` function is called early.
     - Default setting is `true`.
+- Added `offsetI` for letters in their `.txt` data files, for offsetting the letter on the X-axis when they're italic.
 
 ### Changed
 

@@ -26,6 +26,7 @@ class BAlphabetDebug extends MusicBeatState
     var offsetText:BAlphabet;
     var offsetInfo:FlxText;
     var isOffsetBold:Bool = false;
+    var isOffsetItalic:Bool = false;
     var letterIndex:Int = 0;
     var letterOffsets:Array<Float> = [0, 0];
     var modifiedOffsets:Array<Float> = [0, 0];
@@ -149,6 +150,13 @@ class BAlphabetDebug extends MusicBeatState
             regenGlyphs(0);
         }
 
+        if (FlxG.keys.justPressed.I)
+        {
+            isOffsetItalic = !isOffsetItalic;
+            changeOffsetCharacter(0);
+            regenGlyphs(0);
+        }
+
         if (FlxG.keys.justPressed.T)
         {
             typedText.letterStep = FlxG.random.int(1, 10);
@@ -165,7 +173,7 @@ class BAlphabetDebug extends MusicBeatState
             regenGlyphs(1);
         }
 
-        if (FlxG.keys.justPressed.U)
+        if (FlxG.keys.justPressed.N)
         {
             currentFont = FlxMath.bound(currentFont - 1, 0, BAlphabetData.uniqueFonts.length - 1);
             var sortOrder = function(a, b) {
@@ -179,7 +187,7 @@ class BAlphabetDebug extends MusicBeatState
             changedFont = true;
             regenGlyphs(0);
         }
-        else if (FlxG.keys.justPressed.I)
+        else if (FlxG.keys.justPressed.M)
         {
             currentFont = FlxMath.bound(currentFont + 1, 0, BAlphabetData.uniqueFonts.length - 1);
             var sortOrder = function(a, b) {
@@ -226,6 +234,7 @@ class BAlphabetDebug extends MusicBeatState
         var glyphNum:Int = 0;
         var allGlyphs:String = "";
         if (isOffsetBold) allGlyphs += "<b>";
+        if (isOffsetItalic) allGlyphs += "<i>";
         for (i in 0...allLetterIndexes.length)
         {
             if (name != "all")
@@ -235,10 +244,11 @@ class BAlphabetDebug extends MusicBeatState
             allGlyphs += "&#" + allLetterIndexes[i] + ";";
             if (i % 30 == 0 && i != 0)
             {
-                allGlyphs += "\n";
+                // allGlyphs += "\n";
             }
             glyphNum++;
         }
+        if (isOffsetItalic) allGlyphs += "</i>";
         if (isOffsetBold) allGlyphs += "</b>";
 
         if (changedFont)
@@ -260,6 +270,8 @@ class BAlphabetDebug extends MusicBeatState
         glyphCount.text = "Glyphs: " + glyphNum;
         offsetText.text = "";
         changeOffsetCharacter(-letterIndex);
+
+        trace(normalText.text);
     }
 
     public function changeOffsetCharacter(change:Int = 0):Void

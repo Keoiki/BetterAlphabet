@@ -1,12 +1,12 @@
 char=12353
-char=12354
+char=12354 offsetI=6
 char=12355
 char=12356
 char=12357
 char=12358
-char=12359
+char=12359 offsetI=-6
 char=12360
-char=12361
+char=12361 offsetI=-6
 char=12362
 char=12363
 char=12364

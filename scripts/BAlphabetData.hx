@@ -8,7 +8,8 @@ import haxe.ds.IntMap;
 import haxe.ds.StringMap;
 using StringTools;
 
-typedef BAFont = {
+typedef BAFont =
+{
     height:Float,
     heightBold:Float,
     width:Float,
@@ -21,12 +22,14 @@ typedef BAFont = {
     letters:IntMap<Int, BALetter>
 }
 
-typedef BALetter = {
+typedef BALetter =
+{
     anim:String,
     offsets:Array<Float>,
     monospace:Null<Bool>,
     colored:Bool,
-    typeface:String
+    typeface:String,
+    offsetItalic:Float
 }
 
 /**
@@ -165,6 +168,7 @@ class BAlphabetData extends Module
             data = data.trim();
 
             var typeface:String = file.substring(file.lastIndexOf("/") + 1, file.indexOf("."));
+            if (typeface == "general-punctuation") continue;
             if (!BAlphabetData.uniqueTypefaces.contains(typeface))
             {
                 BAlphabetData.uniqueTypefaces.push(typeface);
@@ -177,6 +181,7 @@ class BAlphabetData extends Module
                 var offsets:Array<Float> = [0, 0];
                 var monospace:Null<Bool> = null;
                 var colored:Bool = false;
+                var italicOffset:Float = 0;
     
                 var elements:Array<String> = character.split(" ");
                 for (element in elements)
@@ -192,6 +197,8 @@ class BAlphabetData extends Module
                             offsets[0] = Std.parseFloat(elementInfo[1]);
                         case "offsetY":
                             offsets[1] = Std.parseFloat(elementInfo[1]);
+                        case "offsetI":
+                            italicOffset = Std.parseFloat(elementInfo[1]);
                         case "monospace":
                             monospace = (elementInfo[1].toLowerCase() == "true" || elementInfo[1] == "1");
                         case "colored":
@@ -200,7 +207,7 @@ class BAlphabetData extends Module
                             trace("Invalid data!", character);
                     }
                 }
-                letters.set(Std.int(char), {anim: char, offsets: offsets, monospace: monospace, colored: colored, typeface: typeface});
+                letters.set(Std.int(char), {anim: char, offsets: offsets, monospace: monospace, colored: colored, typeface: typeface, offsetItalic: italicOffset});
             }
         }
 

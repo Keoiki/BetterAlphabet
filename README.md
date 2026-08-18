@@ -79,6 +79,7 @@ With that out of the way, let's continue with the actual implementation:
   - `char`, being the decimal number of the character, not the hex,
   - `offsetX`, the offset in the X axis for the character, particularly useful in positioning monospaced characters properly, `(OPTIONAL)`
   - `offsetY`, the offset in the Y axis for the character, `(OPTIONAL, but highly suggested)`
+  - `offsetI`, the offset in the X axis for the character *when they're italic*, `(OPTIONAL, but highly suggested)`
   - `monospace`, if `true` or `1` the letter will be monospaced, or not if set to anything else, overriding a font's monospace setting, `(OPTIONAL)`
   - `colored`, is this character colored? If `true` or `1`, color tags will not affect them. `(OPTIONAL)`
 
@@ -128,7 +129,9 @@ Omitting the font name will default the font to `default`.
 You can check if your fonts and/or characters were loaded properly *(granted no Polymod errors)* is by opening the Debug State by pressing `Shift + B` on the Main Menu.
 - `WASD` to move the camera.
 - `Q/E` to zoom out/in.
-- `U/I` to switch between the available fonts.
+- `N/M` to switch between the available fonts.
 - `J/K` to switch between the shown typefaces.
 - `Z/C` to switch between the shown character in the offset area, above the main text area, hold `Shift` or `Alt` to the switch by `10`, hold both to switch by `100`.
 - `Arrow Keys` to move the offset area character, hold `Alt` to move by `0.1`, hold `Shift` to move by `10`.
+- `B` to toggle **Bold** text.
+- `I` to toggle *Italic* text.
