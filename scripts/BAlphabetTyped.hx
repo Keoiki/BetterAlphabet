@@ -2,7 +2,7 @@ package balphabet;
 
 class BAlphabetTyped extends BAlphabet
 {
-    function set_text(input:String):String
+    override function set_text(input:String):String
     {
         this.visible = false;
         super.set_text(input);
