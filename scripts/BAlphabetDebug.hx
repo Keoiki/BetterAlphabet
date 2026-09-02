@@ -270,8 +270,6 @@ class BAlphabetDebug extends MusicBeatState
         glyphCount.text = "Glyphs: " + glyphNum;
         offsetText.text = "";
         changeOffsetCharacter(-letterIndex);
-
-        trace(normalText.text);
     }
 
     public function changeOffsetCharacter(change:Int = 0):Void

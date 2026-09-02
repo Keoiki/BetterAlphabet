@@ -96,16 +96,13 @@ class BAlphabetTyped extends BAlphabet
     
     public function displayUpTo(dest:Int):Void
     {
-        var start:Int = curLetter;
-        if (start < 0)
-            start = 0;
-
         if (dest >= letters.length)
         {
             dest = letters.length - 1;
+            curLetter = letters.length - 1;
         }
 
-        for (i in start...(dest + 1))
+        for (i in 0...(dest + 1))
         {
             if (letters[i] != null)
             {

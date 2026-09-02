@@ -148,7 +148,7 @@ class BAlphabetCharacter extends FunkinSprite
     {
         this.skew.x = -20;
         final letterWidth:Float = isBold ? fontData.widthBold : fontData.width;
-        localX -= Math.sqrt(letterWidth) * localScale.x;
+        localX -= Math.sqrt(frameWidth) * localScale.x;
         localX += curLetter.offsetItalic * localScale.x;
         // if (frameWidth / frameHeight > 0.725) return;
         // final letterHeight:Float = isBold ? fontData.heightBold : fontData.height;

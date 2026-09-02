@@ -54,7 +54,7 @@ class BAlphabetData extends Module
 
     public function new()
     {
-        super('balphabet-data', 2);
+        super('balphabet-data', -2100000000);
 
         BAlphabetData.allFonts = new StringMap();
     }

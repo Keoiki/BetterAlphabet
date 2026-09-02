@@ -68,9 +68,9 @@ char=99
 char=100 offsetI=8
 char=101
 char=102 offsetY=8
-char=103 offsetY=14 offsetI=-8
+char=103 offsetY=14
 char=104
-char=105 offsetI=-3
+char=105 offsetI=3
 char=106 offsetY=17
 char=107 offsetI=6
 char=108 offsetI=6

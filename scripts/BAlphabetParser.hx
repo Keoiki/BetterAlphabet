@@ -1,6 +1,7 @@
 package balphabet;
 
 using StringTools;
+import EReg;
 import funkin.modding.module.Module;
 import funkin.util.ReflectUtil;
 import haxe.ds.IntMap;
@@ -192,7 +193,7 @@ class BAlphabetParser extends Module
                     var commaIndex:Int = fullText.indexOf(',', tagStart);
                     hasOffset = [Std.parseFloat(fullText.substring(tagStart, commaIndex)), Std.parseFloat(fullText.substring(commaIndex + 1, tagEnd - 1))];
                 default:
-                    trace('Trying to enter an unknown self-closing tag $tag at $position');
+                    trace('Trying to enter an unknown self-closing tag "$tag" at $position');
                     inSelfClosingTag = false;
             }
         }
@@ -213,7 +214,7 @@ class BAlphabetParser extends Module
                     var commaIndex:Int = fullText.indexOf(',', tagStart);
                     hasOffset = [Std.parseFloat(fullText.substring(tagStart, commaIndex)), Std.parseFloat(fullText.substring(commaIndex + 1, tagEnd))];
                 default:
-                    trace('Trying to enter an unknown tag $tag at $position');
+                    trace('Trying to enter an unknown tag "$tag" at $position');
                     inTag = false;
             }
         }
@@ -232,7 +233,7 @@ class BAlphabetParser extends Module
             case 's', 'scale':      hasScale = null;
             case 'm', 'mono', 'monospace':  hasMono = false;
             case 'o', 'offset':     hasOffset = null;
-            default: trace('Trying to exit an unknown tag $tag at $position');
+            default: trace('Trying to exit an unknown tag "$tag" at $position');
         }
     }
 

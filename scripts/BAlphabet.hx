@@ -238,8 +238,10 @@ class BAlphabet extends FunkinGroup
         this.scale.set(scaleX, scaleY ?? scaleX);
     }
 
+    var storedScrollFactor:Array<Float> = [1.0, 1.0];
     public function setScrollFactor(factorX:Float = 0.0, factorY:Float = 0.0):Void
     {
+        storedScrollFactor = [factorX, factorY];
         for (letter in children)
         {
             if (letter != null && letter.exists && letter.active)
@@ -391,6 +393,7 @@ class BAlphabet extends FunkinGroup
         loadLetterModifiers();
         updateAlignment();
         updateChildren();
+        setScrollFactor(storedScrollFactor[0], storedScrollFactor[1]);
     }
 
     public function setRowWidths():Void
