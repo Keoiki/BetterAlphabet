@@ -191,7 +191,7 @@ class BAlphabet extends FunkinGroup
         config?.font ??= "default";
         this.font = config.font;
         config?.baseColor ??= "FFFFFF";
-        config?.alignment ??= "left";
+        this.alignment = config?.alignment ?? "left";
         config?.lineHeight ??= this.fontData.lineHeight;
         // config.direction ??= TextDirection.LeftToRight;
         return config;
