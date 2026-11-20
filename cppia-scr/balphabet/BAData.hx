@@ -1,77 +1,75 @@
 package balphabet;
 
+import flixel.FlxG;
+import funkin.Assets;
+import funkin.assets.Assets as NewAssets;
+import funkin.assets.Paths;
+import funkin.assets.Paths.AssetPath;
+import funkin.modding.events.ScriptEvent;
+import funkin.modding.events.ScriptEvent.UpdateScriptEvent;
 import funkin.modding.module.Module;
-import funkin.ui.mainmenu.MainMenuState;
+//import funkin.ui.mainmenu.MainMenuState;
 import funkin.util.SerializerUtil;
 import haxe.Utf8;
 import haxe.ds.IntMap;
 import haxe.ds.StringMap;
 using StringTools;
+using funkin.util.tools.ArrayTools;
 
 typedef BAFont =
 {
-    height:Float,
-    heightBold:Float,
-    width:Float,
-    widthBold:Float,
-    monospace:Bool,
-    padding:Float,
-    paddingBold:Float,
-    lineHeight:Float,
-    spaceWidth:Float,
-    letters:IntMap<Int, BALetter>
+    ?height:Float,
+    ?heightBold:Float,
+    ?width:Float,
+    ?widthBold:Float,
+    ?monospace:Bool,
+    ?padding:Float,
+    ?paddingBold:Float,
+    ?lineHeight:Float,
+    ?spaceWidth:Float,
+    ?antialiasing:Bool,
+    ?shakeFramerate:Float,
+    ?shakeSizeX:Float,
+    ?shakeSizeY:Float,
+    ?waveSize:Float,
+    ?waveSpeed:Float,
+    letters:IntMap<BALetter>
 }
 
 typedef BALetter =
 {
     anim:String,
-    offsets:Array<Float>,
-    monospace:Null<Bool>,
-    colored:Bool,
     typeface:String,
-    offsetItalic:Float
+    ?colored:Bool,
+    ?monospace:Bool,
+    ?offsets:Array<Float>,
+    ?offsetItalic:Float
 }
 
-/**
- * This module contains the data relating to letters.
- * Letter sprites are stored in "images/balphabet/FONTNAME" and the data itself in "data/balphabet/FONTNAME".
- * This system allows for unlimited letters, which can easily be added onto.
- * (It's only unlimited if you're using `&#aaaa;` or `&#xaaaa;` for inputting the character. Otherwise the limit is `FFFF`)
- * Now if you're asking, why such a powerful letter system? I hate vanilla Alphabet.hx
- * (It's been since replaced by AtlasText.hx which is better, I guess.)
- */
-class BAlphabetData extends Module
+class BAData extends Module
 {
-    /**
-     * Stores all loaded fonts with their letter, big surprise...
-     * Assigned in loadFontData()
-     * Letters are stored by their character code, instead of their represention as a string. (E.g. 65 instead of "A")
-     */
-    public static var allFonts:StringMap<String, BAFont> = new StringMap();
-
+    public static var allFonts:StringMap<BAFont> = new StringMap();
+    
     public static var uniqueTypefaces:Array<String> = [];
     public static var uniqueFonts:Array<String> = [];
 
-    public function new()
+    override public function new()
     {
-        super('balphabet-data', -2100000000);
-
-        BAlphabetData.allFonts = new StringMap();
+        super('BAData', -2100000000);
     }
 
     override public function onCreate(event:ScriptEvent):Void
     {
         loadFontData();
-
         super.onCreate(event);
     }
 
-    override public function onUpdate(event:ScriptEvent):Void
+    override public function onUpdate(event:UpdateScriptEvent):Void
     {   
-        if ((FlxG.state is MainMenuState) && FlxG.state.subState == null && FlxG.keys.pressed.SHIFT && FlxG.keys.justPressed.B)
-        {
-            FlxG.switchState(new BAlphabetDebug());
-        }
+        //if ((FlxG.state is MainMenuState) && FlxG.state.subState == null && FlxG.keys.pressed.SHIFT && FlxG.keys.justPressed.B)
+        //{
+            // FlxG.switchState(new BAlphabetDebug());
+        //}
 
         super.onUpdate(event);
     }
@@ -84,16 +82,15 @@ class BAlphabetData extends Module
      */
     public static function getLetter(index:Int, font:String = "default"):BALetter
     {
-        font ??= "default";
-        if (BAlphabetData.allFonts.exists(font))
+        if (allFonts.exists(font))
         {
-            if (BAlphabetData.allFonts.get(font).letters.exists(index))
+            if (allFonts.get(font).letters.exists(index))
             {
-                return BAlphabetData.allFonts.get(font).letters.get(index);
+                return allFonts.get(font).letters.get(index);
             }
         }
         trace("No letter found for number: " + index + " in font: " + font + ". Returning fallback letter.");
-        return {anim: "65533", offsets: [0, 8], colored: false, typeface: "specials"};
+        return {anim: "65533", offsets: [0, 8], colored: false, typeface: "specials", monospace: false, offsetItalic: 0};
     }
 
     /**
@@ -101,9 +98,10 @@ class BAlphabetData extends Module
      */
     function loadFontData():Void
     {
-        BAlphabetData.allFonts.clear();
+        BAData.allFonts.clear();
 
-        var fontList:Array<String> = Assets.list("TEXT").filter(function(file):Bool {
+        var fontList:Array<String> = Assets.list(TEXT).filter(function(file:String):Bool
+        {
             return file.contains("data/balphabet/") && file.endsWith(".json");
         });
 
@@ -111,53 +109,69 @@ class BAlphabetData extends Module
         {
             font = font.substring(font.indexOf("/") + 1);
             var data:String = Assets.getText(font);
-            data = SerializerUtil.fromJSON(data);
+            var json:BAFont = SerializerUtil.fromJSON(data);
             var name:String = font.substring(font.lastIndexOf("/") + 1, font.indexOf("."));
 
             // Validate data, apply the "default" font's values if not set.
-            data.height ??= 54;
-            data.heightBold ??= 60;
-            data.width ??= 54;
-            data.widthBold ??= 54;
-            data.monospace ??= false;
-            data.padding ??= 2;
-            data.paddingBold ??= -6;
-            data.lineHeight ??= 85;
-            data.spaceWidth ??= 28;
-            data.antialiasing ??= true;
-            data.shakeFramerate ??= 16;
-            data.shakeSizeX ??= 4;
-            data.shakeSizeY ??= 4;
-            data.waveSize ??= 16;
-            data.waveSpeed ??= 4;
+            json.height ??= 54;
+            json.heightBold ??= 60;
+            json.width ??= 54;
+            json.widthBold ??= 54;
+            json.monospace ??= false;
+            json.padding ??= 2;
+            json.paddingBold ??= -6;
+            json.lineHeight ??= 85;
+            json.spaceWidth ??= 28;
+            json.antialiasing ??= true;
+            json.shakeFramerate ??= 16;
+            json.shakeSizeX ??= 4;
+            json.shakeSizeY ??= 4;
+            json.waveSize ??= 16;
+            json.waveSpeed ??= 4;
 
-            data.letters = loadLetterData(name);
-            BAlphabetData.allFonts.set(name, data);
+            json.letters = loadLetterData(name);
+            BAData.allFonts.set(name, json);
 
-            if (!BAlphabetData.uniqueFonts.contains(name))
+            if (!BAData.uniqueFonts.contains(name))
             {
-                BAlphabetData.uniqueFonts.push(name);
+                BAData.uniqueFonts.push(name);
             }
 
             trace('Loaded font: $name');
         }
 
-        BAlphabetData.uniqueTypefaces.push("all");
+        BAData.uniqueTypefaces.push("all");
+
+        var fontTextures:Array<String> = Assets.list(IMAGE).filter(function(file:String):Bool
+        {
+            return file.contains("ui/balphabet/") && file.endsWith(".png");
+        });
+
+        var toCache:Array<AssetPath> = [];
+
+        for (font in fontTextures)
+        {
+            font = font.substring(font.indexOf("/") + 1, font.lastIndexOf(".png"));
+            toCache.pushUnique(Paths.image(font));
+        }
+
+        NewAssets.cacheAllFlxGraphics(toCache, true);
     }
 
     /**
      * Loads the letter data for the given font.
      */
-    function loadLetterData(fontName:String):IntMap<Int, BALetter>
+    function loadLetterData(fontName:String):IntMap<BALetter>
     {
         if (fontName == null)
         {
             return null;
         }
 
-        var letters:IntMap<Int, BALetter> = new IntMap();
+        var letters:IntMap<BALetter> = new IntMap();
 
-        var alphabetList:Array<String> = Assets.list("TEXT").filter(function(file):Bool {
+        var alphabetList:Array<String> = Assets.list(TEXT).filter(function(file:String):Bool
+        {
             return file.contains("data/balphabet/" + fontName) && file.endsWith(".txt");
         });
 
@@ -169,15 +183,15 @@ class BAlphabetData extends Module
 
             var typeface:String = file.substring(file.lastIndexOf("/") + 1, file.indexOf("."));
             if (typeface == "general-punctuation") continue;
-            if (!BAlphabetData.uniqueTypefaces.contains(typeface))
+            if (!BAData.uniqueTypefaces.contains(typeface))
             {
-                BAlphabetData.uniqueTypefaces.push(typeface);
+                BAData.uniqueTypefaces.push(typeface);
             }
     
             var eachLine:Array<String> = data.split("\n");
             for (character in eachLine)
             {
-                var char:String = "";
+                var index:Int = -1;
                 var offsets:Array<Float> = [0, 0];
                 var monospace:Null<Bool> = null;
                 var colored:Bool = false;
@@ -191,8 +205,8 @@ class BAlphabetData extends Module
                     elementInfo[1] = elementInfo[1].trim();
                     switch (elementInfo[0])
                     {
-                        case "char":
-                            char = elementInfo[1];
+                        case "char" | "index":
+                            index = Std.parseInt(elementInfo[1]);
                         case "offsetX":
                             offsets[0] = Std.parseFloat(elementInfo[1]);
                         case "offsetY":
@@ -207,17 +221,16 @@ class BAlphabetData extends Module
                             trace("Invalid data!", character);
                     }
                 }
-                letters.set(Std.int(char), {anim: char, offsets: offsets, monospace: monospace, colored: colored, typeface: typeface, offsetItalic: italicOffset});
+                letters.set(index, {anim: Std.string(index), offsets: offsets, monospace: monospace, colored: colored, typeface: typeface, offsetItalic: italicOffset});
             }
         }
 
         return letters;
     }
 
-    // it works now????????????? wtf
     public static function fromCharCode(code:Int):String
     {
-        var u = new Utf8();
+        var u:Utf8 = new Utf8();
         u.addChar(code);
         return u.toString();
     }

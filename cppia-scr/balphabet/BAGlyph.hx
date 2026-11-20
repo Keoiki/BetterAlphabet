@@ -1,8 +1,13 @@
 package balphabet;
 
+import balphabet.BAData;
+import balphabet.BAData.BALetter;
+import flixel.FlxG;
+import funkin.assets.Assets;
+import funkin.assets.Paths;
 import funkin.graphics.FunkinSprite;
 
-class BAlphabetCharacter extends FunkinSprite
+class BAGlyph extends FunkinSprite
 {
     public var alignOffset:Float = 0;
     public var letterOffset:Array<Float> = [0, 0];
@@ -36,7 +41,7 @@ class BAlphabetCharacter extends FunkinSprite
     public var fontName:String = "default";
     public var fontData:BAFont = null;
 
-    public function new(x, y)
+    override public function new(x, y)
     {
         super(0, 0);
     }
@@ -52,7 +57,7 @@ class BAlphabetCharacter extends FunkinSprite
             planeOffset = 0xFFFF * plane + plane;
             character = characterCode;
             character += planeOffset;
-            curLetter = BAlphabetData.getLetter(character, font);
+            curLetter = BAData.getLetter(character, font);
 
             // Only set type on the first setup or when either typeface or font changes.
             if (type == "unknown" || typeface != curLetter.typeface || fontName != font)
@@ -93,7 +98,7 @@ class BAlphabetCharacter extends FunkinSprite
             fontName = font;
             this.isBold = bold;
             type = this.isBold ? "bold" : "regular";
-            curLetter = BAlphabetData.getLetter(characterCode, font);
+            curLetter = BAData.getLetter(characterCode, font);
             typeface = curLetter.typeface;
             shouldUpdateFrames = true;
             setTypeface(typeface);
@@ -127,19 +132,26 @@ class BAlphabetCharacter extends FunkinSprite
     {
         if (frames == null || shouldUpdateFrames)
         {
-            var filePath:String = 'balphabet/$font/$type/$name';
-            if (!Assets.exists('images/$filePath.png')) // In case no bold version exists.
+            var filePath:String = 'ui/balphabet/$fontName/$type/$name';
+            if (!Assets.exists('$filePath.png')) // In case no bold version exists.
             {
                 isBold = false;
                 type = "regular";
-                filePath = 'balphabet/$font/regular/$name';
-                if (!Assets.exists('images/$filePath.png')) // Does that typeface not exist in the current font? FALLBACK #2 TIME!!!
+                filePath = 'ui/balphabet/$fontName/regular/$name';
+                if (!Assets.exists('$filePath.png')) // Does that typeface not exist in the current font? FALLBACK #2 TIME!!!
                 {
-                    filePath = 'balphabet/default/regular/$name';
+                    filePath = 'ui/balphabet/default/regular/$name';
                 }
             }
-            final isPacker:Bool = Assets.exists('images/$filePath.txt');
-            frames = isPacker ? Paths.getPackerAtlas(filePath) : Paths.getSparrowAtlas(filePath);
+            final isPacker:Bool = Assets.exists('$filePath.txt');
+            if (isPacker) 
+            {
+                loadPacker(filePath);
+            }
+            else 
+            {
+                loadSparrow(filePath);
+            }
             shouldUpdateFrames = false;
         }
     }
@@ -150,9 +162,6 @@ class BAlphabetCharacter extends FunkinSprite
         final letterWidth:Float = isBold ? fontData.widthBold : fontData.width;
         localX -= Math.sqrt(frameWidth) * localScale.x;
         localX += curLetter.offsetItalic * localScale.x;
-        // if (frameWidth / frameHeight > 0.725) return;
-        // final letterHeight:Float = isBold ? fontData.heightBold : fontData.height;
-        // localX += (frameWidth / 4 * localScale.x) * (letterWidth / frameWidth * 0.5) * (frameHeight / letterHeight) - (curLetter.offsets[1] * localScale.y * 0.5);
     }
 
     public function setColor(newColor:Int):Void
@@ -163,7 +172,7 @@ class BAlphabetCharacter extends FunkinSprite
         }
     }
 
-    function setupPosition(x:Float, y:Float):Void
+    public function setupPosition(x:Float, y:Float):Void
     {
         if (animation.curAnim == null)
         {
@@ -205,7 +214,7 @@ class BAlphabetCharacter extends FunkinSprite
         localY += letterOffset[1] * localScale.y;
     }
 
-    function resetEffects():Void
+    public function resetEffects():Void
     {
         this.localAlpha = 1;
         setColor(0xFFFFFFFF);
@@ -223,7 +232,7 @@ class BAlphabetCharacter extends FunkinSprite
     var waveSine:Float = 0;
     var shakeTick:Float = 0;
 
-    function update(elapsed:Float):Void
+    override public function update(elapsed:Float):Void
     {
         if (doShake)
         {

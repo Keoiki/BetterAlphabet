@@ -1,6 +1,8 @@
 package balphabet;
 
-class BAlphabetTyped extends BAlphabet
+import balphabet.BAText.TextConfig;
+
+class BATextTyped extends BAText
 {
     override function set_text(input:String):String
     {
@@ -17,7 +19,7 @@ class BAlphabetTyped extends BAlphabet
     public var curLetter:Int = -1;
     public var timeToUpdate:Float = 0;
     public var letterStep:Int = 1;
-    public var delayTime:Float = 0;
+    public var delayTime:Null<Float> = 0;
 
     /**
      * A function that is dispatched when a letter is typed.
@@ -47,7 +49,7 @@ class BAlphabetTyped extends BAlphabet
         resetText();
     }
 
-    public function startTyping():Void
+    public function startText():Void
     {
         finishedText = false;
         isTyping = true;
@@ -161,18 +163,11 @@ class BAlphabetTyped extends BAlphabet
         }
     }
 
-    public function start():Void
+    /**
+     * Alias for `startText()`.
+     */
+    public function startTyping():Void
     {
-        startTyping();
-    }
-
-    public function reset():Void
-    {
-        resetText();
-    }
-
-    public function finish():Void
-    {
-        finishText();
+        startText();
     }
 }

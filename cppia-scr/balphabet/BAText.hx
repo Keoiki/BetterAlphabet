@@ -1,8 +1,13 @@
 package balphabet;
 
-import balphabet.BAlphabetCharacter;
+import balphabet.BAData;
+import balphabet.BAData.BAFont;
+import balphabet.BAGlyph;
+import balphabet.BAParser;
+import balphabet.BAParser.PlaneOffset;
+import balphabet.BAParser.TextData;
 import funkin.group.FunkinGroup;
-import funkin.modding.module.ModuleHandler;
+import haxe.ds.IntMap;
 using StringTools;
 
 typedef TextConfig =
@@ -45,10 +50,10 @@ enum TextDirection
 }
 */
 
-class BAlphabet extends FunkinGroup
+class BAText extends FunkinGroup<BAGlyph>
 {
     // Base variable getter overrides
-    override function get_width():Float
+    override public function get_width():Float
     {
         var widestRow:Float = 0;
         for (row in rowWidths)
@@ -61,15 +66,15 @@ class BAlphabet extends FunkinGroup
         return widestRow * scale.x;
     }
 
-    override function get_height():Float
+    override public function get_height():Float
     {
         return (letters[letters.length - 1]?.row + 1) * this.lineHeight * scale.y;
     }
 
     // Regular variables
-    var textRaw:String;
-    var text(default, set):String;
-    var forceTextUpdate:Bool = false;
+    public var textRaw:String = "";
+    public var text(default, set):String = "";
+    public var forceTextUpdate:Bool = false;
 
     function set_text(input:String):String
     {
@@ -78,7 +83,7 @@ class BAlphabet extends FunkinGroup
         textRaw = input;
         clearLetters();
         text = textRaw.replace('\\n', '\n');
-        var parserResult:Array = textParser.parseText(text);
+        var parserResult:Array<Dynamic> = textParser.parseText(text);
         // trace(parserResult);
         text = parserResult[0];
         textData = parserResult[1];
@@ -89,21 +94,26 @@ class BAlphabet extends FunkinGroup
         return input;
     }
 
-    var fontData:BAFont;
-    var font(get, set):String;
+    public var fontData:BAFont;
 
-    function set_font(input:String):String
-    {
-        if (!BAlphabetData.allFonts.exists(input))
+    function setFontData(fontName:String):Void
+    {   
+        if (!BAData.allFonts.exists(fontName))
         {
-            fontData = BAlphabetData.allFonts.get('default');
-            trace("Font " + input + " not found. Defaulting to default font.");
+            fontData = BAData.allFonts.get('default');
+            trace("Font " + fontName + " not found. Defaulting to default font.");
         }
         else
         {
-            fontData = BAlphabetData.allFonts.get(input);
+            fontData = BAData.allFonts.get(fontName);
         }
+    }
 
+    @:isVar public var font(get, set):String;
+
+    function set_font(input:String):String
+    {
+        setFontData(input);
         config.font = input;
         if (config.lineHeight == null) config.lineHeight = fontData.lineHeight;
 
@@ -120,7 +130,7 @@ class BAlphabet extends FunkinGroup
         return config.font;
     }
 
-    var alignment(get, set):String;
+    @:isVar public var alignment(get, set):String;
 
     function set_alignment(input:String):String
     {
@@ -128,7 +138,7 @@ class BAlphabet extends FunkinGroup
         switch (input.toLowerCase())
         {
             case 'right': input = 'right';
-            case 'center', 'centered': input = 'centered';
+            case 'center' | 'centered': input = 'centered';
             default: input = 'left';
         }
         config.alignment = input;
@@ -142,7 +152,7 @@ class BAlphabet extends FunkinGroup
         return config.alignment;
     }
 
-    var baseColor(get, set):String;
+    @:isVar public var baseColor(get, set):String;
 
     function set_baseColor(input:String):String
     {
@@ -156,7 +166,7 @@ class BAlphabet extends FunkinGroup
         return config.baseColor;
     }
 
-    var lineHeight(get, set):Float;
+    @:isVar public var lineHeight(get, set):Float;
 
     function set_lineHeight(input:Float):Float
     {
@@ -175,44 +185,40 @@ class BAlphabet extends FunkinGroup
         return config.lineHeight;
     }
 
-    function resetLineHeight():Void
+    public function resetLineHeight():Void
     {
         lineHeight = fontData.lineHeight;
     }
 
-    var letters:Array<BAlphabetCharacter> = [];
-    var rowWidths:Array<Float> = [];
-    var rows:Int = 0;
+    public var letters:Array<BAGlyph> = [];
+    public var rowWidths:Array<Float> = [];
+    public var rows:Int = 0;
 
-    var config:TextConfig;
+    public var config:TextConfig;
     function validateConfig(config:Null<TextConfig>):TextConfig
     {
         if (config == null) config = {};
-        config?.font ??= "default";
-        this.font = config.font;
-        config?.baseColor ??= "FFFFFF";
-        this.alignment = config?.alignment ?? "left";
-        config?.lineHeight ??= this.fontData.lineHeight;
+        config.font ??= "default";
+        setFontData(config.font);
+        config.baseColor ??= "FFFFFF";
+        config.lineHeight ??= fontData.lineHeight;
+        config.alignment ??= "left";
         // config.direction ??= TextDirection.LeftToRight;
         return config;
     }
 
-    var textParser;
-    var textData;
-    var textDataPlanes;
+    public var textParser:BAParser;
+    public var textData:IntMap<TextData>;
+    public var textDataPlanes:Array<PlaneOffset>;
 
-    public function new(x:Float, y:Float, text:String = "", ?config:TextConfig):Void
+    public function new(x:Float, y:Float, text:String = "", ?config:Null<TextConfig>):Void
     {
-        textParser = ModuleHandler.getModule('balphabet-parser');
         super(x, y);
+        forceTextUpdate = true;
+        textParser = new BAParser();
         this.config = validateConfig(config);
+        this.alignment = this.config.alignment;
         this.text = text;
-    }
-
-    @:deprecated("Use the built-in alignment property instead.")
-    public function setAlignment(align:String):Void
-    {
-        alignment = align;
     }
 
     function updateAlignment():Void
@@ -232,12 +238,6 @@ class BAlphabet extends FunkinGroup
         }
     }
 
-    @:deprecated("Use the built-in scale property instead.")
-    public function setScale(scaleX:Float, ?scaleY:Float):Void
-    {
-        this.scale.set(scaleX, scaleY ?? scaleX);
-    }
-
     var storedScrollFactor:Array<Float> = [1.0, 1.0];
     public function setScrollFactor(factorX:Float = 0.0, factorY:Float = 0.0):Void
     {
@@ -249,12 +249,6 @@ class BAlphabet extends FunkinGroup
                 letter.scrollFactor.set(factorX, factorY);
             }
         }
-    }
-
-    @:deprecated("Use the built-in text property instead.")
-    public function setText(newText:String):Void
-    {
-        text = newText;
     }
 
     function clearLetters():Void
@@ -295,7 +289,7 @@ class BAlphabet extends FunkinGroup
                 var scaleMultiplier:Float = 1;
                 var isBold:Bool = false;
                 var isItalic:Bool = false;
-                var isMonospaced:Bool = null;
+                var isMonospaced:Null<Bool> = null;
                 var newPlane:Int = 0;
                 var posOffsets:Array<Float> = [0, 0];
 
@@ -330,8 +324,8 @@ class BAlphabet extends FunkinGroup
 
                 // Use a revive system rather than creating a new letter EVERY TIME.
                 // Seems to have improved performance quite a bit.
-                var letter:BAlphabetCharacter = null;
-                letter = getFirstAvailable();
+                var letter:Null<BAGlyph> = null;
+                letter = getFirstAvailableLetter();
                 if (letter != null)
                 {
                     letter.revive();
@@ -339,7 +333,7 @@ class BAlphabet extends FunkinGroup
                 }
                 else
                 {
-                    letter = new BAlphabetCharacter(0, 0);
+                    letter = new BAGlyph(0, 0);
                     // Only add a letter when it's brand new!
                     this.add(letter);
                 }
@@ -372,7 +366,9 @@ class BAlphabet extends FunkinGroup
             }
             else
             {
-                letters[index - 1]?.spacesTrailing = consecutiveSpaces;
+                // In hscript, this didn't throw errors if the text started with a newline.
+                // Now we check if any letters actually exist because otherwise Invalid Access (or even Null Object Reference) error lol
+                if (letters.length > 0) letters[index - 1].spacesTrailing = consecutiveSpaces;
                 consecutiveSpaces = 0;
                 posX = 0;
                 rows++;
@@ -386,7 +382,7 @@ class BAlphabet extends FunkinGroup
             {
                 posX += fontData.spaceWidth * consecutiveSpaces * letters[index - 1]?.localScale.x;
             }
-            letters[index - 1]?.spacesTrailing = consecutiveSpaces;
+            letters[index - 1].spacesTrailing = consecutiveSpaces;
         }
 
         setRowWidths();
@@ -478,8 +474,23 @@ class BAlphabet extends FunkinGroup
      */
     public function shouldIgnoreCharacter(character:String):Bool
     {
-        return character == BAlphabetData.fromCharCode(9)
-            || character == BAlphabetData.fromCharCode(10)
-            || character == BAlphabetData.fromCharCode(13);
+        return character == BAData.fromCharCode(9)
+            || character == BAData.fromCharCode(10)
+            || character == BAData.fromCharCode(13);
+    }
+
+    /**
+     * getFirstAvailable() but put separately here because chud base class has contextual returns in an inline or smth idk
+     *
+     * @return The child or null.
+     */
+    function getFirstAvailableLetter():Null<BAGlyph>
+    {
+        for (child in children)
+        {
+            if (!child.exists) return child;
+        }
+
+        return null;
     }
 }

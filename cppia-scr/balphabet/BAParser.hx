@@ -1,32 +1,32 @@
 package balphabet;
 
-using StringTools;
 import EReg;
-import funkin.modding.module.Module;
-import funkin.util.ReflectUtil;
 import haxe.ds.IntMap;
+using StringTools;
 
-typedef TextData = {
-    color:Null<Int>, // <c=FF0000>text</c>
-    scale:Null<Float>, // <s=1.5>text</c>
-    effect:Null<Int>, // <W> (1, Wave) or <S> (2, Shake)
-    italics:Null<Bool>, // <i>
-    bold:Null<Bool>, // <b>
-    alpha:Null<Float>, // <a=0.5>Half opacity text!</a>
-    delay:Null<Float>, // <d=0.5/> (Seconds, only on typed text)
-    monospace:Null<Bool>, // <m>
-    event:Null<String>, // <e=eventName/> (Only on typed text)
-    offset:Null<Array<Float>> // <o=x,y> (Also words as a self-closing tag: <o=x,y/>)
+typedef TextData =
+{
+    ?color:Null<Int>,           // <c=FF0000>text</c>
+    ?scale:Null<Float>,         // <s=1.5>text</c>
+    ?effect:Null<Int>,          // <W> (1, Wave) or <S> (2, Shake)
+    ?italic:Null<Bool>,         // <i>
+    ?bold:Null<Bool>,           // <b>
+    ?alpha:Null<Float>,         // <a=0.5>Half opacity text!</a>
+    ?delay:Null<Float>,         // <d=0.5/> (Seconds, only on typed text)
+    ?monospace:Null<Bool>,      // <m>
+    ?event:Null<String>,        // <e=eventName/> (Only on typed text)
+    ?offset:Null<Array<Float>>  // <o=x,y> (Also words as a self-closing tag: <o=x,y/>)
 }
 
-typedef PlaneOffset = {
+typedef PlaneOffset =
+{
     pos:Int,
     plane:Int
 }
 
-class BAlphabetParser extends Module
+class BAParser
 {
-    public var letterData:IntMap<Int, Null<TextData>> = new IntMap();
+    public var letterData:IntMap<TextData> = new IntMap();
     public var letterPlanes:Array<PlaneOffset> = [];
 
     public var charIndex:Int = 0;
@@ -44,10 +44,7 @@ class BAlphabetParser extends Module
     var hasEvent:Null<String> = null;
     var hasOffset:Null<Array<Float>> = null;
 
-    public function new():Void
-    {
-        super('balphabet-parser', 3);
-    }
+    public function new():Void {}
 
     public function resetVariables():Void
     {
@@ -98,7 +95,7 @@ class BAlphabetParser extends Module
         }
         var regex:EReg = new EReg('<[!a-zA-Z\\/][^>]*>', 'g');
         // text = regex.replace(text, '');
-        text = regex.map(text, (e) -> {
+        text = regex.map(text, (e:EReg) -> {
             var match = e.matchedPos();
             for (a in 0...letterPlanes.length)
             {
@@ -117,8 +114,8 @@ class BAlphabetParser extends Module
         var i:Int = 0;
         var totalLength:Int = 0;
         var regex:EReg = new EReg("&#(x?)([A-Fa-f0-9]+);", "g");
-        text = regex.map(text, (e) -> {
-            var num:Int = Std.int((e.matched(1) == "x" ? "0x" : "") + e.matched(2));
+        text = regex.map(text, (e:EReg) -> {
+            var num:Int = Std.parseInt((e.matched(1) == "x" ? "0x" : "") + e.matched(2));
             if (num > 0xFFFF)
             {
                 var pos:Int = (i == 0) ? e.matchedPos().pos : e.matchedPos().pos - (totalLength - i);
@@ -130,8 +127,9 @@ class BAlphabetParser extends Module
             }
             i++;
             totalLength += e.matchedPos().len;
-            return BAlphabetData.fromCharCode(num);
+            return BAData.fromCharCode(num);
         });
+        return text;
     }
 
     public function parseTags(fullText:String, char:String, i:Int):Void
@@ -239,7 +237,6 @@ class BAlphabetParser extends Module
 
     function addLetterModifiers(offset:Int = 0):Void
     {
-        // return;
         if (letterData.exists(charIndex + offset))
         {
             var prevData:Dynamic = letterData.get(charIndex + offset);
